@@ -58,12 +58,12 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           <ThemeSwitch />
-          <a
-            href="#contact"
+          <Link
+            href="/meeting"
             className="hidden border border-line-strong px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all hover:border-amber hover:bg-amber hover:text-ink md:inline-block"
           >
             Хамтран ажиллах
-          </a>
+          </Link>
           <button
             type="button"
             aria-label="Цэс нээх"
@@ -107,13 +107,13 @@ export function Header() {
             {link.label}
           </a>
         ))}
-        <a
-          href="#contact"
+        <Link
+          href="/meeting"
           onClick={() => setMenuOpen(false)}
           className="mt-4 inline-flex items-center justify-center gap-2.5 bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink"
         >
           Хамтран ажиллах
-        </a>
+        </Link>
       </div>
     </header>
   );
