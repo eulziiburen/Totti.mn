@@ -122,10 +122,17 @@
     content:'';
     position:absolute; inset:0; z-index:0;
     background:
-      linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(255,255,255,0.75)),
-      url('background.png') center 30%/cover no-repeat;
-    opacity:0.5;
+      linear-gradient(90deg, var(--bg-0) 0%, var(--bg-0) 32%, rgba(245,244,240,0.75) 50%, rgba(245,244,240,0.35) 68%, rgba(245,244,240,0.08) 85%, transparent 97%),
+      url('background.png') right center/cover no-repeat;
     pointer-events:none;
+  }
+  @media (max-width:900px){
+    .hero::before{
+      background:
+        linear-gradient(to bottom, rgba(255,255,255,0.55), rgba(255,255,255,0.8)),
+        url('background.png') center 30%/cover no-repeat;
+      opacity:0.55;
+    }
   }
   .court-arc{
     position:absolute; inset:0; z-index:0; opacity:0.5; pointer-events:none;
@@ -136,6 +143,7 @@
   .hero h1{
     font-size:clamp(40px, 6.5vw, 92px);
     color:var(--chalk);
+    text-shadow:0 2px 30px rgba(255,255,255,0.6);
   }
   .hero h1 .accent{color:var(--amber);}
   .hero-sub{
