@@ -12,6 +12,7 @@ import {
   type DayOption,
 } from "@/lib/booking";
 import { createBooking } from "@/app/meeting/actions";
+import { TimeWheel } from "@/components/TimeWheel";
 
 type Errors = Partial<Record<"role" | "date" | "time" | "format" | "contact", string>>;
 
@@ -406,37 +407,18 @@ export function Booking() {
                 <span className="font-mono text-xs font-bold text-amber-dim">03</span> Цаг, хэлбэр{" "}
                 <small className="ml-auto text-xs font-medium text-muted">Цагаар (UB цаг)</small>
               </legend>
-              <div
-                className="mb-3.5 flex gap-2.5 overflow-x-auto py-0.5 pb-3 pr-6"
-                style={{
-                  WebkitMaskImage: "linear-gradient(to right,#000 92%,transparent)",
-                  maskImage: "linear-gradient(to right,#000 92%,transparent)",
-                }}
-              >
-                {timeOptions.map((opt) => (
-                  <label key={opt.value} className="relative flex-none cursor-pointer">
-                    <input
-                      type="radio"
-                      name="time"
-                      value={opt.value}
-                      checked={time === opt.value}
-                      onChange={() => {
-                        setTime(opt.value);
-                        clearError("time");
-                      }}
-                      className="absolute inset-0 m-0 h-full w-full cursor-pointer opacity-0"
-                    />
-                    <span
-                      className={`flex min-w-[68px] items-center justify-center rounded-full border px-4 py-3 font-mono text-sm font-semibold tabular-nums transition-all ${
-                        time === opt.value
-                          ? "border-ink bg-ink text-white shadow-[inset_0_-3px_0_var(--color-amber)]"
-                          : "border-line-strong bg-bg-0 hover:border-chalk"
-                      }`}
-                    >
-                      {opt.range}
-                    </span>
-                  </label>
-                ))}
+              <div className="mb-3.5 flex items-center gap-4">
+                <TimeWheel
+                  options={timeOptions}
+                  value={time}
+                  onChange={(v) => {
+                    setTime(v);
+                    clearError("time");
+                  }}
+                />
+                <p className="text-[13px] leading-relaxed text-muted">
+                  Дугуйг чирж эсвэл дарж цагаа сонгоно уу. Дунд хүрээнд орсон цаг сонгогдоно.
+                </p>
               </div>
               {errors.time && <p className="-mt-1 mb-3.5 text-[13px] font-semibold text-red-600">{errors.time}</p>}
               <div className="flex flex-wrap gap-2.5">
