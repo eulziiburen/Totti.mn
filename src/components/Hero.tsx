@@ -43,7 +43,7 @@ export function Hero() {
       <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-8">
         <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-amber/30 bg-amber/10 py-2 pl-2 pr-4">
           <span className="h-2 w-2 rounded-full bg-amber shadow-[0_0_8px_rgba(212,175,55,0.7)]" />
-          <span className="font-mono text-xs uppercase tracking-[0.18em] text-amber">
+          <span className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">
             Спортын агентлаг · Улаанбаатар
           </span>
         </div>
@@ -66,13 +66,13 @@ export function Hero() {
         <div className="mt-10 flex flex-wrap gap-4">
           <a
             href="/meeting"
-            className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
+            className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
           >
             Уулзалт товлох →
           </a>
           <PdfTriggerLink
             pdfKey="male"
-            className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
+            className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-sm font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
           >
             Тамирчдыг үзэх
           </PdfTriggerLink>

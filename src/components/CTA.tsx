@@ -12,7 +12,7 @@ export function CTA() {
       />
       <div className="relative z-[1] mx-auto max-w-[1180px] px-8">
         <RevealOnScroll>
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-amber">Дараагийн шат</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Дараагийн шат</p>
         </RevealOnScroll>
         <RevealOnScroll className="mt-3.5">
           <h2 className="font-display text-[clamp(36px,6vw,72px)] uppercase leading-[0.92]">
@@ -27,13 +27,13 @@ export function CTA() {
         <RevealOnScroll className="mt-10 flex flex-wrap justify-center gap-4">
           <a
             href="mailto:info@totti.mn"
-            className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
+            className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
           >
             info@totti.mn
           </a>
           <a
             href="tel:+97688602941"
-            className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
+            className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-sm font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
           >
             Залгах: +976 88602941
           </a>

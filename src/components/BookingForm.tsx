@@ -29,7 +29,7 @@ type Summary = {
 function Cell({ label, value, sub, active }: { label: string; value: string; sub: string; active: boolean }) {
   return (
     <div className="min-w-0 border-r border-white/16 px-3.5 pb-4.5 pt-4 last:border-r-0">
-      <div className="text-[10px] font-bold uppercase tracking-[.14em] text-white/55">{label}</div>
+      <div className="text-[11px] font-bold uppercase tracking-[.14em] text-white/55">{label}</div>
       <div
         className={`mt-3 font-display text-[30px] leading-none transition-colors sm:text-[40px] ${
           active ? "text-amber" : "text-white/28"
@@ -38,7 +38,7 @@ function Cell({ label, value, sub, active }: { label: string; value: string; sub
       >
         {value}
       </div>
-      <div className="mt-2 min-h-[1.3em] text-xs text-white/60">{sub}</div>
+      <div className="mt-2 min-h-[1.3em] text-[13px] text-white/60">{sub}</div>
     </div>
   );
 }
@@ -64,7 +64,7 @@ function Sidebar({
       <aside className="relative flex min-h-[520px] flex-col px-6 pb-9 pt-10 min-[980px]:sticky min-[980px]:top-[110px] sm:px-10 sm:pt-11">
       <a
         href="/"
-        className="inline-flex w-fit items-center gap-2 self-start text-[13px] font-semibold text-white/65 transition-colors hover:text-amber"
+        className="inline-flex w-fit items-center gap-2 self-start text-sm font-semibold text-white/65 transition-colors hover:text-amber"
       >
         ← Нүүр хуудас руу буцах
       </a>
@@ -89,7 +89,7 @@ function Sidebar({
 
       <div className="mt-auto flex flex-col gap-3 pt-10">
         <div>
-          <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-[.14em] text-white/45">
+          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">
             Утас · дарж залгах
           </span>
           <a
@@ -103,7 +103,7 @@ function Sidebar({
           </a>
         </div>
         <div>
-          <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-[.14em] text-white/45">Имэйл</span>
+          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">Имэйл</span>
           <a
             href="https://mail.google.com/mail/?view=cm&fs=1&to=info%40totti.mn"
             target="_blank"
@@ -114,7 +114,7 @@ function Sidebar({
           </a>
         </div>
         <div>
-          <span className="mb-0.5 block text-[10px] font-bold uppercase tracking-[.14em] text-white/45">Хаяг</span>
+          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">Хаяг</span>
           <p className="text-white/78">Сүхбаатар дүүрэг, Улаанбаатар</p>
         </div>
       </div>
@@ -291,25 +291,25 @@ export function Booking() {
                 href={gmailUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
+                className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
               >
                 Gmail дээр нээх
               </a>
               <a
                 href="tel:+97688602941"
-                className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-[13px] font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
+                className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
               >
                 Залгах
               </a>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-[13px] font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
+                className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
               >
                 Засварлах
               </button>
             </div>
-            <p className="mt-4.5 text-[13px]">
+            <p className="mt-4.5 text-sm">
               Gmail ашигладаггүй бол{" "}
               <a href={mailtoUrl} className="font-semibold underline">
                 өөр имэйл програмаар нээх
@@ -321,7 +321,7 @@ export function Booking() {
           <form onSubmit={handleSubmit} noValidate className="px-6 py-5 sm:px-10 sm:py-7" id="bookingFieldset">
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-xs font-bold text-amber-dim">01</span> Та хэн бэ?
+                <span className="font-mono text-[13px] font-bold text-amber-dim">01</span> Та хэн бэ?
               </legend>
               <div className="flex flex-wrap gap-2.5">
                 {roleOptions.map((opt) => (
@@ -349,13 +349,13 @@ export function Booking() {
                   </label>
                 ))}
               </div>
-              {errors.role && <p className="mt-1.5 text-[13px] font-semibold text-red-600">{errors.role}</p>}
+              {errors.role && <p className="mt-1.5 text-sm font-semibold text-red-600">{errors.role}</p>}
             </fieldset>
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-xs font-bold text-amber-dim">02</span> Өдөр сонгох{" "}
-                <small className="ml-auto text-xs font-medium text-muted">Ирэх 14 хоног</small>
+                <span className="font-mono text-[13px] font-bold text-amber-dim">02</span> Өдөр сонгох{" "}
+                <small className="ml-auto text-[13px] font-medium text-muted">Ирэх 14 хоног</small>
               </legend>
               <div
                 className="flex gap-2.5 overflow-x-auto py-0.5 pb-3 pr-6"
@@ -385,27 +385,27 @@ export function Booking() {
                       }`}
                     >
                       <span
-                        className={`text-[11px] font-bold uppercase tracking-wider ${
+                        className={`text-xs font-bold uppercase tracking-wider ${
                           dateIso === d.iso ? "text-ink/75" : d.isWeekend ? "text-amber-dim" : ""
                         }`}
                       >
                         {DOW_SHORT[d.weekday]}
                       </span>
                       <span className="mt-2 font-display text-[30px] leading-none">{d.dayNum}</span>
-                      <span className={`mt-1.5 text-[11px] ${dateIso === d.iso ? "text-ink/75" : "text-muted"}`}>
+                      <span className={`mt-1.5 text-xs ${dateIso === d.iso ? "text-ink/75" : "text-muted"}`}>
                         {d.month}-р сар
                       </span>
                     </span>
                   </label>
                 ))}
               </div>
-              {errors.date && <p className="mt-1.5 text-[13px] font-semibold text-red-600">{errors.date}</p>}
+              {errors.date && <p className="mt-1.5 text-sm font-semibold text-red-600">{errors.date}</p>}
             </fieldset>
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-xs font-bold text-amber-dim">03</span> Цаг, хэлбэр{" "}
-                <small className="ml-auto text-xs font-medium text-muted">Цагаар (UB цаг)</small>
+                <span className="font-mono text-[13px] font-bold text-amber-dim">03</span> Цаг, хэлбэр{" "}
+                <small className="ml-auto text-[13px] font-medium text-muted">Цагаар (UB цаг)</small>
               </legend>
               <div className="mb-3.5 flex items-center gap-4">
                 <TimeWheel
@@ -416,11 +416,11 @@ export function Booking() {
                     clearError("time");
                   }}
                 />
-                <p className="text-[13px] leading-relaxed text-muted">
+                <p className="text-sm leading-relaxed text-muted">
                   Дугуйг чирж эсвэл дарж цагаа сонгоно уу. Дунд хүрээнд орсон цаг сонгогдоно.
                 </p>
               </div>
-              {errors.time && <p className="-mt-1 mb-3.5 text-[13px] font-semibold text-red-600">{errors.time}</p>}
+              {errors.time && <p className="-mt-1 mb-3.5 text-sm font-semibold text-red-600">{errors.time}</p>}
               <div className="flex flex-wrap gap-2.5">
                 {formatOptions.map((opt) => (
                   <label key={opt.value} className="relative cursor-pointer">
@@ -443,21 +443,21 @@ export function Booking() {
                       }`}
                     >
                       {opt.value}
-                      <em className="text-xs font-medium not-italic opacity-70">{opt.sub}</em>
+                      <em className="text-[13px] font-medium not-italic opacity-70">{opt.sub}</em>
                     </span>
                   </label>
                 ))}
               </div>
-              {errors.format && <p className="mt-1.5 text-[13px] font-semibold text-red-600">{errors.format}</p>}
+              {errors.format && <p className="mt-1.5 text-sm font-semibold text-red-600">{errors.format}</p>}
             </fieldset>
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-xs font-bold text-amber-dim">04</span> Холбоо барих мэдээлэл
+                <span className="font-mono text-[13px] font-bold text-amber-dim">04</span> Холбоо барих мэдээлэл
               </legend>
               <div className="grid grid-cols-1 gap-5.5 min-[640px]:grid-cols-2 min-[640px]:gap-x-6.5">
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <label htmlFor="name" className="text-xs font-bold uppercase tracking-wide text-muted">
+                  <label htmlFor="name" className="text-[13px] font-bold uppercase tracking-wide text-muted">
                     Нэр
                   </label>
                   <input
@@ -482,7 +482,7 @@ export function Booking() {
                   />
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5">
-                  <label htmlFor="phone" className="text-xs font-bold uppercase tracking-wide text-muted">
+                  <label htmlFor="phone" className="text-[13px] font-bold uppercase tracking-wide text-muted">
                     Утас
                   </label>
                   <input
@@ -508,7 +508,7 @@ export function Booking() {
                   />
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5 min-[640px]:col-span-2">
-                  <label htmlFor="email" className="text-xs font-bold uppercase tracking-wide text-muted">
+                  <label htmlFor="email" className="text-[13px] font-bold uppercase tracking-wide text-muted">
                     Имэйл
                   </label>
                   <input
@@ -533,9 +533,9 @@ export function Booking() {
                   />
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5 min-[640px]:col-span-2">
-                  <label htmlFor="msg" className="text-xs font-bold uppercase tracking-wide text-muted">
+                  <label htmlFor="msg" className="text-[13px] font-bold uppercase tracking-wide text-muted">
                     Юуны тухай ярилцах вэ?{" "}
-                    <span className="text-xs font-medium normal-case tracking-normal">(заавал биш)</span>
+                    <span className="text-[13px] font-medium normal-case tracking-normal">(заавал биш)</span>
                   </label>
                   <textarea
                     id="msg"
@@ -547,17 +547,17 @@ export function Booking() {
                   />
                 </div>
               </div>
-              {errors.contact && <p className="mt-1.5 text-[13px] font-semibold text-red-600">{errors.contact}</p>}
+              {errors.contact && <p className="mt-1.5 text-sm font-semibold text-red-600">{errors.contact}</p>}
             </fieldset>
 
             <div className="mt-2 flex flex-wrap items-center gap-5.5">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8.5 py-4.5 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
+                className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8.5 py-4.5 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
               >
                 Хүсэлт илгээх →
               </button>
-              <p className="max-w-80 text-[13px] leading-relaxed text-muted">
+              <p className="max-w-80 text-sm leading-relaxed text-muted">
                 Энэ нь цаг товлох хүсэлт. Бид тантай холбогдож эцсийн цагийг баталгаажуулна. Яаралтай
                 бол{" "}
                 <a href="tel:+97688602941" className="font-bold underline">

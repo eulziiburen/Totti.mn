@@ -104,7 +104,7 @@ function PdfModal({
                 key={key}
                 type="button"
                 onClick={() => onSelect(key)}
-                className={`rounded-full px-[18px] py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
+                className={`rounded-full px-[18px] py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all ${
                   key === activeKey
                     ? "border border-amber bg-amber text-ink"
                     : "border border-line-strong text-chalk hover:border-chalk"
@@ -119,14 +119,14 @@ function PdfModal({
               href={doc.url}
               target="_blank"
               rel="noopener"
-              className="rounded-full border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
+              className="rounded-full border border-line-strong px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
               Шинэ цонхонд нээх
             </a>
             <a
               href={doc.url}
               download
-              className="rounded-full border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
+              className="rounded-full border border-line-strong px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
               Татах
             </a>
@@ -134,7 +134,7 @@ function PdfModal({
               type="button"
               aria-label="Хаах"
               onClick={onClose}
-              className="rounded-full border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
+              className="rounded-full border border-line-strong px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
               ✕
             </button>

@@ -28,7 +28,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
     <section id="roster" className="border-y border-line bg-bg-1 py-[120px]">
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mb-14 max-w-[640px]">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-amber">Бидний баг</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Бидний баг</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
             ТӨЛӨӨЛӨГЧ ТАМИРЧИД
           </h2>
@@ -133,7 +133,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                   style={{ width: "min(580px, 100%)" }}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-amber px-3.5 py-1.5 text-[11px] font-extrabold tracking-[.1em] text-ink">
+                    <span className="rounded-full bg-amber px-3.5 py-1.5 text-xs font-extrabold tracking-[.1em] text-ink">
                       {player.pos}
                     </span>
                     {player.jersey && (
@@ -152,7 +152,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                         <b className="block font-display text-[46px] leading-none tabular-nums text-amber max-[900px]:text-[38px]">
                           {s.value}
                         </b>
-                        <span className="mt-1.5 block text-[11px] font-semibold tracking-[.12em] text-white/62">
+                        <span className="mt-1.5 block text-xs font-semibold tracking-[.12em] text-white/62">
                           {s.label}
                         </span>
                       </div>
@@ -179,13 +179,13 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
           <div className="flex flex-wrap gap-3">
             <PdfTriggerLink
               pdfKey="male"
-              className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
+              className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
             >
               Эрэгтэй тоглогчид →
             </PdfTriggerLink>
             <PdfTriggerLink
               pdfKey="female"
-              className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
+              className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-sm font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
             >
               Эмэгтэй тоглогчид →
             </PdfTriggerLink>

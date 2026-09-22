@@ -19,7 +19,7 @@ export function Footer() {
             </a>
           </div>
           <div>
-            <h5 className="mb-3.5 text-xs uppercase tracking-[0.1em] text-muted">Холбоо барих</h5>
+            <h5 className="mb-3.5 text-[13px] uppercase tracking-[0.1em] text-muted">Холбоо барих</h5>
             <a href="tel:+97688602941" className="mb-2 block text-sm text-chalk">
               +976 88602941
             </a>
@@ -29,7 +29,7 @@ export function Footer() {
             <p className="mb-2 text-sm text-chalk">Сүхбаатар дүүрэг, Улаанбаатар</p>
           </div>
           <div>
-            <h5 className="mb-3.5 text-xs uppercase tracking-[0.1em] text-muted">Сүлжээ</h5>
+            <h5 className="mb-3.5 text-[13px] uppercase tracking-[0.1em] text-muted">Сүлжээ</h5>
             <a
               href="https://www.instagram.com/tott1sports.agency/"
               target="_blank"
@@ -51,7 +51,7 @@ export function Footer() {
             </a>
           </div>
         </div>
-        <div className="mt-14 flex flex-wrap justify-between gap-3 border-t border-line pt-6 text-xs text-muted">
+        <div className="mt-14 flex flex-wrap justify-between gap-3 border-t border-line pt-6 text-[13px] text-muted">
           <span>© 2026 Нью Тотти ХХК</span>
           <span>Бүх эрх хуулиар хамгаалагдсан</span>
         </div>

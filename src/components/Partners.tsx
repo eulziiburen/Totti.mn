@@ -15,7 +15,7 @@ export function Partners({ items: partners }: { items: Partner[] }) {
     >
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mx-auto mb-14 max-w-[640px] text-center">
-          <p className="font-mono text-xs uppercase tracking-[0.18em] text-amber">Хамтын ажиллагаа</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Хамтын ажиллагаа</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
             БИДНИЙ ТҮНШ БАЙГУУЛЛАГА
           </h2>

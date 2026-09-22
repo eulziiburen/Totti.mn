@@ -53,7 +53,7 @@ export function Scoreboard({ stats }: { stats: Stat[] }) {
             className="rounded-3xl border border-line bg-bg-0/95 px-6 py-8 text-center shadow-[0_16px_40px_rgba(13,12,10,0.08)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-amber/40"
           >
             <Counter target={stat.value} />
-            <div className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted">
+            <div className="mt-2 text-xs uppercase tracking-[0.12em] text-muted">
               {stat.label}
             </div>
           </div>

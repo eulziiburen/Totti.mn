@@ -45,7 +45,7 @@ export function Header() {
           />
         </a>
 
-        <div className="hidden gap-1 text-[13px] font-semibold uppercase tracking-wide md:flex">
+        <div className="hidden gap-1 text-sm font-semibold uppercase tracking-wide md:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
@@ -63,7 +63,7 @@ export function Header() {
               client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
           <a
             href="/meeting"
-            className="hidden rounded-full border border-line-strong px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-amber hover:bg-amber hover:text-ink md:inline-block"
+            className="hidden rounded-full border border-line-strong px-5 py-2.5 text-[13px] font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-amber hover:bg-amber hover:text-ink md:inline-block"
           >
             Хамтран ажиллах
           </a>
@@ -115,7 +115,7 @@ export function Header() {
         <a
           href="/meeting"
           onClick={() => setMenuOpen(false)}
-          className="mt-4 inline-flex items-center justify-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink"
+          className="mt-4 inline-flex items-center justify-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink"
         >
           Хамтран ажиллах
         </a>
