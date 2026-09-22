@@ -59,7 +59,7 @@ export function TimeWheel({
   }
 
   return (
-    <div className="relative w-[180px] select-none">
+    <div className="relative w-[180px] shrink-0 select-none">
       <div
         aria-hidden="true"
         className="pointer-events-none absolute inset-x-0 top-1/2 z-10 -translate-y-1/2 rounded-xl border-y-2 border-amber bg-amber/5"
@@ -112,7 +112,7 @@ export function TimeWheel({
                 scrollSnapAlign: "center",
                 opacity: dist === 0 ? 1 : dist === 1 ? 0.55 : dist === 2 ? 0.28 : 0.12,
                 fontSize: dist === 0 ? 22 : dist === 1 ? 17 : 15,
-                color: dist === 0 ? "var(--color-ink)" : "var(--color-muted)",
+                color: dist === 0 ? "var(--color-chalk)" : "var(--color-muted)",
                 transform: `scale(${dist === 0 ? 1 : 0.92})`,
               }}
             >
