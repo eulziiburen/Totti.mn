@@ -45,25 +45,19 @@ function Counter({ target }: { target: number }) {
 
 export function Scoreboard({ stats }: { stats: Stat[] }) {
   return (
-    <section className="border-y border-line bg-bg-1">
-      <div className="mx-auto grid max-w-[1180px] grid-cols-2 px-8 min-[900px]:grid-cols-4">
-        {stats.map((stat, i) => {
-          const mobileRight = i % 2 === 0;
-          const desktopRight = i !== stats.length - 1;
-          return (
-            <div
-              key={stat.label}
-              className={`border-line px-6 py-9 text-center border-b min-[900px]:border-b-0 ${
-                mobileRight ? "border-r" : ""
-              } ${desktopRight ? "min-[900px]:border-r" : "min-[900px]:border-r-0"}`}
-            >
-              <Counter target={stat.value} />
-              <div className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted">
-                {stat.label}
-              </div>
+    <section className="py-16">
+      <div className="mx-auto grid max-w-[1180px] grid-cols-2 gap-3 px-8 min-[900px]:grid-cols-4 min-[900px]:gap-4">
+        {stats.map((stat) => (
+          <div
+            key={stat.label}
+            className="rounded-3xl border border-line bg-bg-0/95 px-6 py-8 text-center shadow-[0_16px_40px_rgba(13,12,10,0.08)] backdrop-blur-sm transition-all hover:-translate-y-1 hover:border-amber/40"
+          >
+            <Counter target={stat.value} />
+            <div className="mt-2 text-[11px] uppercase tracking-[0.12em] text-muted">
+              {stat.label}
             </div>
-          );
-        })}
+          </div>
+        ))}
       </div>
     </section>
   );

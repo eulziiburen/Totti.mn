@@ -17,9 +17,9 @@ export function About() {
           {aboutItems.map((item) => (
             <div
               key={item.idx}
-              className="group flex gap-4.5 border-b border-line pb-5 transition-[padding-left,border-color] hover:pl-2.5 hover:border-amber"
+              className="group flex items-start gap-4.5 rounded-2xl border-b border-line p-3 pb-5 transition-all hover:border-transparent hover:bg-bg-1"
             >
-              <div className="inline-block pt-0.5 font-mono text-sm text-amber-dim transition-[color,transform] group-hover:scale-[1.35] group-hover:text-amber">
+              <div className="flex h-9 w-9 flex-none items-center justify-center rounded-full bg-amber/10 font-mono text-sm text-amber-dim transition-colors group-hover:bg-amber group-hover:text-ink">
                 {item.idx}
               </div>
               <div>

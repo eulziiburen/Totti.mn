@@ -45,12 +45,12 @@ export function Header() {
           />
         </a>
 
-        <div className="hidden gap-9 text-[13px] font-semibold uppercase tracking-wide md:flex">
+        <div className="hidden gap-1 text-[13px] font-semibold uppercase tracking-wide md:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="text-muted transition-colors hover:text-chalk"
+              className="rounded-full px-4 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
             >
               {link.label}
             </a>
@@ -63,7 +63,7 @@ export function Header() {
               client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
           <a
             href="/meeting"
-            className="hidden border border-line-strong px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all hover:border-amber hover:bg-amber hover:text-ink md:inline-block"
+            className="hidden rounded-full border border-line-strong px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-amber hover:bg-amber hover:text-ink md:inline-block"
           >
             Хамтран ажиллах
           </a>
@@ -96,7 +96,7 @@ export function Header() {
 
       <div
         id="mobileMenu"
-        className={`mx-auto flex max-w-[1180px] flex-col overflow-hidden px-5 transition-[max-height,opacity,padding] duration-300 md:hidden ${
+        className={`mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-b-3xl px-5 transition-[max-height,opacity,padding] duration-300 md:hidden ${
           menuOpen ? "max-h-[420px] pt-1.5 pb-6 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
@@ -115,7 +115,7 @@ export function Header() {
         <a
           href="/meeting"
           onClick={() => setMenuOpen(false)}
-          className="mt-4 inline-flex items-center justify-center gap-2.5 bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink"
+          className="mt-4 inline-flex items-center justify-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink"
         >
           Хамтран ажиллах
         </a>

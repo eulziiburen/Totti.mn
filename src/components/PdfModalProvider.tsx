@@ -91,12 +91,12 @@ function PdfModal({
       role="dialog"
       aria-modal="true"
       aria-label="Тоглогчдын танилцуулга"
-      className="fixed inset-0 z-[300] flex items-center justify-center bg-[rgba(13,12,10,0.72)] p-6 backdrop-blur-sm sm:p-0"
+      className="fixed inset-0 z-[300] flex items-center justify-center bg-[rgba(13,12,10,0.72)] p-0 backdrop-blur-sm sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
       }}
     >
-      <div className="flex h-full max-h-[92vh] w-full max-w-[1000px] flex-col border-t-[3px] border-amber bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:max-h-full">
+      <div className="flex h-full max-h-[92vh] w-full max-w-[1000px] flex-col overflow-hidden rounded-none border-t-[3px] border-amber bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:max-h-full sm:rounded-3xl">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-bg-1 px-4 py-3">
           <div className="flex gap-1.5">
             {(Object.keys(documents) as PdfKey[]).map((key) => (
@@ -104,7 +104,7 @@ function PdfModal({
                 key={key}
                 type="button"
                 onClick={() => onSelect(key)}
-                className={`px-[18px] py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
+                className={`rounded-full px-[18px] py-2.5 text-xs font-bold uppercase tracking-wider transition-all ${
                   key === activeKey
                     ? "border border-amber bg-amber text-ink"
                     : "border border-line-strong text-chalk hover:border-chalk"
@@ -119,14 +119,14 @@ function PdfModal({
               href={doc.url}
               target="_blank"
               rel="noopener"
-              className="border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
+              className="rounded-full border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
               Шинэ цонхонд нээх
             </a>
             <a
               href={doc.url}
               download
-              className="border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
+              className="rounded-full border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
               Татах
             </a>
@@ -134,7 +134,7 @@ function PdfModal({
               type="button"
               aria-label="Хаах"
               onClick={onClose}
-              className="border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
+              className="rounded-full border border-line-strong px-4 py-2.5 text-xs font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
               ✕
             </button>

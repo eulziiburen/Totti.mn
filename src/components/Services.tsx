@@ -15,11 +15,11 @@ export function Services({ items: services }: { items: ServiceItem[] }) {
           </p>
         </RevealOnScroll>
 
-        <RevealOnScroll className="grid grid-cols-1 gap-px border border-line bg-line min-[900px]:grid-cols-3">
+        <RevealOnScroll className="grid grid-cols-1 gap-5 min-[900px]:grid-cols-3">
           {services.map((service) => (
             <div
               key={service.idx}
-              className="group relative overflow-hidden bg-bg-0 px-8 py-11 transition-colors hover:bg-bg-1"
+              className="group relative overflow-hidden rounded-3xl border border-line bg-bg-0 px-8 py-11 transition-all duration-300 hover:-translate-y-1.5 hover:border-amber/40 hover:shadow-[0_24px_48px_rgba(13,12,10,0.12)]"
             >
               <span
                 aria-hidden="true"
@@ -29,17 +29,19 @@ export function Services({ items: services }: { items: ServiceItem[] }) {
               </span>
               <span
                 aria-hidden="true"
-                className="absolute inset-y-0 left-0 w-[3px] origin-bottom scale-y-0 bg-amber transition-transform duration-[450ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-y-100"
+                className="absolute inset-x-8 top-0 h-[3px] origin-left scale-x-0 rounded-full bg-amber transition-transform duration-[450ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:scale-x-100"
               />
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                strokeWidth={1.5}
-                className="relative z-[1] mb-6 block h-9 w-9 text-amber transition-transform duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:rotate-[-6deg] group-hover:scale-[1.15]"
-              >
-                <path d={service.path} />
-              </svg>
+              <div className="relative z-[1] mb-6 flex h-14 w-14 items-center justify-center rounded-2xl bg-amber/10 transition-colors duration-300 group-hover:bg-amber/15">
+                <svg
+                  viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth={1.5}
+                  className="block h-7 w-7 text-amber transition-transform duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:rotate-[-6deg] group-hover:scale-[1.15]"
+                >
+                  <path d={service.path} />
+                </svg>
+              </div>
               <h3 className="relative z-[1] mb-3 text-xl font-semibold">{service.title}</h3>
               <p className="relative z-[1] text-sm leading-relaxed text-muted">{service.desc}</p>
             </div>

@@ -68,7 +68,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     focusPanel(i - 1);
                   }
                 }}
-                className={`group relative min-w-0 cursor-pointer overflow-hidden bg-ink text-white transition-[flex-grow] duration-700 ease-[cubic-bezier(.2,.8,.2,1)] max-[900px]:h-[88px] max-[900px]:flex-none max-[900px]:transition-[height] ${
+                className={`group relative min-w-0 cursor-pointer overflow-hidden rounded-3xl bg-ink text-white transition-[flex-grow] duration-700 ease-[cubic-bezier(.2,.8,.2,1)] max-[900px]:h-[88px] max-[900px]:flex-none max-[900px]:transition-[height] ${
                   active
                     ? "flex-[3.4_1_0%] cursor-default max-[900px]:h-[470px]"
                     : "flex-[1_1_0%]"
@@ -133,11 +133,11 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                   style={{ width: "min(580px, 100%)" }}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="bg-amber px-3 py-1.5 text-[11px] font-extrabold tracking-[.1em] text-ink">
+                    <span className="rounded-full bg-amber px-3.5 py-1.5 text-[11px] font-extrabold tracking-[.1em] text-ink">
                       {player.pos}
                     </span>
                     {player.jersey && (
-                      <span className="border border-white/40 px-2.5 py-1 font-display text-sm tracking-[.04em]">
+                      <span className="rounded-full border border-white/40 px-3 py-1 font-display text-sm tracking-[.04em]">
                         {player.jersey}
                       </span>
                     )}
@@ -165,7 +165,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
         </RevealOnScroll>
 
         <RevealOnScroll
-          className="mt-14 flex flex-wrap items-center justify-between gap-6 border border-line-strong bg-bg-1 px-9 py-8"
+          className="mt-14 flex flex-wrap items-center justify-between gap-6 rounded-3xl border border-line-strong bg-bg-1 px-9 py-8"
         >
           <div>
             <h3 className="font-display text-[28px] uppercase leading-none tracking-[.01em]">
@@ -179,13 +179,13 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
           <div className="flex flex-wrap gap-3">
             <PdfTriggerLink
               pdfKey="male"
-              className="inline-flex items-center gap-2.5 bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-transform hover:-translate-y-0.5"
+              className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
             >
               Эрэгтэй тоглогчид →
             </PdfTriggerLink>
             <PdfTriggerLink
               pdfKey="female"
-              className="inline-flex items-center gap-2.5 border border-line-strong px-8 py-4 text-[13px] font-bold uppercase tracking-wider text-chalk transition-colors hover:border-chalk"
+              className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
             >
               Эмэгтэй тоглогчид →
             </PdfTriggerLink>

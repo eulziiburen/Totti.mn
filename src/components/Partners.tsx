@@ -37,7 +37,7 @@ export function Partners({ items: partners }: { items: Partner[] }) {
             {track.map((partner, i) => (
               <div
                 key={partner.name + i}
-                className="group flex h-[150px] w-[200px] flex-none items-center justify-center border border-line bg-[#f5f4f0] px-7 py-8 transition-[border-color,transform,box-shadow] hover:-translate-y-1.5 hover:border-amber hover:shadow-[0_16px_32px_rgba(13,12,10,0.08)] min-[720px]:w-[260px] min-[720px]:px-10"
+                className="group flex h-[150px] w-[200px] flex-none items-center justify-center rounded-3xl border border-line bg-[#f5f4f0] px-7 py-8 transition-all hover:-translate-y-1.5 hover:border-amber hover:shadow-[0_20px_40px_rgba(13,12,10,0.1)] min-[720px]:w-[260px] min-[720px]:px-10"
               >
                 <Image
                   src={partner.src}

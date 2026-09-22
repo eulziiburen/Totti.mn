@@ -58,7 +58,7 @@ function Sidebar({
   formatSub: string;
 }) {
   return (
-    <aside className="relative flex min-h-[520px] flex-col overflow-hidden bg-ink px-6 pb-9 pt-10 text-white min-[980px]:sticky min-[980px]:top-[110px] sm:px-10 sm:pt-11">
+    <aside className="relative flex min-h-[520px] flex-col overflow-hidden rounded-t-3xl bg-ink px-6 pb-9 pt-10 text-white min-[980px]:sticky min-[980px]:top-[110px] min-[980px]:rounded-bl-3xl min-[980px]:rounded-tr-none sm:px-10 sm:pt-11">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-amber" />
       <a
         href="/"
@@ -76,7 +76,7 @@ function Sidebar({
       </p>
 
       <div
-        className="mt-9.5 grid grid-cols-3 border border-white/22 bg-white/[0.03]"
+        className="mt-9.5 grid grid-cols-3 rounded-2xl border border-white/22 bg-white/[0.03]"
         aria-live="polite"
         aria-label="Таны сонгосон уулзалтын хураангуй"
       >
@@ -241,7 +241,7 @@ export function Booking() {
   }
 
   return (
-    <div className="grid grid-cols-1 border border-line-strong bg-bg-0 min-[980px]:grid-cols-[5fr_7fr]">
+    <div className="grid grid-cols-1 rounded-3xl border border-line-strong bg-bg-0 min-[980px]:grid-cols-[5fr_7fr]">
       <Sidebar
         dayValue={selectedDay ? String(selectedDay.dayNum) : "—"}
         dayLabel={selectedDay ? `${DOW_LONG[selectedDay.weekday]}, ${selectedDay.month}-р сар` : "сонгоогүй"}
@@ -254,7 +254,7 @@ export function Booking() {
       <div className="min-w-0">
         {submitted && summary ? (
           <div className="px-6 py-5 sm:px-10 sm:py-7" tabIndex={-1}>
-            <div className="mb-6.5 flex h-16 w-16 items-center justify-center bg-amber">
+            <div className="mb-6.5 flex h-16 w-16 items-center justify-center rounded-2xl bg-amber">
               <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="#0d0c0a" strokeWidth={3} strokeLinecap="round" strokeLinejoin="round">
                 <path d="M5 12.5l4.5 4.5L19 7.5" />
               </svg>
@@ -288,20 +288,20 @@ export function Booking() {
                 href={gmailUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2.5 bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-transform hover:-translate-y-0.5"
+                className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
               >
                 Gmail дээр нээх
               </a>
               <a
                 href="tel:+97688602941"
-                className="inline-flex items-center gap-2.5 border border-line-strong px-7.5 py-4.25 text-[13px] font-bold uppercase tracking-wider transition-colors hover:border-chalk"
+                className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-[13px] font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
               >
                 Залгах
               </a>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
-                className="inline-flex items-center gap-2.5 border border-line-strong px-7.5 py-4.25 text-[13px] font-bold uppercase tracking-wider transition-colors hover:border-chalk"
+                className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-[13px] font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
               >
                 Засварлах
               </button>
@@ -335,7 +335,7 @@ export function Booking() {
                       className="absolute inset-0 m-0 h-full w-full cursor-pointer opacity-0"
                     />
                     <span
-                      className={`inline-flex items-center gap-2 border px-4.5 py-3 text-sm font-semibold transition-all ${
+                      className={`inline-flex items-center gap-2 rounded-full border px-4.5 py-3 text-sm font-semibold transition-all ${
                         role === opt
                           ? "border-ink bg-ink text-white shadow-[inset_0_-3px_0_var(--color-amber)]"
                           : "border-line-strong bg-bg-0 hover:border-chalk"
@@ -375,7 +375,7 @@ export function Booking() {
                       className="absolute inset-0 m-0 h-full w-full cursor-pointer opacity-0"
                     />
                     <span
-                      className={`flex w-[72px] flex-col items-center border px-0 pb-3.5 pt-3 transition-all ${
+                      className={`flex w-[72px] flex-col items-center rounded-2xl border px-0 pb-3.5 pt-3 transition-all ${
                         dateIso === d.iso
                           ? "-translate-y-1 border-amber bg-amber text-ink shadow-[0_10px_20px_rgba(212,175,55,0.28)]"
                           : "border-line-strong bg-bg-0 hover:border-chalk"
@@ -418,7 +418,7 @@ export function Booking() {
                       className="absolute inset-0 m-0 h-full w-full cursor-pointer opacity-0"
                     />
                     <span
-                      className={`inline-flex items-center gap-2 border px-4.5 py-3 text-sm font-semibold transition-all ${
+                      className={`inline-flex items-center gap-2 rounded-full border px-4.5 py-3 text-sm font-semibold transition-all ${
                         time === opt.value
                           ? "border-ink bg-ink text-white shadow-[inset_0_-3px_0_var(--color-amber)]"
                           : "border-line-strong bg-bg-0 hover:border-chalk"
@@ -445,7 +445,7 @@ export function Booking() {
                       className="absolute inset-0 m-0 h-full w-full cursor-pointer opacity-0"
                     />
                     <span
-                      className={`flex min-w-[150px] flex-col items-start gap-0.5 border px-4.5 py-3 text-sm font-semibold transition-all ${
+                      className={`flex min-w-[150px] flex-col items-start gap-0.5 rounded-2xl border px-4.5 py-3 text-sm font-semibold transition-all ${
                         format === opt.value
                           ? "border-ink bg-ink text-white shadow-[inset_0_-3px_0_var(--color-amber)]"
                           : "border-line-strong bg-bg-0 hover:border-chalk"
@@ -562,7 +562,7 @@ export function Booking() {
             <div className="mt-2 flex flex-wrap items-center gap-5.5">
               <button
                 type="submit"
-                className="inline-flex items-center gap-2.5 bg-amber px-8.5 py-4.5 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-transform hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.28)]"
+                className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8.5 py-4.5 text-[13px] font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
               >
                 Хүсэлт илгээх →
               </button>
