@@ -20,7 +20,7 @@ export function Footer() {
           <div>
             <h5 className="mb-3.5 text-xs uppercase tracking-[0.1em] text-muted">Холбоо барих</h5>
             <a href="tel:+97688602941" className="mb-2 block text-sm text-chalk">
-              +976 8860-2941
+              +976 88602941
             </a>
             <a href="mailto:info@totti.mn" className="mb-2 block text-sm text-chalk">
               info@totti.mn

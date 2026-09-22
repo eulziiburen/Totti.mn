@@ -35,7 +35,7 @@ export function CTA() {
             href="tel:+97688602941"
             className="inline-flex items-center gap-2.5 border border-line-strong px-8 py-4 text-[13px] font-bold uppercase tracking-wider text-chalk transition-colors hover:border-chalk"
           >
-            Залгах: +976 8860-2941
+            Залгах: +976 88602941
           </a>
         </RevealOnScroll>
       </div>

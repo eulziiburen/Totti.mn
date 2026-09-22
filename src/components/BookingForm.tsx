@@ -97,7 +97,7 @@ function Sidebar({
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="flex-none text-amber">
               <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1 1 .4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8.1 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.8.6 2.8.7a2 2 0 0 1 1.7 2z" />
             </svg>
-            +976 8860-2941
+            +976 88602941
           </a>
         </div>
         <div>
@@ -570,7 +570,7 @@ export function Booking() {
                 Энэ нь цаг товлох хүсэлт. Бид тантай холбогдож эцсийн цагийг баталгаажуулна. Яаралтай
                 бол{" "}
                 <a href="tel:+97688602941" className="font-bold underline">
-                  +976 8860-2941
+                  +976 88602941
                 </a>{" "}
                 руу залгана уу.
               </p>
