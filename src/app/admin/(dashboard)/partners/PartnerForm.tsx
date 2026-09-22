@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { upsertPartner, deletePartner } from "./actions";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 
 const inputClass =
   "w-full border-0 border-b-2 border-line-strong bg-transparent py-2 text-sm text-chalk outline-none focus:border-amber";
@@ -24,13 +26,11 @@ export function PartnerForm({ partner, onDone }: { partner?: Partner; onDone?: (
         <input name="name" defaultValue={partner?.name} required className={inputClass} />
       </div>
       <div className="flex flex-col gap-1 sm:col-span-2">
-        <label className={labelClass}>Лого URL</label>
-        <input
-          name="logoUrl"
-          defaultValue={partner?.logoUrl}
-          placeholder="/images/partner-x.png"
-          required
-          className={inputClass}
+        <ImageUploadField
+          label="Лого"
+          fileName="logoFile"
+          currentUrlFieldName="currentLogoUrl"
+          currentUrl={partner?.logoUrl ?? null}
         />
       </div>
       <div className="flex flex-col gap-1">
@@ -38,9 +38,7 @@ export function PartnerForm({ partner, onDone }: { partner?: Partner; onDone?: (
         <input name="sortOrder" defaultValue={String(partner?.sortOrder ?? 0)} className={inputClass} />
       </div>
       <div className="col-span-2 flex items-center gap-3 sm:col-span-4">
-        <button type="submit" className="bg-amber px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-ink">
-          Хадгалах
-        </button>
+        <SubmitButton />
         {onDone && (
           <button type="button" onClick={onDone} className="text-xs font-semibold text-muted underline">
             Цуцлах

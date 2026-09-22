@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import { upsertPlayer, deletePlayer } from "./actions";
+import { ImageUploadField } from "@/components/admin/ImageUploadField";
+import { SubmitButton } from "@/components/admin/SubmitButton";
 
 type Stat = { label: string; value: string };
 
@@ -55,7 +57,12 @@ export function PlayerForm({ player, onDone }: { player?: Player; onDone?: () =>
       <Field label="Байрлал (богино)" name="pos" defaultValue={player?.pos} placeholder="POINT GUARD" />
       <Field label="Ghost (PG/SG/C)" name="ghost" defaultValue={player?.ghost} placeholder="PG" />
       <Field label="Дугаар" name="jersey" defaultValue={player?.jersey ?? ""} placeholder="#23" />
-      <Field label="Зургийн URL" name="photoUrl" defaultValue={player?.photoUrl ?? ""} placeholder="/images/player-x.jpg" />
+      <ImageUploadField
+        label="Зураг"
+        fileName="photoFile"
+        currentUrlFieldName="currentPhotoUrl"
+        currentUrl={player?.photoUrl ?? null}
+      />
       <Field label="Эрэмбэ" name="sortOrder" defaultValue={String(player?.sortOrder ?? 0)} />
 
       <div className="col-span-2 grid grid-cols-3 gap-3 sm:col-span-3">
@@ -68,12 +75,7 @@ export function PlayerForm({ player, onDone }: { player?: Player; onDone?: () =>
       </div>
 
       <div className="col-span-2 flex items-center gap-3 sm:col-span-3">
-        <button
-          type="submit"
-          className="inline-flex items-center gap-2 bg-amber px-5 py-2.5 text-xs font-extrabold uppercase tracking-wider text-ink"
-        >
-          Хадгалах
-        </button>
+        <SubmitButton />
         {onDone && (
           <button type="button" onClick={onDone} className="text-xs font-semibold text-muted underline">
             Цуцлах

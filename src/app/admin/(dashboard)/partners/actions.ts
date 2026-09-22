@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import { partners } from "@/db/schema";
 import { isAuthenticated } from "@/lib/auth";
+import { uploadImage } from "@/lib/upload";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) throw new Error("Not authenticated");
@@ -13,12 +14,19 @@ async function requireAuth() {
 export async function upsertPartner(formData: FormData) {
   await requireAuth();
   const idRaw = formData.get("id");
+
+  let logoUrl = String(formData.get("currentLogoUrl") ?? "").trim();
+  const logoFile = formData.get("logoFile");
+  if (logoFile instanceof File && logoFile.size > 0) {
+    logoUrl = await uploadImage(logoFile, "partners");
+  }
+
   const data = {
     name: String(formData.get("name") ?? "").trim(),
-    logoUrl: String(formData.get("logoUrl") ?? "").trim(),
+    logoUrl,
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };
-  if (!data.name || !data.logoUrl) throw new Error("name, logoUrl шаардлагатай");
+  if (!data.name || !data.logoUrl) throw new Error("name, лого зураг шаардлагатай");
 
   if (idRaw) {
     await db.update(partners).set(data).where(eq(partners.id, Number(idRaw)));

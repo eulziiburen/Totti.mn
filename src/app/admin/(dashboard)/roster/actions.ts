@@ -5,6 +5,7 @@ import { eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import { rosterPlayers } from "@/db/schema";
 import { isAuthenticated } from "@/lib/auth";
+import { uploadImage } from "@/lib/upload";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) throw new Error("Not authenticated");
@@ -23,6 +24,13 @@ function statsFromForm(formData: FormData) {
 export async function upsertPlayer(formData: FormData) {
   await requireAuth();
   const idRaw = formData.get("id");
+
+  let photoUrl = String(formData.get("currentPhotoUrl") ?? "").trim() || null;
+  const photoFile = formData.get("photoFile");
+  if (photoFile instanceof File && photoFile.size > 0) {
+    photoUrl = await uploadImage(photoFile, "roster");
+  }
+
   const data = {
     slug: String(formData.get("slug") ?? "").trim(),
     ghost: String(formData.get("ghost") ?? "").trim(),
@@ -30,7 +38,7 @@ export async function upsertPlayer(formData: FormData) {
     jersey: String(formData.get("jersey") ?? "").trim() || null,
     name: String(formData.get("name") ?? "").trim(),
     team: String(formData.get("team") ?? "").trim(),
-    photoUrl: String(formData.get("photoUrl") ?? "").trim() || null,
+    photoUrl,
     statsJson: statsFromForm(formData),
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };
