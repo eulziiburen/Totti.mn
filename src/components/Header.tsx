@@ -1,7 +1,6 @@
 "use client";
 
 import Image from "next/image";
-import Link from "next/link";
 import { useEffect, useState } from "react";
 import { navLinks } from "@/lib/data";
 import { ThemeSwitch } from "@/components/ThemeSwitch";
@@ -33,7 +32,9 @@ export function Header() {
       }`}
     >
       <nav className="mx-auto flex max-w-[1180px] items-center justify-between gap-4 px-8">
-        <Link href="/" className="flex items-center gap-2.5">
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
+            client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
+        <a href="/" className="flex items-center gap-2.5">
           <Image
             src="/images/logo.png"
             alt="ТОТТИ Спортын Агентлаг"
@@ -42,7 +43,7 @@ export function Header() {
             priority
             className="h-[68px] w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
           />
-        </Link>
+        </a>
 
         <div className="hidden gap-9 text-[13px] font-semibold uppercase tracking-wide md:flex">
           {navLinks.map((link) => (
@@ -58,12 +59,14 @@ export function Header() {
 
         <div className="flex items-center gap-4">
           <ThemeSwitch />
-          <Link
+          {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
+              client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
+          <a
             href="/meeting"
             className="hidden border border-line-strong px-5 py-2.5 text-xs font-bold uppercase tracking-wider transition-all hover:border-amber hover:bg-amber hover:text-ink md:inline-block"
           >
             Хамтран ажиллах
-          </Link>
+          </a>
           <button
             type="button"
             aria-label="Цэс нээх"
@@ -107,13 +110,15 @@ export function Header() {
             {link.label}
           </a>
         ))}
-        <Link
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
+            client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
+        <a
           href="/meeting"
           onClick={() => setMenuOpen(false)}
           className="mt-4 inline-flex items-center justify-center gap-2.5 bg-amber px-8 py-4 text-[13px] font-extrabold uppercase tracking-wider text-ink"
         >
           Хамтран ажиллах
-        </Link>
+        </a>
       </div>
     </header>
   );

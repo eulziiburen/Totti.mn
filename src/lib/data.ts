@@ -170,8 +170,8 @@ export const pdfDocuments: PdfDocuments = {
 };
 
 export const navLinks = [
-  { href: "#about", label: "Бидний тухай" },
-  { href: "#roster", label: "Тамирчид" },
-  { href: "#services", label: "Үйлчилгээ" },
-  { href: "#contact", label: "Холбоо барих" },
+  { href: "/#about", label: "Бидний тухай" },
+  { href: "/#roster", label: "Тамирчид" },
+  { href: "/#services", label: "Үйлчилгээ" },
+  { href: "/#contact", label: "Холбоо барих" },
 ];

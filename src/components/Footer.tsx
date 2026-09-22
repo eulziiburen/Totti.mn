@@ -1,5 +1,4 @@
 import Image from "next/image";
-import Link from "next/link";
 
 export function Footer() {
   return (
@@ -7,7 +6,9 @@ export function Footer() {
       <div className="mx-auto max-w-[1180px] px-8">
         <div className="flex flex-wrap items-end justify-between gap-8">
           <div>
-            <Link href="/" className="inline-flex items-center gap-2.5">
+            {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
+                client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
+            <a href="/" className="inline-flex items-center gap-2.5">
               <Image
                 src="/images/logo.png"
                 alt="ТОТТИ Спортын Агентлаг"
@@ -15,7 +16,7 @@ export function Footer() {
                 height={112}
                 className="h-20 w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
               />
-            </Link>
+            </a>
           </div>
           <div>
             <h5 className="mb-3.5 text-xs uppercase tracking-[0.1em] text-muted">Холбоо барих</h5>
