@@ -4,6 +4,7 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import { PdfModalProvider } from "@/components/PdfModalProvider";
+import { getPlayerDocuments } from "@/lib/content";
 
 export const metadata: Metadata = {
   title: "ТОТТИ | Спортын агент",
@@ -11,7 +12,11 @@ export const metadata: Metadata = {
     "ТОТТИ Спортын Агентлаг — сагсан бөмбөгийн тамирчдын карьерыг стратегийн түвшинд төлөвлөж, мэргэжлийн түвшинд удирдан хэрэгжүүлдэг агентлаг.",
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export const revalidate = 60;
+
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const documents = await getPlayerDocuments();
+
   return (
     <html lang="mn" suppressHydrationWarning>
       <head>
@@ -23,7 +28,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       </head>
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <PdfModalProvider>
+          <PdfModalProvider documents={documents}>
             <ScrollProgress />
             <GrainOverlay />
             {children}

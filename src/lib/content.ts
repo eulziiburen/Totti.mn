@@ -1,11 +1,18 @@
 import { asc } from "drizzle-orm";
 import { db } from "@/db/client";
-import { partners as partnersTable, rosterPlayers as rosterTable, services as servicesTable } from "@/db/schema";
+import {
+  partners as partnersTable,
+  playerDocuments as playerDocumentsTable,
+  rosterPlayers as rosterTable,
+  services as servicesTable,
+} from "@/db/schema";
 import {
   partners as staticPartners,
+  pdfDocuments as staticPdfDocuments,
   rosterPlayers as staticRoster,
   services as staticServices,
   type Partner,
+  type PdfDocuments,
   type RosterPlayer,
   type ServiceItem,
 } from "./data";
@@ -54,5 +61,23 @@ export async function getServices(): Promise<ServiceItem[]> {
   } catch (err) {
     console.error("getServices failed, falling back to static data", err);
     return staticServices;
+  }
+}
+
+export async function getPlayerDocuments(): Promise<PdfDocuments> {
+  try {
+    const rows = await db.select().from(playerDocumentsTable);
+    if (rows.length === 0) return staticPdfDocuments;
+    const result: PdfDocuments = { ...staticPdfDocuments };
+    for (const row of rows) {
+      const key = row.key;
+      if (key === "male" || key === "female") {
+        result[key] = { name: row.fileName, url: row.url, label: row.label };
+      }
+    }
+    return result;
+  } catch (err) {
+    console.error("getPlayerDocuments failed, falling back to static data", err);
+    return staticPdfDocuments;
   }
 }

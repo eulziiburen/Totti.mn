@@ -8,7 +8,7 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import { pdfDocuments, type PdfKey } from "@/lib/data";
+import type { PdfDocuments, PdfKey } from "@/lib/data";
 
 type PdfModalContextValue = {
   openKey: PdfKey | null;
@@ -24,7 +24,13 @@ export function usePdfModal() {
   return ctx;
 }
 
-export function PdfModalProvider({ children }: { children: ReactNode }) {
+export function PdfModalProvider({
+  children,
+  documents,
+}: {
+  children: ReactNode;
+  documents: PdfDocuments;
+}) {
   const [openKey, setOpenKey] = useState<PdfKey | null>(null);
 
   const open = useCallback((key: PdfKey) => {
@@ -60,21 +66,25 @@ export function PdfModalProvider({ children }: { children: ReactNode }) {
   return (
     <PdfModalContext.Provider value={{ openKey, open, close }}>
       {children}
-      {openKey && <PdfModal activeKey={openKey} onClose={close} onSelect={open} />}
+      {openKey && (
+        <PdfModal activeKey={openKey} documents={documents} onClose={close} onSelect={open} />
+      )}
     </PdfModalContext.Provider>
   );
 }
 
 function PdfModal({
   activeKey,
+  documents,
   onClose,
   onSelect,
 }: {
   activeKey: PdfKey;
+  documents: PdfDocuments;
   onClose: () => void;
   onSelect: (key: PdfKey) => void;
 }) {
-  const doc = pdfDocuments[activeKey];
+  const doc = documents[activeKey];
 
   return (
     <div
@@ -89,7 +99,7 @@ function PdfModal({
       <div className="flex h-full max-h-[92vh] w-full max-w-[1000px] flex-col border-t-[3px] border-amber bg-white shadow-[0_30px_80px_rgba(0,0,0,0.4)] sm:max-h-full">
         <div className="flex flex-wrap items-center justify-between gap-3 border-b border-line bg-bg-1 px-4 py-3">
           <div className="flex gap-1.5">
-            {(Object.keys(pdfDocuments) as PdfKey[]).map((key) => (
+            {(Object.keys(documents) as PdfKey[]).map((key) => (
               <button
                 key={key}
                 type="button"
@@ -100,7 +110,7 @@ function PdfModal({
                     : "border border-line-strong text-chalk hover:border-chalk"
                 }`}
               >
-                {pdfDocuments[key].label}
+                {documents[key].label}
               </button>
             ))}
           </div>

@@ -48,3 +48,14 @@ export const services = sqliteTable("services", {
   iconPath: text("icon_path").notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
 });
+
+export const playerDocuments = sqliteTable("player_documents", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  key: text("key").notNull().unique(), // "male" | "female"
+  label: text("label").notNull(),
+  fileName: text("file_name").notNull(),
+  url: text("url").notNull(),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(current_timestamp)`),
+});

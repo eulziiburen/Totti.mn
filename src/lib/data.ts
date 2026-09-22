@@ -146,7 +146,17 @@ export const partners: Partner[] = [
   { name: "Хаан Банк", src: "/images/partner-pickpack.jpg" },
 ];
 
-export const pdfDocuments = {
+export type PdfKey = "male" | "female";
+
+export type PdfDocEntry = {
+  name: string;
+  url: string;
+  label: string;
+};
+
+export type PdfDocuments = Record<PdfKey, PdfDocEntry>;
+
+export const pdfDocuments: PdfDocuments = {
   male: {
     name: "Totti_Male_Players_2026-27.pdf",
     url: "/documents/Totti_Male_Players_2026-27.pdf",
@@ -157,9 +167,7 @@ export const pdfDocuments = {
     url: "/documents/Totti_Female_Players_2026-27.pdf",
     label: "Эмэгтэй",
   },
-} as const;
-
-export type PdfKey = keyof typeof pdfDocuments;
+};
 
 export const navLinks = [
   { href: "#about", label: "Бидний тухай" },
