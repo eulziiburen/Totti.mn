@@ -11,6 +11,7 @@ import {
   timeOptions,
   type DayOption,
 } from "@/lib/booking";
+import { createBooking } from "@/app/meeting/actions";
 
 type Errors = Partial<Record<"role" | "date" | "time" | "format" | "contact", string>>;
 
@@ -223,6 +224,20 @@ export function Booking() {
     setMailtoUrl(mailto);
     setSubmitted(true);
     window.open(gmail, "_blank", "noopener");
+
+    createBooking({
+      role,
+      dateIso: selectedDay.iso,
+      dayLabel,
+      timeSlot: selectedTime.value,
+      timeRange: selectedTime.range,
+      format: selectedFormat.value,
+      formatSub: selectedFormat.sub,
+      name: trimmedName,
+      phone: trimmedPhone,
+      email: trimmedEmail,
+      message: msg.trim(),
+    }).catch(() => {});
   }
 
   return (

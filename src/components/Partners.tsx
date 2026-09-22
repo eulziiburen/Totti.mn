@@ -1,8 +1,8 @@
 import Image from "next/image";
-import { partners } from "@/lib/data";
+import type { Partner } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 
-export function Partners() {
+export function Partners({ items: partners }: { items: Partner[] }) {
   const track = [...partners, ...partners];
 
   return (

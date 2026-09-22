@@ -2,12 +2,12 @@
 
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
-import { rosterPlayers } from "@/lib/data";
+import type { RosterPlayer } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { PdfTriggerLink } from "@/components/PdfTriggerLink";
 
-export function Roster() {
-  const [activeId, setActiveId] = useState(rosterPlayers[0].id);
+export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) {
+  const [activeId, setActiveId] = useState(rosterPlayers[0]?.id ?? "");
   const panelRefs = useRef<Array<HTMLElement | null>>([]);
   const [canHover, setCanHover] = useState(false);
 

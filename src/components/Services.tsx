@@ -1,7 +1,7 @@
-import { services } from "@/lib/data";
+import type { ServiceItem } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 
-export function Services() {
+export function Services({ items: services }: { items: ServiceItem[] }) {
   return (
     <section id="services" className="py-[120px]">
       <div className="mx-auto max-w-[1180px] px-8">
