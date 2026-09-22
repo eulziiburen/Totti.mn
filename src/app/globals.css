@@ -16,9 +16,9 @@
   --color-line-strong: rgba(13, 12, 10, 0.28);
   --color-surface: 255, 255, 255;
 
-  --font-display: "Anton", sans-serif;
-  --font-sans: "Inter", sans-serif;
-  --font-mono: "Space Mono", monospace;
+  --font-display: "Noto Sans", system-ui, sans-serif;
+  --font-sans: "Noto Sans", system-ui, sans-serif;
+  --font-mono: "Noto Sans", system-ui, sans-serif;
 
   --animate-marquee: marquee 24s linear infinite;
   --animate-cta-pulse: cta-pulse 6s ease-in-out infinite;
