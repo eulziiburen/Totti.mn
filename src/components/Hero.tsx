@@ -24,7 +24,7 @@ export function Hero() {
         className="absolute inset-0 z-0 opacity-55 pointer-events-none md:hidden"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(var(--color-surface),0.55), rgba(var(--color-surface),0.8)), url('/images/hero-basketball.png') center 30%/cover no-repeat",
+            "linear-gradient(to bottom, rgba(var(--color-surface),0.55), rgba(var(--color-surface),0.8)), url('/images/hero-basketball.png') 82% 35%/cover no-repeat",
         }}
       />
       <svg
