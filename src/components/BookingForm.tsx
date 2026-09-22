@@ -58,8 +58,9 @@ function Sidebar({
   formatSub: string;
 }) {
   return (
-    <aside className="relative flex min-h-[520px] flex-col overflow-hidden rounded-t-3xl bg-ink px-6 pb-9 pt-10 text-white min-[980px]:sticky min-[980px]:top-[110px] min-[980px]:rounded-bl-3xl min-[980px]:rounded-tr-none sm:px-10 sm:pt-11">
-      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 bg-amber" />
+    <div className="relative rounded-t-3xl bg-ink text-white min-[980px]:rounded-bl-3xl min-[980px]:rounded-tr-none">
+      <div className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-3xl bg-amber min-[980px]:rounded-tr-none" />
+      <aside className="relative flex min-h-[520px] flex-col px-6 pb-9 pt-10 min-[980px]:sticky min-[980px]:top-[110px] sm:px-10 sm:pt-11">
       <a
         href="/"
         className="inline-flex w-fit items-center gap-2 self-start text-[13px] font-semibold text-white/65 transition-colors hover:text-amber"
@@ -116,7 +117,8 @@ function Sidebar({
           <p className="text-white/78">Сүхбаатар дүүрэг, Улаанбаатар</p>
         </div>
       </div>
-    </aside>
+      </aside>
+    </div>
   );
 }
 

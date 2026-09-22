@@ -61,7 +61,6 @@ body {
   background: var(--color-bg-0);
   color: var(--color-chalk);
   font-family: var(--font-sans);
-  overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.25s ease, color 0.25s ease;
 }
