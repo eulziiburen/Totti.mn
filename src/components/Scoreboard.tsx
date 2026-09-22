@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { scoreboardStats } from "@/lib/data";
+import type { Stat } from "@/lib/data";
 
 function Counter({ target }: { target: number }) {
   const ref = useRef<HTMLDivElement>(null);
@@ -43,13 +43,13 @@ function Counter({ target }: { target: number }) {
   );
 }
 
-export function Scoreboard() {
+export function Scoreboard({ stats }: { stats: Stat[] }) {
   return (
     <section className="border-y border-line bg-bg-1">
       <div className="mx-auto grid max-w-[1180px] grid-cols-2 px-8 min-[900px]:grid-cols-4">
-        {scoreboardStats.map((stat, i) => {
+        {stats.map((stat, i) => {
           const mobileRight = i % 2 === 0;
-          const desktopRight = i !== scoreboardStats.length - 1;
+          const desktopRight = i !== stats.length - 1;
           return (
             <div
               key={stat.label}

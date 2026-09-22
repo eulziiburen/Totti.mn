@@ -4,17 +4,20 @@ import {
   partners as partnersTable,
   playerDocuments as playerDocumentsTable,
   rosterPlayers as rosterTable,
+  scoreboardStats as scoreboardStatsTable,
   services as servicesTable,
 } from "@/db/schema";
 import {
   partners as staticPartners,
   pdfDocuments as staticPdfDocuments,
   rosterPlayers as staticRoster,
+  scoreboardStats as staticScoreboardStats,
   services as staticServices,
   type Partner,
   type PdfDocuments,
   type RosterPlayer,
   type ServiceItem,
+  type Stat,
 } from "./data";
 
 export async function getRosterPlayers(): Promise<RosterPlayer[]> {
@@ -61,6 +64,20 @@ export async function getServices(): Promise<ServiceItem[]> {
   } catch (err) {
     console.error("getServices failed, falling back to static data", err);
     return staticServices;
+  }
+}
+
+export async function getScoreboardStats(): Promise<Stat[]> {
+  try {
+    const rows = await db
+      .select()
+      .from(scoreboardStatsTable)
+      .orderBy(asc(scoreboardStatsTable.sortOrder));
+    if (rows.length === 0) return staticScoreboardStats;
+    return rows.map((s) => ({ value: s.value, label: s.label }));
+  } catch (err) {
+    console.error("getScoreboardStats failed, falling back to static data", err);
+    return staticScoreboardStats;
   }
 }
 

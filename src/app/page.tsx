@@ -7,15 +7,16 @@ import { Services } from "@/components/Services";
 import { Partners } from "@/components/Partners";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
-import { getPartners, getRosterPlayers, getServices } from "@/lib/content";
+import { getPartners, getRosterPlayers, getScoreboardStats, getServices } from "@/lib/content";
 
 export const revalidate = 60;
 
 export default async function HomePage() {
-  const [players, services, partners] = await Promise.all([
+  const [players, services, partners, stats] = await Promise.all([
     getRosterPlayers(),
     getServices(),
     getPartners(),
+    getScoreboardStats(),
   ]);
 
   return (
@@ -23,7 +24,7 @@ export default async function HomePage() {
       <Header />
       <main>
         <Hero />
-        <Scoreboard />
+        <Scoreboard stats={stats} />
         <About />
         <Roster players={players} />
         <Services items={services} />

@@ -49,6 +49,13 @@ export const services = sqliteTable("services", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+export const scoreboardStats = sqliteTable("scoreboard_stats", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  value: integer("value").notNull(),
+  label: text("label").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
 export const playerDocuments = sqliteTable("player_documents", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   key: text("key").notNull().unique(), // "male" | "female"
