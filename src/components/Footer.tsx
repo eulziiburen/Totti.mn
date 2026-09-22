@@ -14,7 +14,7 @@ export function Footer() {
                 alt="ТОТТИ Спортын Агентлаг"
                 width={280}
                 height={112}
-                className="h-20 w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
+                className="h-28 w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
               />
             </a>
           </div>

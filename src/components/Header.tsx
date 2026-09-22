@@ -41,7 +41,7 @@ export function Header() {
             width={220}
             height={88}
             priority
-            className="h-[68px] w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
+            className="h-[88px] w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
           />
         </a>
 
