@@ -46,7 +46,12 @@ export function Footer() {
             >
               Facebook
             </a>
-            <a href="#" className="mb-2 block text-sm text-chalk">
+            <a
+              href="https://www.linkedin.com/company/new-totti-llc/?viewAsMember=true"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="mb-2 block text-sm text-chalk"
+            >
               LinkedIn
             </a>
           </div>
