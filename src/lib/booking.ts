@@ -38,11 +38,19 @@ export function buildNext14Days(): DayOption[] {
 
 export const roleOptions = ["Тамирчин", "Клубын төлөөлөгч", "Спонсор / түнш", "Бусад"];
 
-export const timeOptions = [
-  { value: "Өглөө", range: "09:00–12:00" },
-  { value: "Өдөр", range: "12:00–17:00" },
-  { value: "Орой", range: "17:00–20:00" },
-];
+export type TimeSlot = { value: string; range: string };
+
+function buildHourlySlots(startHour: number, endHour: number): TimeSlot[] {
+  const pad = (n: number) => String(n).padStart(2, "0");
+  const slots: TimeSlot[] = [];
+  for (let h = startHour; h < endHour; h++) {
+    slots.push({ value: `${pad(h)}:00`, range: `${pad(h)}-${pad(h + 1)}` });
+  }
+  return slots;
+}
+
+// Ажлын цаг: 09:00–20:00 хооронд 1 цагийн интервалаар (09-10, 10-11 … 19-20)
+export const timeOptions: TimeSlot[] = buildHourlySlots(9, 20);
 
 export const formatOptions = [
   { value: "Биечлэн", sub: "Улаанбаатар" },

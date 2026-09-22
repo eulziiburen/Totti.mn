@@ -196,7 +196,7 @@ export function Booking() {
     const rows: [string, string][] = [
       ["Хэн", role],
       ["Өдөр", dayLabel],
-      ["Цаг", `${selectedTime.value} (${selectedTime.range})`],
+      ["Цаг", `${selectedTime.range} цаг`],
       ["Хэлбэр", selectedFormat.value],
       ["Нэр", trimmedName],
       ["Утас", trimmedPhone || "—"],
@@ -216,7 +216,7 @@ export function Booking() {
     setSummary({
       role,
       dayLabel,
-      timeLabel: `${selectedTime.value} (${selectedTime.range})`,
+      timeLabel: `${selectedTime.range} цаг`,
       formatLabel: selectedFormat.value,
       name: trimmedName,
       phone: trimmedPhone || "—",
@@ -247,8 +247,8 @@ export function Booking() {
       <Sidebar
         dayValue={selectedDay ? String(selectedDay.dayNum) : "—"}
         dayLabel={selectedDay ? `${DOW_LONG[selectedDay.weekday]}, ${selectedDay.month}-р сар` : "сонгоогүй"}
-        timeLabel={selectedTime ? selectedTime.value : "—"}
-        timeSub={selectedTime ? selectedTime.range : "сонгоогүй"}
+        timeLabel={selectedTime ? selectedTime.range : "—"}
+        timeSub={selectedTime ? "УБ цагаар" : "сонгоогүй"}
         formatLabel={selectedFormat ? selectedFormat.value : "—"}
         formatSub={selectedFormat ? selectedFormat.sub : "сонгоогүй"}
       />
@@ -403,11 +403,18 @@ export function Booking() {
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-xs font-bold text-amber-dim">03</span> Цаг, хэлбэр
+                <span className="font-mono text-xs font-bold text-amber-dim">03</span> Цаг, хэлбэр{" "}
+                <small className="ml-auto text-xs font-medium text-muted">Цагаар (UB цаг)</small>
               </legend>
-              <div className="mb-3.5 flex flex-wrap gap-2.5">
+              <div
+                className="mb-3.5 flex gap-2.5 overflow-x-auto py-0.5 pb-3 pr-6"
+                style={{
+                  WebkitMaskImage: "linear-gradient(to right,#000 92%,transparent)",
+                  maskImage: "linear-gradient(to right,#000 92%,transparent)",
+                }}
+              >
                 {timeOptions.map((opt) => (
-                  <label key={opt.value} className="relative cursor-pointer">
+                  <label key={opt.value} className="relative flex-none cursor-pointer">
                     <input
                       type="radio"
                       name="time"
@@ -420,13 +427,13 @@ export function Booking() {
                       className="absolute inset-0 m-0 h-full w-full cursor-pointer opacity-0"
                     />
                     <span
-                      className={`inline-flex items-center gap-2 rounded-full border px-4.5 py-3 text-sm font-semibold transition-all ${
+                      className={`flex min-w-[68px] items-center justify-center rounded-full border px-4 py-3 font-mono text-sm font-semibold tabular-nums transition-all ${
                         time === opt.value
                           ? "border-ink bg-ink text-white shadow-[inset_0_-3px_0_var(--color-amber)]"
                           : "border-line-strong bg-bg-0 hover:border-chalk"
                       }`}
                     >
-                      {opt.value}
+                      {opt.range}
                     </span>
                   </label>
                 ))}
