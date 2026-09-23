@@ -6,6 +6,8 @@ import { db } from "@/db/client";
 import { orderItems, orders, productVariants } from "@/db/schema";
 import { isAuthenticated } from "@/lib/auth";
 import { checkOrderStatus } from "@/app/delguur/actions";
+import { sendEmailSafely } from "@/lib/email";
+import { orderPaidEmailHtml } from "@/lib/email-templates";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) throw new Error("Not authenticated");
@@ -14,7 +16,7 @@ async function requireAuth() {
 export async function updateOrderStatus(id: number, status: string) {
   await requireAuth();
 
-  await db.transaction(async (tx) => {
+  const newlyPaidOrder = await db.transaction(async (tx) => {
     const [order] = await tx.select().from(orders).where(eq(orders.id, id));
     if (!order) throw new Error("Захиалга олдсонгүй.");
 
@@ -28,8 +30,22 @@ export async function updateOrderStatus(id: number, status: string) {
       }
     }
 
-    await tx.update(orders).set({ status }).where(eq(orders.id, id));
+    const becamePaid = status === "paid" && order.status !== "paid";
+    await tx
+      .update(orders)
+      .set({ status, ...(becamePaid ? { paidAt: sql`(current_timestamp)` } : {}) })
+      .where(eq(orders.id, id));
+
+    return becamePaid ? order : null;
   });
+
+  if (newlyPaidOrder?.customerEmail) {
+    const mail = orderPaidEmailHtml(
+      newlyPaidOrder.orderNo,
+      `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/delguur/order/${newlyPaidOrder.orderNo}`
+    );
+    await sendEmailSafely({ to: newlyPaidOrder.customerEmail, subject: mail.subject, html: mail.html });
+  }
 
   revalidatePath("/admin/orders");
 }

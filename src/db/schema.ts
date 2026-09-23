@@ -95,12 +95,23 @@ export const productVariants = sqliteTable("product_variants", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+export const productImages = sqliteTable("product_images", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  productId: integer("product_id")
+    .notNull()
+    .references(() => products.id),
+  url: text("url").notNull(),
+  sortOrder: integer("sort_order").notNull().default(0),
+});
+
 export const customers = sqliteTable("customers", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   email: text("email").notNull().unique(),
   passwordHash: text("password_hash").notNull(),
   name: text("name").notNull(),
   phone: text("phone"),
+  resetTokenHash: text("reset_token_hash"),
+  resetTokenExpiresAt: text("reset_token_expires_at"),
   createdAt: text("created_at")
     .notNull()
     .default(sql`(current_timestamp)`),

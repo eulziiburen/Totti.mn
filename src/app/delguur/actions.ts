@@ -6,6 +6,8 @@ import { db } from "@/db/client";
 import { orders, orderItems, products, productVariants } from "@/db/schema";
 import * as qpay from "@/lib/qpay";
 import { getCurrentCustomerId } from "@/lib/customer-auth";
+import { sendEmailSafely } from "@/lib/email";
+import { adminNewOrderEmailHtml, orderConfirmationEmailHtml, orderPaidEmailHtml } from "@/lib/email-templates";
 
 function generateOrderNo() {
   return `T${Date.now().toString(36).toUpperCase()}${crypto.randomUUID().slice(0, 4).toUpperCase()}`;
@@ -34,6 +36,7 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
   const orderNo = generateOrderNo();
   let insertedOrderId: number;
   let orderTotal: number;
+  let orderLines: (typeof orderItems.$inferInsert)[] = [];
 
   try {
     const result = await db.transaction(async (tx) => {
@@ -105,13 +108,42 @@ export async function createOrder(input: CreateOrderInput): Promise<CreateOrderR
         })
         .returning();
       await tx.insert(orderItems).values(lines.map((l) => ({ ...l, orderId: order.id })));
-      return order;
+      return { order, lines };
     });
-    insertedOrderId = result.id;
-    orderTotal = result.total;
+    insertedOrderId = result.order.id;
+    orderTotal = result.order.total;
+    orderLines = result.lines;
   } catch (err) {
     console.error("createOrder failed", err);
     return { ok: false, error: err instanceof Error ? err.message : "Захиалга үүсгэхэд алдаа гарлаа." };
+  }
+
+  const orderUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/delguur/order/${orderNo}`;
+  const customerEmail = input.customer.email?.trim();
+  if (customerEmail) {
+    const mail = orderConfirmationEmailHtml({
+      orderNo,
+      items: orderLines.map((l) => ({
+        productName: l.productName,
+        variantLabel: l.variantLabel,
+        quantity: l.quantity,
+        lineTotal: l.lineTotal,
+      })),
+      total: orderTotal,
+      orderUrl,
+    });
+    await sendEmailSafely({ to: customerEmail, subject: mail.subject, html: mail.html });
+  }
+  const adminEmail = process.env.ADMIN_NOTIFY_EMAIL;
+  if (adminEmail) {
+    const adminMail = adminNewOrderEmailHtml({
+      orderNo,
+      customerName: name,
+      customerPhone: phone,
+      total: orderTotal,
+      adminUrl: `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/admin/orders`,
+    });
+    await sendEmailSafely({ to: adminEmail, subject: adminMail.subject, html: adminMail.html });
   }
 
   try {
@@ -172,6 +204,26 @@ export async function retryQpayInvoice(orderNo: string): Promise<{ ok: boolean; 
   }
 }
 
+// Shared by both the client-side status poller (checkOrderStatus) and the QPay
+// webhook (src/app/api/qpay/callback/route.ts) — whichever one actually flips the
+// row from pending -> paid (checked via rowsAffected) is the one that emails the
+// customer, so the email fires exactly once regardless of which path wins the race.
+export async function markOrderPaidAndNotify(order: typeof orders.$inferSelect): Promise<boolean> {
+  const result = await db
+    .update(orders)
+    .set({ status: "paid", paidAt: sql`(current_timestamp)` })
+    .where(and(eq(orders.id, order.id), eq(orders.status, "pending")));
+  if (result.rowsAffected === 0) return false;
+
+  revalidatePath("/admin/orders");
+  if (order.customerEmail) {
+    const orderUrl = `${process.env.NEXT_PUBLIC_SITE_URL ?? ""}/delguur/order/${order.orderNo}`;
+    const mail = orderPaidEmailHtml(order.orderNo, orderUrl);
+    await sendEmailSafely({ to: order.customerEmail, subject: mail.subject, html: mail.html });
+  }
+  return true;
+}
+
 export async function checkOrderStatus(orderNo: string): Promise<{ status: string }> {
   const [order] = await db.select().from(orders).where(eq(orders.orderNo, orderNo));
   if (!order) return { status: "not_found" };
@@ -180,11 +232,7 @@ export async function checkOrderStatus(orderNo: string): Promise<{ status: strin
   try {
     const paid = await qpay.checkPayment(order.qpayInvoiceId);
     if (paid) {
-      await db
-        .update(orders)
-        .set({ status: "paid", paidAt: sql`(current_timestamp)` })
-        .where(and(eq(orders.id, order.id), eq(orders.status, "pending")));
-      revalidatePath("/admin/orders");
+      await markOrderPaidAndNotify(order);
       return { status: "paid" };
     }
   } catch (err) {

@@ -45,6 +45,13 @@ export function LoginForm() {
         {pending ? "Түр хүлээнэ үү…" : "Нэвтрэх"}
       </button>
       <p className="text-center text-[13px] text-muted">
+        {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
+            client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
+        <a href="/account/forgot-password" className="text-chalk underline">
+          Нууц үгээ мартсан уу?
+        </a>
+      </p>
+      <p className="text-center text-[13px] text-muted">
         Бүртгэлгүй юу?{" "}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
             client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}

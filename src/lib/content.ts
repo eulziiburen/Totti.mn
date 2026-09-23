@@ -3,6 +3,7 @@ import { db } from "@/db/client";
 import {
   partners as partnersTable,
   playerDocuments as playerDocumentsTable,
+  productImages as productImagesTable,
   productVariants as productVariantsTable,
   products as productsTable,
   rosterPlayers as rosterTable,
@@ -102,7 +103,7 @@ export type ProductSummary = {
   inStock: boolean;
 };
 
-export type ProductDetail = ProductSummary & { variants: ProductVariant[] };
+export type ProductDetail = ProductSummary & { variants: ProductVariant[]; images: string[] };
 
 export async function getProducts(query?: string): Promise<ProductSummary[]> {
   try {
@@ -150,11 +151,18 @@ export async function getProduct(slug: string): Promise<ProductDetail | null> {
       .where(and(eq(productsTable.slug, slug), eq(productsTable.isActive, true)));
     if (!p) return null;
 
-    const variants = await db
-      .select()
-      .from(productVariantsTable)
-      .where(and(eq(productVariantsTable.productId, p.id), eq(productVariantsTable.isActive, true)))
-      .orderBy(asc(productVariantsTable.sortOrder));
+    const [variants, galleryRows] = await Promise.all([
+      db
+        .select()
+        .from(productVariantsTable)
+        .where(and(eq(productVariantsTable.productId, p.id), eq(productVariantsTable.isActive, true)))
+        .orderBy(asc(productVariantsTable.sortOrder)),
+      db
+        .select()
+        .from(productImagesTable)
+        .where(eq(productImagesTable.productId, p.id))
+        .orderBy(asc(productImagesTable.sortOrder)),
+    ]);
 
     const mapped = variants.map((v) => ({
       id: v.id,
@@ -175,6 +183,7 @@ export async function getProduct(slug: string): Promise<ProductDetail | null> {
       minPrice: Math.min(...prices),
       inStock: mapped.some((v) => v.stock > 0),
       variants: mapped,
+      images: [p.imageUrl, ...galleryRows.map((g) => g.url)].filter((u): u is string => !!u),
     };
   } catch (err) {
     console.error("getProduct failed", err);

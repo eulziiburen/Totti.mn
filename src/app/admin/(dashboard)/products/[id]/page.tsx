@@ -2,9 +2,10 @@ import { asc, eq } from "drizzle-orm";
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { db } from "@/db/client";
-import { productVariants, products } from "@/db/schema";
+import { productImages, productVariants, products } from "@/db/schema";
 import { ProductForm } from "../ProductForm";
 import { VariantsSection } from "../VariantsSection";
+import { ProductImagesSection } from "../ProductImagesSection";
 
 export const dynamic = "force-dynamic";
 
@@ -14,11 +15,18 @@ export default async function ProductEditPage({ params }: { params: Promise<{ id
   const [product] = await db.select().from(products).where(eq(products.id, productId));
   if (!product) notFound();
 
-  const variants = await db
-    .select()
-    .from(productVariants)
-    .where(eq(productVariants.productId, productId))
-    .orderBy(asc(productVariants.sortOrder));
+  const [variants, images] = await Promise.all([
+    db
+      .select()
+      .from(productVariants)
+      .where(eq(productVariants.productId, productId))
+      .orderBy(asc(productVariants.sortOrder)),
+    db
+      .select()
+      .from(productImages)
+      .where(eq(productImages.productId, productId))
+      .orderBy(asc(productImages.sortOrder)),
+  ]);
 
   return (
     <div>
@@ -28,6 +36,7 @@ export default async function ProductEditPage({ params }: { params: Promise<{ id
       <h1 className="mb-6 mt-2 font-display text-2xl uppercase">{product.name}</h1>
 
       <ProductForm product={product} />
+      <ProductImagesSection productId={productId} images={images} />
       <VariantsSection productId={productId} variants={variants} />
     </div>
   );

@@ -25,6 +25,7 @@ export function ProductDetail({ product }: { product: ProductDetailType }) {
   const [color, setColor] = useState<string | null>(colors[0] ?? null);
   const [quantity, setQuantity] = useState(1);
   const [added, setAdded] = useState(false);
+  const [activeImage, setActiveImage] = useState(product.images[0] ?? null);
 
   const selectedVariant = useMemo(() => {
     if (!hasVariants) return null;
@@ -65,11 +66,36 @@ export function ProductDetail({ product }: { product: ProductDetailType }) {
 
   return (
     <div className="grid grid-cols-1 gap-10 lg:grid-cols-2">
-      <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-bg-1">
-        {product.imageUrl ? (
-          <Image src={product.imageUrl} alt={product.name} fill sizes="(max-width: 1024px) 100vw, 560px" className="object-cover" unoptimized />
-        ) : (
-          <div className="flex h-full items-center justify-center text-muted">Зураггүй</div>
+      <div>
+        <div className="relative aspect-square w-full overflow-hidden rounded-3xl bg-bg-1">
+          {activeImage ? (
+            <Image
+              src={activeImage}
+              alt={product.name}
+              fill
+              sizes="(max-width: 1024px) 100vw, 560px"
+              className="object-cover"
+              unoptimized
+            />
+          ) : (
+            <div className="flex h-full items-center justify-center text-muted">Зураггүй</div>
+          )}
+        </div>
+        {product.images.length > 1 && (
+          <div className="mt-3 flex flex-wrap gap-2.5">
+            {product.images.map((img) => (
+              <button
+                key={img}
+                type="button"
+                onClick={() => setActiveImage(img)}
+                className={`relative h-16 w-16 flex-none overflow-hidden rounded-xl border-2 transition-colors ${
+                  activeImage === img ? "border-amber" : "border-transparent hover:border-line-strong"
+                }`}
+              >
+                <Image src={img} alt="" fill sizes="64px" className="object-cover" unoptimized />
+              </button>
+            ))}
+          </div>
         )}
       </div>
 

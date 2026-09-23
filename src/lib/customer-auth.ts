@@ -123,3 +123,23 @@ export async function getCurrentCustomer(): Promise<Customer | null> {
   if (!row) return null;
   return { id: row.id, email: row.email, name: row.name, phone: row.phone, createdAt: row.createdAt };
 }
+
+const RESET_TOKEN_MAX_AGE_MS = 60 * 60 * 1000; // 1 hour
+
+export function generatePasswordResetToken(): string {
+  return toBase64Url(crypto.getRandomValues(new Uint8Array(32)));
+}
+
+export async function hashResetToken(token: string): Promise<string> {
+  const digest = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(token));
+  return toBase64Url(digest);
+}
+
+export function resetTokenExpiry(): string {
+  return new Date(Date.now() + RESET_TOKEN_MAX_AGE_MS).toISOString();
+}
+
+export function isResetTokenExpired(expiresAt: string | null): boolean {
+  if (!expiresAt) return true;
+  return Date.now() > new Date(expiresAt).getTime();
+}

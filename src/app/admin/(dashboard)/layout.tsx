@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { isAuthenticated, destroySession } from "@/lib/auth";
 
 const navItems = [
+  { href: "/admin", label: "Тойм" },
   { href: "/admin/bookings", label: "Хүсэлтүүд" },
   { href: "/admin/stats", label: "Тоо баримт" },
   { href: "/admin/roster", label: "Тамирчид" },

@@ -1,8 +1,9 @@
 import { NextRequest } from "next/server";
-import { and, eq, sql } from "drizzle-orm";
+import { eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import { orders } from "@/db/schema";
 import * as qpay from "@/lib/qpay";
+import { markOrderPaidAndNotify } from "@/app/delguur/actions";
 
 async function handle(req: NextRequest) {
   try {
@@ -18,10 +19,7 @@ async function handle(req: NextRequest) {
     // always independently re-verify with QPay before marking an order paid.
     const paid = await qpay.checkPayment(order.qpayInvoiceId);
     if (paid) {
-      await db
-        .update(orders)
-        .set({ status: "paid", paidAt: sql`(current_timestamp)` })
-        .where(and(eq(orders.id, order.id), eq(orders.status, "pending")));
+      await markOrderPaidAndNotify(order);
     }
   } catch (err) {
     console.error("QPay callback handling failed", err);
