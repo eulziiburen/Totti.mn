@@ -1,8 +1,10 @@
-import { asc } from "drizzle-orm";
+import { and, asc, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import {
   partners as partnersTable,
   playerDocuments as playerDocumentsTable,
+  productVariants as productVariantsTable,
+  products as productsTable,
   rosterPlayers as rosterTable,
   scoreboardStats as scoreboardStatsTable,
   services as servicesTable,
@@ -78,6 +80,105 @@ export async function getScoreboardStats(): Promise<Stat[]> {
   } catch (err) {
     console.error("getScoreboardStats failed, falling back to static data", err);
     return staticScoreboardStats;
+  }
+}
+
+export type ProductVariant = {
+  id: number;
+  size: string | null;
+  color: string | null;
+  price: number;
+  stock: number;
+};
+
+export type ProductSummary = {
+  id: number;
+  slug: string;
+  name: string;
+  description: string | null;
+  imageUrl: string | null;
+  basePrice: number;
+  minPrice: number;
+  inStock: boolean;
+};
+
+export type ProductDetail = ProductSummary & { variants: ProductVariant[] };
+
+export async function getProducts(query?: string): Promise<ProductSummary[]> {
+  try {
+    let rows = await db
+      .select()
+      .from(productsTable)
+      .where(eq(productsTable.isActive, true))
+      .orderBy(asc(productsTable.sortOrder));
+    // Filtered in JS rather than SQL LIKE — sqlite's LIKE is ASCII-only
+    // case-insensitive and would miss Cyrillic-case variants of the query.
+    const q = query?.trim().toLowerCase();
+    if (q) rows = rows.filter((p) => p.name.toLowerCase().includes(q));
+    if (rows.length === 0) return [];
+
+    const variantRows = await db
+      .select()
+      .from(productVariantsTable)
+      .where(eq(productVariantsTable.isActive, true));
+
+    return rows.map((p) => {
+      const variants = variantRows.filter((v) => v.productId === p.id);
+      const prices = variants.length > 0 ? variants.map((v) => v.priceOverride ?? p.basePrice) : [p.basePrice];
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        description: p.description,
+        imageUrl: p.imageUrl,
+        basePrice: p.basePrice,
+        minPrice: Math.min(...prices),
+        inStock: variants.some((v) => v.stock > 0),
+      };
+    });
+  } catch (err) {
+    console.error("getProducts failed", err);
+    return [];
+  }
+}
+
+export async function getProduct(slug: string): Promise<ProductDetail | null> {
+  try {
+    const [p] = await db
+      .select()
+      .from(productsTable)
+      .where(and(eq(productsTable.slug, slug), eq(productsTable.isActive, true)));
+    if (!p) return null;
+
+    const variants = await db
+      .select()
+      .from(productVariantsTable)
+      .where(and(eq(productVariantsTable.productId, p.id), eq(productVariantsTable.isActive, true)))
+      .orderBy(asc(productVariantsTable.sortOrder));
+
+    const mapped = variants.map((v) => ({
+      id: v.id,
+      size: v.size,
+      color: v.color,
+      price: v.priceOverride ?? p.basePrice,
+      stock: v.stock,
+    }));
+    const prices = mapped.length > 0 ? mapped.map((v) => v.price) : [p.basePrice];
+
+    return {
+      id: p.id,
+      slug: p.slug,
+      name: p.name,
+      description: p.description,
+      imageUrl: p.imageUrl,
+      basePrice: p.basePrice,
+      minPrice: Math.min(...prices),
+      inStock: mapped.some((v) => v.stock > 0),
+      variants: mapped,
+    };
+  } catch (err) {
+    console.error("getProduct failed", err);
+    return null;
   }
 }
 

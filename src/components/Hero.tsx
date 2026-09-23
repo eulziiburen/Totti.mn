@@ -68,7 +68,7 @@ export function Hero() {
             href="/meeting"
             className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
           >
-            Уулзалт товлох →
+            Хамтран ажиллах →
           </a>
           <PdfTriggerLink
             pdfKey="male"

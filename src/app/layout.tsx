@@ -4,6 +4,8 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import { PdfModalProvider } from "@/components/PdfModalProvider";
+import { CartProvider } from "@/components/CartProvider";
+import { CartDrawer } from "@/components/CartDrawer";
 import { getPlayerDocuments } from "@/lib/content";
 
 export const metadata: Metadata = {
@@ -28,11 +30,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <PdfModalProvider documents={documents}>
-            <ScrollProgress />
-            <GrainOverlay />
-            {children}
-          </PdfModalProvider>
+          <CartProvider>
+            <PdfModalProvider documents={documents}>
+              <ScrollProgress />
+              <GrainOverlay />
+              {children}
+              <CartDrawer />
+            </PdfModalProvider>
+          </CartProvider>
         </ThemeProvider>
       </body>
     </html>

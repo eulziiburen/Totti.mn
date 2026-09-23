@@ -8,6 +8,9 @@ const navItems = [
   { href: "/admin/roster", label: "Тамирчид" },
   { href: "/admin/partners", label: "Түншүүд" },
   { href: "/admin/services", label: "Үйлчилгээ" },
+  { href: "/admin/products", label: "Онлайн дэлгүүр", highlight: true },
+  { href: "/admin/orders", label: "Захиалгууд" },
+  { href: "/admin/customers", label: "Хэрэглэгчид" },
 ];
 
 async function logoutAction() {
@@ -33,12 +36,22 @@ export default async function AdminDashboardLayout({
             <Link href="/admin" className="font-display text-lg uppercase tracking-wide">
               ТОТТИ <span className="text-amber">Admin</span>
             </Link>
-            <nav className="flex flex-wrap gap-5 text-[13px] font-semibold uppercase tracking-wide text-muted">
-              {navItems.map((item) => (
-                <Link key={item.href} href={item.href} className="transition-colors hover:text-chalk">
-                  {item.label}
-                </Link>
-              ))}
+            <nav className="flex flex-wrap items-center gap-5 text-[13px] font-semibold uppercase tracking-wide text-muted">
+              {navItems.map((item) =>
+                item.highlight ? (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    className="rounded-full bg-amber px-3.5 py-1.5 text-ink transition-colors hover:bg-amber-dim"
+                  >
+                    {item.label}
+                  </Link>
+                ) : (
+                  <Link key={item.href} href={item.href} className="transition-colors hover:text-chalk">
+                    {item.label}
+                  </Link>
+                )
+              )}
             </nav>
           </div>
           <div className="flex items-center gap-4">
