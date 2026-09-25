@@ -1,15 +1,29 @@
 import type { Metadata } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import { PdfModalProvider } from "@/components/PdfModalProvider";
 import { getPlayerDocuments } from "@/lib/content";
+import { SITE_URL } from "@/lib/site";
+
+const description =
+  "ТОТТИ Спортын Агентлаг — сагсан бөмбөгийн тамирчдын карьерыг стратегийн түвшинд төлөвлөж, мэргэжлийн түвшинд удирдан хэрэгжүүлдэг агентлаг.";
 
 export const metadata: Metadata = {
+  metadataBase: new URL(SITE_URL),
   title: "ТОТТИ | Спортын агент",
-  description:
-    "ТОТТИ Спортын Агентлаг — сагсан бөмбөгийн тамирчдын карьерыг стратегийн түвшинд төлөвлөж, мэргэжлийн түвшинд удирдан хэрэгжүүлдэг агентлаг.",
+  description,
+  openGraph: {
+    title: "ТОТТИ | Спортын агент",
+    description,
+    siteName: "ТОТТИ Спортын агент",
+    locale: "mn_MN",
+    type: "website",
+    images: [{ url: "/images/hero-basketball.png", width: 2200, height: 782 }],
+  },
+  twitter: { card: "summary_large_image" },
 };
 
 export const revalidate = 60;
@@ -34,6 +48,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children}
           </PdfModalProvider>
         </ThemeProvider>
+        <Analytics />
       </body>
     </html>
   );

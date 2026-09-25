@@ -40,6 +40,9 @@ export async function upsertPlayer(formData: FormData) {
     team: String(formData.get("team") ?? "").trim(),
     photoUrl,
     statsJson: statsFromForm(formData),
+    height: String(formData.get("height") ?? "").trim() || null,
+    bio: String(formData.get("bio") ?? "").trim() || null,
+    videoUrl: String(formData.get("videoUrl") ?? "").trim() || null,
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };
 
@@ -52,6 +55,7 @@ export async function upsertPlayer(formData: FormData) {
   }
   revalidatePath("/admin/roster");
   revalidatePath("/");
+  revalidatePath(`/tamirchid/${data.slug}`);
 }
 
 export async function deletePlayer(id: number) {

@@ -158,6 +158,15 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                       </div>
                     ))}
                   </div>
+                  <a
+                    href={`/tamirchid/${player.id}`}
+                    tabIndex={active ? 0 : -1}
+                    onClick={(e) => e.stopPropagation()}
+                    onKeyDown={(e) => e.stopPropagation()}
+                    className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-2.5 text-xs font-bold uppercase tracking-[.12em] transition-colors hover:border-amber hover:bg-amber hover:text-ink"
+                  >
+                    Дэлгэрэнгүй →
+                  </a>
                 </div>
               </article>
             );

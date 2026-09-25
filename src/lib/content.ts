@@ -33,11 +33,19 @@ export async function getRosterPlayers(): Promise<RosterPlayer[]> {
       team: r.team,
       photo: r.photoUrl ?? undefined,
       stats: JSON.parse(r.statsJson || "[]"),
+      height: r.height ?? undefined,
+      bio: r.bio ?? undefined,
+      videoUrl: r.videoUrl ?? undefined,
     }));
   } catch (err) {
     console.error("getRosterPlayers failed, falling back to static data", err);
     return staticRoster;
   }
+}
+
+export async function getRosterPlayer(slug: string): Promise<RosterPlayer | null> {
+  const players = await getRosterPlayers();
+  return players.find((p) => p.id === slug) ?? null;
 }
 
 export async function getPartners(): Promise<Partner[]> {

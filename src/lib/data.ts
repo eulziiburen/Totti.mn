@@ -45,6 +45,9 @@ export type RosterPlayer = {
   team: string;
   photo?: string;
   stats: RosterStat[];
+  height?: string;
+  bio?: string;
+  videoUrl?: string;
 };
 
 export const rosterPlayers: RosterPlayer[] = [

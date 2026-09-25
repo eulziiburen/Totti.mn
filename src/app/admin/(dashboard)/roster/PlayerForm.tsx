@@ -17,6 +17,9 @@ type Player = {
   team: string;
   photoUrl: string | null;
   statsJson: string;
+  height: string | null;
+  bio: string | null;
+  videoUrl: string | null;
   sortOrder: number;
 };
 
@@ -64,6 +67,25 @@ export function PlayerForm({ player, onDone }: { player?: Player; onDone?: () =>
         currentUrl={player?.photoUrl ?? null}
       />
       <Field label="Эрэмбэ" name="sortOrder" defaultValue={String(player?.sortOrder ?? 0)} />
+      <Field label="Өндөр" name="height" defaultValue={player?.height ?? ""} placeholder="1.93 м" />
+      <div className="col-span-2">
+        <Field
+          label="Видео хайлайт (YouTube холбоос)"
+          name="videoUrl"
+          defaultValue={player?.videoUrl ?? ""}
+          placeholder="https://www.youtube.com/watch?v=..."
+        />
+      </div>
+      <div className="col-span-2 flex flex-col gap-1 sm:col-span-3">
+        <label className={labelClass}>Намтар</label>
+        <textarea
+          name="bio"
+          defaultValue={player?.bio ?? ""}
+          rows={4}
+          placeholder="Тамирчны карьер, амжилт, тоглох хэв маяг…"
+          className={inputClass}
+        />
+      </div>
 
       <div className="col-span-2 grid grid-cols-3 gap-3 sm:col-span-3">
         {[0, 1, 2].map((i) => (
