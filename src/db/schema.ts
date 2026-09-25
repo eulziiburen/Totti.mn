@@ -32,6 +32,7 @@ export const rosterPlayers = sqliteTable("roster_players", {
   statsJson: text("stats_json").notNull().default("[]"),
   height: text("height"),
   bio: text("bio"),
+  bioEn: text("bio_en"),
   videoUrl: text("video_url"),
   sortOrder: integer("sort_order").notNull().default(0),
 });
@@ -47,7 +48,9 @@ export const services = sqliteTable("services", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   idx: text("idx").notNull(),
   title: text("title").notNull(),
+  titleEn: text("title_en"),
   description: text("description").notNull(),
+  descriptionEn: text("description_en"),
   iconPath: text("icon_path").notNull(),
   sortOrder: integer("sort_order").notNull().default(0),
 });
@@ -56,6 +59,7 @@ export const scoreboardStats = sqliteTable("scoreboard_stats", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   value: integer("value").notNull(),
   label: text("label").notNull(),
+  labelEn: text("label_en"),
   sortOrder: integer("sort_order").notNull().default(0),
 });
 

@@ -8,15 +8,15 @@ import { Partners } from "@/components/Partners";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
 import { getPartners, getRosterPlayers, getScoreboardStats, getServices } from "@/lib/content";
-
-export const revalidate = 60;
+import { getLocale } from "@/lib/locale";
 
 export default async function HomePage() {
+  const locale = await getLocale();
   const [players, services, partners, stats] = await Promise.all([
-    getRosterPlayers(),
-    getServices(),
+    getRosterPlayers(locale),
+    getServices(locale),
     getPartners(),
-    getScoreboardStats(),
+    getScoreboardStats(locale),
   ]);
 
   return (

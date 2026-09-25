@@ -1,6 +1,8 @@
 import Image from "next/image";
+import { getI18n } from "@/lib/locale";
 
-export function Footer() {
+export async function Footer() {
+  const { t } = await getI18n();
   return (
     <footer className="border-t border-line py-14 pb-10">
       <div className="mx-auto max-w-[1180px] px-8">
@@ -11,7 +13,7 @@ export function Footer() {
             <a href="/" className="inline-flex items-center gap-2.5">
               <Image
                 src="/images/logo.png"
-                alt="ТОТТИ Спортын Агентлаг"
+                alt={t.brand.logoAlt}
                 width={280}
                 height={112}
                 className="h-28 w-auto rounded-lg transition-[background-color,padding] duration-200 dark:bg-[#f5f4f0] dark:px-3.5 dark:py-1.5"
@@ -19,17 +21,17 @@ export function Footer() {
             </a>
           </div>
           <div>
-            <h5 className="mb-3.5 text-[13px] uppercase tracking-[0.1em] text-muted">Холбоо барих</h5>
+            <h5 className="mb-3.5 text-[13px] uppercase tracking-[0.1em] text-muted">{t.footer.contact}</h5>
             <a href="tel:+97688602941" className="mb-2 block text-sm text-chalk">
               +976 88602941
             </a>
             <a href="mailto:info@totti.mn" className="mb-2 block text-sm text-chalk">
               info@totti.mn
             </a>
-            <p className="mb-2 text-sm text-chalk">Сүхбаатар дүүрэг, Улаанбаатар</p>
+            <p className="mb-2 text-sm text-chalk">{t.brand.address}</p>
           </div>
           <div>
-            <h5 className="mb-3.5 text-[13px] uppercase tracking-[0.1em] text-muted">Сүлжээ</h5>
+            <h5 className="mb-3.5 text-[13px] uppercase tracking-[0.1em] text-muted">{t.footer.social}</h5>
             <a
               href="https://www.instagram.com/tott1sports.agency/"
               target="_blank"
@@ -57,8 +59,8 @@ export function Footer() {
           </div>
         </div>
         <div className="mt-14 flex flex-wrap justify-between gap-3 border-t border-line pt-6 text-[13px] text-muted">
-          <span>© 2026 Нью Тотти ХХК</span>
-          <span>Бүх эрх хуулиар хамгаалагдсан</span>
+          <span>{t.footer.company}</span>
+          <span>{t.footer.rights}</span>
         </div>
       </div>
     </footer>

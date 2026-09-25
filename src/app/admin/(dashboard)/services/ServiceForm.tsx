@@ -11,7 +11,9 @@ type Service = {
   id: number;
   idx: string;
   title: string;
+  titleEn: string | null;
   description: string;
+  descriptionEn: string | null;
   iconPath: string;
   sortOrder: number;
 };
@@ -41,6 +43,14 @@ export function ServiceForm({ service, onDone }: { service?: Service; onDone?: (
       <div className="col-span-2 flex flex-col gap-1 sm:col-span-3">
         <label className={labelClass}>Тайлбар</label>
         <textarea name="description" defaultValue={service?.description} required rows={2} className={inputClass} />
+      </div>
+      <div className="col-span-2 flex flex-col gap-1 sm:col-span-2">
+        <label className={labelClass}>Гарчиг (English)</label>
+        <input name="titleEn" defaultValue={service?.titleEn ?? ""} className={inputClass} />
+      </div>
+      <div className="col-span-2 flex flex-col gap-1 sm:col-span-2">
+        <label className={labelClass}>Тайлбар (English)</label>
+        <textarea name="descriptionEn" defaultValue={service?.descriptionEn ?? ""} rows={2} className={inputClass} />
       </div>
       <div className="flex flex-col gap-1">
         <label className={labelClass}>Icon SVG path (d=)</label>

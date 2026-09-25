@@ -3,15 +3,9 @@ import Image from "next/image";
 import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { getRosterPlayer, getRosterPlayers } from "@/lib/content";
+import { getRosterPlayer } from "@/lib/content";
 import { youtubeEmbedUrl } from "@/lib/video";
-
-export const revalidate = 60;
-
-export async function generateStaticParams() {
-  const players = await getRosterPlayers();
-  return players.map((p) => ({ slug: p.id }));
-}
+import { getI18n } from "@/lib/locale";
 
 export async function generateMetadata({
   params,
@@ -19,14 +13,14 @@ export async function generateMetadata({
   params: Promise<{ slug: string }>;
 }): Promise<Metadata> {
   const { slug } = await params;
-  const player = await getRosterPlayer(slug);
+  const { locale, t } = await getI18n();
+  const player = await getRosterPlayer(slug, locale);
   if (!player) return {};
 
   const title = `${player.name} · ${player.pos}`;
-  const description =
-    player.bio?.slice(0, 160) ?? `${player.name}, ${player.pos}, ${player.team}. ТОТТИ Спортын агентын тамирчин.`;
+  const description = player.bio?.slice(0, 160) ?? `${player.name}, ${player.pos}, ${player.team}. ${t.player.metaSuffix}`;
   return {
-    title: `${title} | ТОТТИ Спортын агент`,
+    title: `${title} | ${t.meta.siteName}`,
     description,
     openGraph: {
       title,
@@ -39,15 +33,16 @@ export async function generateMetadata({
 
 export default async function PlayerPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const player = await getRosterPlayer(slug);
+  const { locale, t } = await getI18n();
+  const player = await getRosterPlayer(slug, locale);
   if (!player) notFound();
 
   const embedUrl = player.videoUrl ? youtubeEmbedUrl(player.videoUrl) : null;
   const facts = [
-    { label: "Байрлал", value: player.pos },
-    { label: "Клуб", value: player.team },
-    player.height && { label: "Өндөр", value: player.height },
-    player.jersey && { label: "Дугаар", value: player.jersey },
+    { label: t.player.position, value: player.pos },
+    { label: t.player.club, value: player.team },
+    player.height && { label: t.player.height, value: player.height },
+    player.jersey && { label: t.player.jersey, value: player.jersey },
   ].filter((f): f is { label: string; value: string } => !!f);
 
   return (
@@ -61,7 +56,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             href="/#roster"
             className="text-xs font-bold uppercase tracking-[.14em] text-muted transition-colors hover:text-chalk"
           >
-            ← Бүх тамирчид
+            {t.player.back}
           </a>
 
           <section className="relative mt-6 overflow-hidden rounded-3xl bg-ink text-white">
@@ -127,11 +122,11 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <div className="min-w-0">
               {embedUrl && (
                 <section className="mb-12">
-                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Хайлайт</p>
+                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.highlight}</p>
                   <div className="mt-4 aspect-video overflow-hidden rounded-3xl border border-line-strong bg-ink">
                     <iframe
                       src={embedUrl}
-                      title={`${player.name} — видео хайлайт`}
+                      title={`${player.name} — ${t.player.videoTitle}`}
                       className="h-full w-full"
                       allow="accelerometer; encrypted-media; gyroscope; picture-in-picture"
                       allowFullScreen
@@ -147,14 +142,14 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
                   rel="noopener noreferrer"
                   className="mb-12 inline-flex items-center gap-2.5 rounded-full border border-line-strong px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors hover:border-chalk"
                 >
-                  Видео хайлайт үзэх ↗
+                  {t.player.watchVideo}
                 </a>
               )}
 
               <section>
-                <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Намтар</p>
+                <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.bio}</p>
                 <p className="mt-4 whitespace-pre-line text-base leading-relaxed text-muted">
-                  {player.bio ?? "Тамирчны дэлгэрэнгүй мэдээлэл удахгүй нэмэгдэнэ."}
+                  {player.bio ?? t.player.bioEmpty}
                 </p>
               </section>
             </div>
@@ -169,15 +164,15 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
                 ))}
               </dl>
               <div className="rounded-3xl bg-amber px-7 py-7 text-ink">
-                <h2 className="font-display text-2xl uppercase leading-none">Энэ тамирчныг сонирхож байна уу?</h2>
+                <h2 className="font-display text-2xl uppercase leading-none">{t.player.interestTitle}</h2>
                 <p className="mt-2.5 text-sm leading-normal">
-                  Клуб, скаутуудад гэрээ болон туршилтын талаар бид холбогдоно.
+                  {t.player.interestLead}
                 </p>
                 <a
                   href="/meeting"
                   className="mt-5 inline-flex items-center gap-2 rounded-full bg-ink px-6 py-3 text-sm font-extrabold uppercase tracking-wider text-white transition-transform hover:-translate-y-0.5"
                 >
-                  Уулзалт товлох →
+                  {t.player.book}
                 </a>
               </div>
             </aside>

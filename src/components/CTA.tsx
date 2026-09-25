@@ -1,6 +1,8 @@
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { getI18n } from "@/lib/locale";
 
-export function CTA() {
+export async function CTA() {
+  const { t } = await getI18n();
   return (
     <section id="contact" className="relative overflow-hidden border-t border-line bg-bg-1 py-[110px] text-center">
       <div
@@ -12,17 +14,17 @@ export function CTA() {
       />
       <div className="relative z-[1] mx-auto max-w-[1180px] px-8">
         <RevealOnScroll>
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Дараагийн шат</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.cta.eyebrow}</p>
         </RevealOnScroll>
         <RevealOnScroll className="mt-3.5">
           <h2 className="font-display text-[clamp(36px,6vw,72px)] uppercase leading-[0.92]">
-            ЦАГ ЗАРЦУУЛАХГҮЙ,
+            {t.cta.title1}
             <br />
-            ШУУД ТОГЛООМД ОРНО
+            {t.cta.title2}
           </h2>
         </RevealOnScroll>
         <RevealOnScroll className="mt-4.5">
-          <p className="text-base text-muted">Тамирчин уу, эсвэл клубын төлөөлөгч үү — бидэнтэй ярилцъя.</p>
+          <p className="text-base text-muted">{t.cta.lead}</p>
         </RevealOnScroll>
         <RevealOnScroll className="mt-10 flex flex-wrap justify-center gap-4">
           <a
@@ -35,7 +37,7 @@ export function CTA() {
             href="tel:+97688602941"
             className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-sm font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
           >
-            Залгах: +976 88602941
+            {t.cta.call}
           </a>
         </RevealOnScroll>
       </div>

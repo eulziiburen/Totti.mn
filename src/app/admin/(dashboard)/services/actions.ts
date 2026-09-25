@@ -16,7 +16,9 @@ export async function upsertService(formData: FormData) {
   const data = {
     idx: String(formData.get("idx") ?? "").trim(),
     title: String(formData.get("title") ?? "").trim(),
+    titleEn: String(formData.get("titleEn") ?? "").trim() || null,
     description: String(formData.get("description") ?? "").trim(),
+    descriptionEn: String(formData.get("descriptionEn") ?? "").trim() || null,
     iconPath: String(formData.get("iconPath") ?? "").trim(),
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };

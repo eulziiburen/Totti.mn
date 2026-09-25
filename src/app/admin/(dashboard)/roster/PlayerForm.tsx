@@ -19,6 +19,7 @@ type Player = {
   statsJson: string;
   height: string | null;
   bio: string | null;
+  bioEn: string | null;
   videoUrl: string | null;
   sortOrder: number;
 };
@@ -83,6 +84,16 @@ export function PlayerForm({ player, onDone }: { player?: Player; onDone?: () =>
           defaultValue={player?.bio ?? ""}
           rows={4}
           placeholder="Тамирчны карьер, амжилт, тоглох хэв маяг…"
+          className={inputClass}
+        />
+      </div>
+      <div className="col-span-2 flex flex-col gap-1 sm:col-span-3">
+        <label className={labelClass}>Намтар (English)</label>
+        <textarea
+          name="bioEn"
+          defaultValue={player?.bioEn ?? ""}
+          rows={4}
+          placeholder="Career, achievements, playing style…"
           className={inputClass}
         />
       </div>

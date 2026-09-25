@@ -3,7 +3,6 @@
 import { useEffect, useMemo, useState } from "react";
 import {
   DOW_LONG,
-  DOW_SHORT,
   MAIL_TO,
   buildNext14Days,
   formatOptions,
@@ -13,6 +12,7 @@ import {
 } from "@/lib/booking";
 import { createBooking } from "@/app/meeting/actions";
 import { TimeWheel } from "@/components/TimeWheel";
+import { useI18n } from "@/components/LocaleProvider";
 
 type Errors = Partial<Record<"role" | "date" | "time" | "format" | "contact", string>>;
 
@@ -58,6 +58,8 @@ function Sidebar({
   formatLabel: string;
   formatSub: string;
 }) {
+  const { t } = useI18n();
+  const b = t.booking;
   return (
     <div className="relative rounded-t-3xl bg-ink text-white min-[980px]:rounded-bl-3xl min-[980px]:rounded-tr-none">
       <div className="pointer-events-none absolute inset-x-0 top-0 h-1 rounded-t-3xl bg-amber min-[980px]:rounded-tr-none" />
@@ -66,31 +68,30 @@ function Sidebar({
         href="/"
         className="inline-flex w-fit items-center gap-2 self-start text-sm font-semibold text-white/65 transition-colors hover:text-amber"
       >
-        ← Нүүр хуудас руу буцах
+        {b.back}
       </a>
       <h1 className="mt-8.5 font-display text-[clamp(46px,5.4vw,74px)] uppercase leading-[0.95]">
-        Уулзалт
-        <span className="block text-amber">товлох</span>
+        {b.title1}
+        <span className="block text-amber">{b.title2}</span>
       </h1>
       <p className="mt-5.5 max-w-[340px] text-[15px] leading-relaxed text-white/72">
-        Тохиромжтой өдөр, цагаа сонгоод үлдээгээрэй. Бид тантай холбогдож уулзалтын цагийг
-        баталгаажуулна.
+        {b.lead}
       </p>
 
       <div
         className="mt-9.5 grid grid-cols-3 rounded-2xl border border-white/22 bg-white/[0.03]"
         aria-live="polite"
-        aria-label="Таны сонгосон уулзалтын хураангуй"
+        aria-label={b.summaryAria}
       >
-        <Cell label="Өдөр" value={dayValue} sub={dayLabel} active={dayLabel !== "сонгоогүй"} />
-        <Cell label="Цаг" value={timeLabel} sub={timeSub} active={timeSub !== "сонгоогүй"} />
-        <Cell label="Хэлбэр" value={formatLabel} sub={formatSub} active={formatSub !== "сонгоогүй"} />
+        <Cell label={b.day} value={dayValue} sub={dayLabel} active={dayLabel !== b.notSelected} />
+        <Cell label={b.time} value={timeLabel} sub={timeSub} active={timeSub !== b.notSelected} />
+        <Cell label={b.format} value={formatLabel} sub={formatSub} active={formatSub !== b.notSelected} />
       </div>
 
       <div className="mt-auto flex flex-col gap-3 pt-10">
         <div>
           <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">
-            Утас · дарж залгах
+            {b.phoneTap}
           </span>
           <a
             href="tel:+97688602941"
@@ -103,7 +104,7 @@ function Sidebar({
           </a>
         </div>
         <div>
-          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">Имэйл</span>
+          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">{b.email}</span>
           <a
             href="https://mail.google.com/mail/?view=cm&fs=1&to=info%40totti.mn"
             target="_blank"
@@ -114,8 +115,8 @@ function Sidebar({
           </a>
         </div>
         <div>
-          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">Хаяг</span>
-          <p className="text-white/78">Сүхбаатар дүүрэг, Улаанбаатар</p>
+          <span className="mb-0.5 block text-[11px] font-bold uppercase tracking-[.14em] text-white/45">{b.address}</span>
+          <p className="text-white/78">{t.brand.address}</p>
         </div>
       </div>
       </aside>
@@ -124,6 +125,12 @@ function Sidebar({
 }
 
 export function Booking() {
+  const { locale, t } = useI18n();
+  const b = t.booking;
+  const monthLabel = (month: number) =>
+    locale === "en"
+      ? new Intl.DateTimeFormat("en-US", { month: "short" }).format(new Date(2000, month - 1, 1))
+      : `${month}${b.monthSuffix}`;
   const [days, setDays] = useState<DayOption[]>([]);
   useEffect(() => setDays(buildNext14Days()), []);
 
@@ -144,7 +151,10 @@ export function Booking() {
 
   const selectedDay = useMemo(() => days.find((d) => d.iso === dateIso) ?? null, [days, dateIso]);
   const selectedTime = timeOptions.find((t) => t.value === time) ?? null;
-  const selectedFormat = formatOptions.find((f) => f.value === format) ?? null;
+  const formatIndex = formatOptions.findIndex((f) => f.value === format);
+  const selectedFormat = formatIndex >= 0 ? formatOptions[formatIndex] : null;
+  const selectedFormatText = formatIndex >= 0 ? b.formats[formatIndex] : null;
+  const roleText = (value: string) => b.roles[roleOptions.indexOf(value)] ?? value;
 
   function clearError(key: keyof Errors) {
     setErrors((e) => {
@@ -160,10 +170,10 @@ export function Booking() {
     const nextErrors: Errors = {};
     const nextInvalid = new Set<string>();
 
-    if (!role) nextErrors.role = "Та хэн болохоо сонгоно уу.";
-    if (!selectedDay) nextErrors.date = "Уулзалтын өдрөө сонгоно уу.";
-    if (!selectedTime) nextErrors.time = "Тохиромжтой цагийн хүрээгээ сонгоно уу.";
-    if (!selectedFormat) nextErrors.format = "Уулзалтын хэлбэрээ сонгоно уу.";
+    if (!role) nextErrors.role = b.errRole;
+    if (!selectedDay) nextErrors.date = b.errDate;
+    if (!selectedTime) nextErrors.time = b.errTime;
+    if (!selectedFormat) nextErrors.format = b.errFormat;
 
     const trimmedName = name.trim();
     const trimmedPhone = phone.trim();
@@ -178,9 +188,9 @@ export function Booking() {
       }
       if (!emailOk) {
         nextInvalid.add("email");
-        nextErrors.contact = "Имэйл хаягийн формат буруу байна.";
+        nextErrors.contact = b.errEmail;
       } else {
-        nextErrors.contact = "Нэрээ бичиж, утас эсвэл имэйлийн аль нэгийг оруулна уу.";
+        nextErrors.contact = b.errContact;
       }
     }
 
@@ -191,34 +201,37 @@ export function Booking() {
       document.getElementById("bookingFieldset")?.scrollIntoView({ behavior: "smooth", block: "center" });
       return;
     }
-    if (!selectedDay || !selectedTime || !selectedFormat) return;
+    if (!selectedDay || !selectedTime || !selectedFormat || !selectedFormatText) return;
 
+    // Stored for the admin in Mongolian regardless of the visitor's language.
     const dayLabel = `${DOW_LONG[selectedDay.weekday]}, ${selectedDay.month}-р сар ${selectedDay.dayNum} (${selectedDay.iso})`;
+    const localDayLabel = `${b.dowLong[selectedDay.weekday]}, ${monthLabel(selectedDay.month)} ${selectedDay.dayNum} (${selectedDay.iso})`;
+    const timeLabel = `${selectedTime.range}${b.hoursSuffix}`;
     const rows: [string, string][] = [
-      ["Хэн", role],
-      ["Өдөр", dayLabel],
-      ["Цаг", `${selectedTime.range} цаг`],
-      ["Хэлбэр", selectedFormat.value],
-      ["Нэр", trimmedName],
-      ["Утас", trimmedPhone || "—"],
-      ["Имэйл", trimmedEmail || "—"],
+      [b.who, roleText(role)],
+      [b.day, localDayLabel],
+      [b.time, timeLabel],
+      [b.format, selectedFormatText.value],
+      [b.name, trimmedName],
+      [b.phone, trimmedPhone || "—"],
+      [b.email, trimmedEmail || "—"],
     ];
-    if (msg.trim()) rows.push(["Зорилго", msg.trim()]);
+    if (msg.trim()) rows.push([b.purpose, msg.trim()]);
 
-    const body = `Сайн байна уу,\n\nУулзалт товлох хүсэлт:\n\n${rows
+    const body = `${b.mailGreeting}\n\n${b.mailIntro}\n\n${rows
       .map(([k, v]) => `${k}: ${v}`)
-      .join("\n")}\n\nБаярлалаа.`;
-    const subject = `Уулзалт товлох хүсэлт — ${trimmedName}`;
+      .join("\n")}\n\n${b.mailThanks}`;
+    const subject = `${b.mailSubject} — ${trimmedName}`;
     const gmail = `https://mail.google.com/mail/?view=cm&fs=1&to=${encodeURIComponent(
       MAIL_TO
     )}&su=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
     const mailto = `mailto:${MAIL_TO}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 
     setSummary({
-      role,
-      dayLabel,
-      timeLabel: `${selectedTime.range} цаг`,
-      formatLabel: selectedFormat.value,
+      role: roleText(role),
+      dayLabel: localDayLabel,
+      timeLabel,
+      formatLabel: selectedFormatText.value,
       name: trimmedName,
       phone: trimmedPhone || "—",
       email: trimmedEmail || "—",
@@ -247,11 +260,11 @@ export function Booking() {
     <div className="grid grid-cols-1 rounded-3xl border border-line-strong bg-bg-0 min-[980px]:grid-cols-[5fr_7fr]">
       <Sidebar
         dayValue={selectedDay ? String(selectedDay.dayNum) : "—"}
-        dayLabel={selectedDay ? `${DOW_LONG[selectedDay.weekday]}, ${selectedDay.month}-р сар` : "сонгоогүй"}
+        dayLabel={selectedDay ? `${b.dowLong[selectedDay.weekday]}, ${monthLabel(selectedDay.month)}` : b.notSelected}
         timeLabel={selectedTime ? selectedTime.range : "—"}
-        timeSub={selectedTime ? "УБ цагаар" : "сонгоогүй"}
-        formatLabel={selectedFormat ? selectedFormat.value : "—"}
-        formatSub={selectedFormat ? selectedFormat.sub : "сонгоогүй"}
+        timeSub={selectedTime ? b.ubTime : b.notSelected}
+        formatLabel={selectedFormatText ? selectedFormatText.value : "—"}
+        formatSub={selectedFormatText ? selectedFormatText.sub : b.notSelected}
       />
 
       <div className="min-w-0">
@@ -263,22 +276,20 @@ export function Booking() {
               </svg>
             </div>
             <h2 className="font-display text-[clamp(34px,4vw,52px)] uppercase leading-[0.95]">
-              Хүсэлт бэлэн боллоо
+              {b.doneTitle}
             </h2>
             <p className="mt-4 max-w-[480px] leading-relaxed text-muted">
-              Gmail дээр <b>info@totti.mn</b> руу бэлдсэн захидал шинэ табаар нээгдсэн байх ёстой.
-              Gmail-д нэвтэрсэн бол &ldquo;Илгээх&rdquo; товчийг дарж хүсэлтээ дуусгана уу. Таб
-              нээгдээгүй бол доорх товчийг дарна уу.
+              {b.doneLead1} <b>info@totti.mn</b> {b.doneLead2}
             </p>
             <div className="mt-6.5 border-y border-line">
               {[
-                ["Хэн", summary.role],
-                ["Өдөр", summary.dayLabel],
-                ["Цаг", summary.timeLabel],
-                ["Хэлбэр", summary.formatLabel],
-                ["Нэр", summary.name],
-                ["Утас", summary.phone],
-                ["Имэйл", summary.email],
+                [b.who, summary.role],
+                [b.day, summary.dayLabel],
+                [b.time, summary.timeLabel],
+                [b.format, summary.formatLabel],
+                [b.name, summary.name],
+                [b.phone, summary.phone],
+                [b.email, summary.email],
               ].map(([k, v]) => (
                 <div key={k} className="flex justify-between gap-5 border-b border-line py-3.5 text-[15px] last:border-b-0">
                   <span className="text-muted">{k}</span>
@@ -293,38 +304,38 @@ export function Booking() {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
               >
-                Gmail дээр нээх
+                {b.openGmail}
               </a>
               <a
                 href="tel:+97688602941"
                 className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
               >
-                Залгах
+                {b.call}
               </a>
               <button
                 type="button"
                 onClick={() => setSubmitted(false)}
                 className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-7.5 py-4.25 text-sm font-bold uppercase tracking-wider transition-all hover:-translate-y-0.5 hover:border-chalk"
               >
-                Засварлах
+                {b.edit}
               </button>
             </div>
             <p className="mt-4.5 text-sm">
-              Gmail ашигладаггүй бол{" "}
+              {b.noGmail1}{" "}
               <a href={mailtoUrl} className="font-semibold underline">
-                өөр имэйл програмаар нээх
+                {b.noGmailLink}
               </a>{" "}
-              эсвэл <a href="/" className="font-semibold underline">нүүр хуудас руу буцах</a>.
+              {b.noGmail2} <a href="/" className="font-semibold underline">{b.backHome}</a>.
             </p>
           </div>
         ) : (
           <form onSubmit={handleSubmit} noValidate className="px-6 py-5 sm:px-10 sm:py-7" id="bookingFieldset">
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-[13px] font-bold text-amber-dim">01</span> Та хэн бэ?
+                <span className="font-mono text-[13px] font-bold text-amber-dim">01</span> {b.step1}
               </legend>
               <div className="flex flex-wrap gap-2.5">
-                {roleOptions.map((opt) => (
+                {roleOptions.map((opt, i) => (
                   <label key={opt} className="relative cursor-pointer">
                     <input
                       type="radio"
@@ -344,7 +355,7 @@ export function Booking() {
                           : "border-line-strong bg-bg-0 hover:border-chalk"
                       }`}
                     >
-                      {opt}
+                      {b.roles[i]}
                     </span>
                   </label>
                 ))}
@@ -354,8 +365,8 @@ export function Booking() {
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-[13px] font-bold text-amber-dim">02</span> Өдөр сонгох{" "}
-                <small className="ml-auto text-[13px] font-medium text-muted">Ирэх 14 хоног</small>
+                <span className="font-mono text-[13px] font-bold text-amber-dim">02</span> {b.step2}{" "}
+                <small className="ml-auto text-[13px] font-medium text-muted">{b.next14}</small>
               </legend>
               <div
                 className="flex gap-2.5 overflow-x-auto py-0.5 pb-3 pr-6"
@@ -389,11 +400,11 @@ export function Booking() {
                           dateIso === d.iso ? "text-ink/75" : d.isWeekend ? "text-amber-dim" : ""
                         }`}
                       >
-                        {DOW_SHORT[d.weekday]}
+                        {b.dowShort[d.weekday]}
                       </span>
                       <span className="mt-2 font-display text-[30px] leading-none">{d.dayNum}</span>
                       <span className={`mt-1.5 text-xs ${dateIso === d.iso ? "text-ink/75" : "text-muted"}`}>
-                        {d.month}-р сар
+                        {monthLabel(d.month)}
                       </span>
                     </span>
                   </label>
@@ -404,8 +415,8 @@ export function Booking() {
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-[13px] font-bold text-amber-dim">03</span> Цаг, хэлбэр{" "}
-                <small className="ml-auto text-[13px] font-medium text-muted">Цагаар (UB цаг)</small>
+                <span className="font-mono text-[13px] font-bold text-amber-dim">03</span> {b.step3}{" "}
+                <small className="ml-auto text-[13px] font-medium text-muted">{b.ubHours}</small>
               </legend>
               <div className="mb-3.5 flex items-center gap-4">
                 <TimeWheel
@@ -417,12 +428,12 @@ export function Booking() {
                   }}
                 />
                 <p className="text-sm leading-relaxed text-muted">
-                  Дугуйг чирж эсвэл дарж цагаа сонгоно уу. Дунд хүрээнд орсон цаг сонгогдоно.
+                  {b.wheelHint}
                 </p>
               </div>
               {errors.time && <p className="-mt-1 mb-3.5 text-sm font-semibold text-red-600">{errors.time}</p>}
               <div className="flex flex-wrap gap-2.5">
-                {formatOptions.map((opt) => (
+                {formatOptions.map((opt, i) => (
                   <label key={opt.value} className="relative cursor-pointer">
                     <input
                       type="radio"
@@ -442,8 +453,8 @@ export function Booking() {
                           : "border-line-strong bg-bg-0 hover:border-chalk"
                       }`}
                     >
-                      {opt.value}
-                      <em className="text-[13px] font-medium not-italic opacity-70">{opt.sub}</em>
+                      {b.formats[i].value}
+                      <em className="text-[13px] font-medium not-italic opacity-70">{b.formats[i].sub}</em>
                     </span>
                   </label>
                 ))}
@@ -453,19 +464,19 @@ export function Booking() {
 
             <fieldset className="mb-8.5 min-w-0 border-0 p-0">
               <legend className="mb-4 flex w-full items-baseline gap-3 border-b border-line pb-3 text-base font-bold">
-                <span className="font-mono text-[13px] font-bold text-amber-dim">04</span> Холбоо барих мэдээлэл
+                <span className="font-mono text-[13px] font-bold text-amber-dim">04</span> {b.step4}
               </legend>
               <div className="grid grid-cols-1 gap-5.5 min-[640px]:grid-cols-2 min-[640px]:gap-x-6.5">
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <label htmlFor="name" className="text-[13px] font-bold uppercase tracking-wide text-muted">
-                    Нэр
+                    {b.name}
                   </label>
                   <input
                     id="name"
                     name="name"
                     type="text"
                     autoComplete="name"
-                    placeholder="Овог нэр"
+                    placeholder={b.namePlaceholder}
                     value={name}
                     onChange={(e) => {
                       setName(e.target.value);
@@ -483,7 +494,7 @@ export function Booking() {
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5">
                   <label htmlFor="phone" className="text-[13px] font-bold uppercase tracking-wide text-muted">
-                    Утас
+                    {b.phone}
                   </label>
                   <input
                     id="phone"
@@ -509,7 +520,7 @@ export function Booking() {
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5 min-[640px]:col-span-2">
                   <label htmlFor="email" className="text-[13px] font-bold uppercase tracking-wide text-muted">
-                    Имэйл
+                    {b.email}
                   </label>
                   <input
                     id="email"
@@ -534,13 +545,13 @@ export function Booking() {
                 </div>
                 <div className="flex min-w-0 flex-col gap-1.5 min-[640px]:col-span-2">
                   <label htmlFor="msg" className="text-[13px] font-bold uppercase tracking-wide text-muted">
-                    Юуны тухай ярилцах вэ?{" "}
-                    <span className="text-[13px] font-medium normal-case tracking-normal">(заавал биш)</span>
+                    {b.topic}{" "}
+                    <span className="text-[13px] font-medium normal-case tracking-normal">{b.optional}</span>
                   </label>
                   <textarea
                     id="msg"
                     name="msg"
-                    placeholder="Жишээ нь: гадаадад тоглох боломж, гэрээний хэлэлцээр, спонсорлолт…"
+                    placeholder={b.topicPlaceholder}
                     value={msg}
                     onChange={(e) => setMsg(e.target.value)}
                     className="min-h-24 w-full resize-y border-0 border-b-2 border-line-strong bg-transparent py-2.5 text-base leading-relaxed text-chalk outline-none transition-colors placeholder:text-[#a3a097] focus:border-amber"
@@ -555,15 +566,14 @@ export function Booking() {
                 type="submit"
                 className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8.5 py-4.5 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
               >
-                Хүсэлт илгээх →
+                {b.submit}
               </button>
               <p className="max-w-80 text-sm leading-relaxed text-muted">
-                Энэ нь цаг товлох хүсэлт. Бид тантай холбогдож эцсийн цагийг баталгаажуулна. Яаралтай
-                бол{" "}
+                {b.note1}{" "}
                 <a href="tel:+97688602941" className="font-bold underline">
                   +976 88602941
-                </a>{" "}
-                руу залгана уу.
+                </a>
+                {b.note2}
               </p>
             </div>
           </form>

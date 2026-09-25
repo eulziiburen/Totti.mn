@@ -2,6 +2,7 @@
 
 import { useEffect, useRef, useState } from "react";
 import type { TimeSlot } from "@/lib/booking";
+import { useI18n } from "@/components/LocaleProvider";
 
 const ITEM_HEIGHT = 44;
 const VISIBLE_ROWS = 5;
@@ -16,6 +17,7 @@ export function TimeWheel({
   value: string;
   onChange: (v: string) => void;
 }) {
+  const { t } = useI18n();
   const listRef = useRef<HTMLDivElement>(null);
   const scrollEndTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const initialIndex = Math.max(0, options.findIndex((o) => o.value === value));
@@ -77,7 +79,7 @@ export function TimeWheel({
       <div
         ref={listRef}
         role="listbox"
-        aria-label="Цаг сонгох"
+        aria-label={t.booking.wheelAria}
         tabIndex={0}
         onScroll={handleScroll}
         onKeyDown={(e) => {

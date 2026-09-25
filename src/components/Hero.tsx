@@ -1,6 +1,8 @@
 import { PdfTriggerLink } from "@/components/PdfTriggerLink";
+import { getI18n } from "@/lib/locale";
 
-export function Hero() {
+export async function Hero() {
+  const { t } = await getI18n();
   return (
     <section className="relative flex min-h-screen items-center pt-[120px]">
       <div
@@ -44,7 +46,7 @@ export function Hero() {
         <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-amber/30 bg-amber/10 py-2 pl-2 pr-4">
           <span className="h-2 w-2 rounded-full bg-amber shadow-[0_0_8px_rgba(212,175,55,0.7)]" />
           <span className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">
-            Спортын агентлаг · Улаанбаатар
+            {t.hero.badge}
           </span>
         </div>
 
@@ -52,15 +54,13 @@ export function Hero() {
           className="font-display text-[clamp(40px,6.5vw,92px)] uppercase leading-[0.92] tracking-[0.01em] text-chalk"
           style={{ textShadow: "0 2px 30px rgba(var(--color-surface),0.6)" }}
         >
-          ТАНЫ КАРЬЕР
+          {t.hero.title1}
           <br />
-          <span className="text-amber"> БИДНИЙ СТРАТЕГИ.</span>
+          <span className="text-amber"> {t.hero.title2}</span>
         </h1>
 
         <p className="mt-7 max-w-[520px] text-[17px] leading-[1.65] text-muted">
-          Гэрээ хэлэлцээрээс эхлээд брэндийн түншлэл хүртэл — бид сагсан бөмбөгийн тамирчдын
-          карьерын бүхий л үе шатыг стратегийн түвшинд төлөвлөж, мэргэжлийн түвшинд удирдан
-          хэрэгжүүлнэ.
+          {t.hero.lead}
         </p>
 
         <div className="mt-10 flex flex-wrap gap-4">
@@ -68,13 +68,13 @@ export function Hero() {
             href="/meeting"
             className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.35)]"
           >
-            Хамтран ажиллах →
+            {t.hero.cta}
           </a>
           <PdfTriggerLink
             pdfKey="male"
             className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-sm font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
           >
-            Тамирчдыг үзэх
+            {t.hero.viewPlayers}
           </PdfTriggerLink>
         </div>
       </div>

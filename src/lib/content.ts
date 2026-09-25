@@ -19,8 +19,9 @@ import {
   type ServiceItem,
   type Stat,
 } from "./data";
+import { localizeContent, type Locale } from "./i18n";
 
-export async function getRosterPlayers(): Promise<RosterPlayer[]> {
+export async function getRosterPlayers(locale: Locale = "mn"): Promise<RosterPlayer[]> {
   try {
     const rows = await db.select().from(rosterTable).orderBy(asc(rosterTable.sortOrder));
     if (rows.length === 0) return staticRoster;
@@ -34,7 +35,7 @@ export async function getRosterPlayers(): Promise<RosterPlayer[]> {
       photo: r.photoUrl ?? undefined,
       stats: JSON.parse(r.statsJson || "[]"),
       height: r.height ?? undefined,
-      bio: r.bio ?? undefined,
+      bio: (locale === "en" ? r.bioEn || r.bio : r.bio) ?? undefined,
       videoUrl: r.videoUrl ?? undefined,
     }));
   } catch (err) {
@@ -43,8 +44,8 @@ export async function getRosterPlayers(): Promise<RosterPlayer[]> {
   }
 }
 
-export async function getRosterPlayer(slug: string): Promise<RosterPlayer | null> {
-  const players = await getRosterPlayers();
+export async function getRosterPlayer(slug: string, locale: Locale = "mn"): Promise<RosterPlayer | null> {
+  const players = await getRosterPlayers(locale);
   return players.find((p) => p.id === slug) ?? null;
 }
 
@@ -59,33 +60,36 @@ export async function getPartners(): Promise<Partner[]> {
   }
 }
 
-export async function getServices(): Promise<ServiceItem[]> {
+export async function getServices(locale: Locale = "mn"): Promise<ServiceItem[]> {
+  const localizeStatic = (items: ServiceItem[]) =>
+    items.map((s) => ({ ...s, title: localizeContent(locale, s.title), desc: localizeContent(locale, s.desc) }));
   try {
     const rows = await db.select().from(servicesTable).orderBy(asc(servicesTable.sortOrder));
-    if (rows.length === 0) return staticServices;
+    if (rows.length === 0) return localizeStatic(staticServices);
     return rows.map((s) => ({
       idx: s.idx,
-      title: s.title,
-      desc: s.description,
+      title: localizeContent(locale, s.title, s.titleEn),
+      desc: localizeContent(locale, s.description, s.descriptionEn),
       path: s.iconPath,
     }));
   } catch (err) {
     console.error("getServices failed, falling back to static data", err);
-    return staticServices;
+    return localizeStatic(staticServices);
   }
 }
 
-export async function getScoreboardStats(): Promise<Stat[]> {
+export async function getScoreboardStats(locale: Locale = "mn"): Promise<Stat[]> {
+  const localizeStatic = (items: Stat[]) => items.map((s) => ({ ...s, label: localizeContent(locale, s.label) }));
   try {
     const rows = await db
       .select()
       .from(scoreboardStatsTable)
       .orderBy(asc(scoreboardStatsTable.sortOrder));
-    if (rows.length === 0) return staticScoreboardStats;
-    return rows.map((s) => ({ value: s.value, label: s.label }));
+    if (rows.length === 0) return localizeStatic(staticScoreboardStats);
+    return rows.map((s) => ({ value: s.value, label: localizeContent(locale, s.label, s.labelEn) }));
   } catch (err) {
     console.error("getScoreboardStats failed, falling back to static data", err);
-    return staticScoreboardStats;
+    return localizeStatic(staticScoreboardStats);
   }
 }
 

@@ -5,11 +5,13 @@ import { useEffect, useRef, useState } from "react";
 import type { RosterPlayer } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { PdfTriggerLink } from "@/components/PdfTriggerLink";
+import { useI18n } from "@/components/LocaleProvider";
 
 export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) {
   const [activeId, setActiveId] = useState(rosterPlayers[0]?.id ?? "");
   const panelRefs = useRef<Array<HTMLElement | null>>([]);
   const [canHover, setCanHover] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     const mq = window.matchMedia("(hover:hover) and (pointer:fine) and (min-width:901px)");
@@ -28,13 +30,12 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
     <section id="roster" className="border-y border-line bg-bg-1 py-[120px]">
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mb-14 max-w-[640px]">
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Бидний баг</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.roster.eyebrow}</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
-            ТӨЛӨӨЛӨГЧ ТАМИРЧИД
+            {t.roster.title}
           </h2>
           <p className="mt-4.5 text-base leading-relaxed text-muted">
-            Лигийн шилдэг тоглогчдоос ирээдүйтэй залуу авьяас хүртэл — та бүхэнд тохирсон
-            тоглогчоо олно.
+            {t.roster.lead}
           </p>
         </RevealOnScroll>
 
@@ -165,7 +166,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     onKeyDown={(e) => e.stopPropagation()}
                     className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-2.5 text-xs font-bold uppercase tracking-[.12em] transition-colors hover:border-amber hover:bg-amber hover:text-ink"
                   >
-                    Дэлгэрэнгүй →
+                    {t.roster.details}
                   </a>
                 </div>
               </article>
@@ -178,11 +179,10 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
         >
           <div>
             <h3 className="font-display text-[28px] uppercase leading-none tracking-[.01em]">
-              Тоглогчдын танилцуулга 2026–27
+              {t.roster.catalogTitle}
             </h3>
             <p className="mt-2 text-[15px] leading-normal text-muted">
-              Эрэгтэй, эмэгтэй тоглогчдын бүрэн жагсаалт — байрлал, өндөр, нас, туршлага, EuroBasket
-              профайл.
+              {t.roster.catalogLead}
             </p>
           </div>
           <div className="flex flex-wrap gap-3">
@@ -190,13 +190,13 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
               pdfKey="male"
               className="inline-flex items-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink transition-all hover:-translate-y-0.5 hover:shadow-[0_12px_24px_rgba(212,175,55,0.3)]"
             >
-              Эрэгтэй тоглогчид →
+              {t.roster.male}
             </PdfTriggerLink>
             <PdfTriggerLink
               pdfKey="female"
               className="inline-flex items-center gap-2.5 rounded-full border border-line-strong px-8 py-4 text-sm font-bold uppercase tracking-wider text-chalk transition-all hover:-translate-y-0.5 hover:border-chalk"
             >
-              Эмэгтэй тоглогчид →
+              {t.roster.female}
             </PdfTriggerLink>
           </div>
         </RevealOnScroll>

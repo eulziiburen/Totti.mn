@@ -1,8 +1,10 @@
 import Image from "next/image";
 import type { Partner } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { getI18n } from "@/lib/locale";
 
-export function Partners({ items: partners }: { items: Partner[] }) {
+export async function Partners({ items: partners }: { items: Partner[] }) {
+  const { t } = await getI18n();
   const track = [...partners, ...partners];
 
   return (
@@ -15,13 +17,12 @@ export function Partners({ items: partners }: { items: Partner[] }) {
     >
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mx-auto mb-14 max-w-[640px] text-center">
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Хамтын ажиллагаа</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.partners.eyebrow}</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
-            БИДНИЙ ТҮНШ БАЙГУУЛЛАГА
+            {t.partners.title}
           </h2>
           <p className="mt-4.5 text-base leading-relaxed text-muted">
-            Тамирчдынхаа ард тогтвортой түшиг болж, спортын төлөө хамтдаа зүтгэж байгаа та нартаа
-            баярлалаа.
+            {t.partners.lead}
           </p>
         </RevealOnScroll>
 

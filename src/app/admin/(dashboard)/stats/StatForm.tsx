@@ -8,7 +8,7 @@ const inputClass =
   "w-full border-0 border-b-2 border-line-strong bg-transparent py-2 text-sm text-chalk outline-none focus:border-amber";
 const labelClass = "text-[11px] font-bold uppercase tracking-wide text-muted";
 
-type Stat = { id: number; value: number; label: string; sortOrder: number };
+type Stat = { id: number; value: number; label: string; labelEn: string | null; sortOrder: number };
 
 export function StatForm({ stat, onDone }: { stat?: Stat; onDone?: () => void }) {
   return (
@@ -33,6 +33,10 @@ export function StatForm({ stat, onDone }: { stat?: Stat; onDone?: () => void })
           required
           className={inputClass}
         />
+      </div>
+      <div className="flex flex-col gap-1 sm:col-span-2">
+        <label className={labelClass}>Тайлбар (English)</label>
+        <input name="labelEn" defaultValue={stat?.labelEn ?? ""} placeholder="Players represented" className={inputClass} />
       </div>
       <div className="flex flex-col gap-1">
         <label className={labelClass}>Эрэмбэ</label>

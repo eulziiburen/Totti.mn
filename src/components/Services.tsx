@@ -1,17 +1,19 @@
 import type { ServiceItem } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
+import { getI18n } from "@/lib/locale";
 
-export function Services({ items: services }: { items: ServiceItem[] }) {
+export async function Services({ items: services }: { items: ServiceItem[] }) {
+  const { t } = await getI18n();
   return (
     <section id="services" className="py-[120px]">
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mb-14 max-w-[640px]">
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">Юу хийдэг вэ</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.services.eyebrow}</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
-            ТОГЛООМООС ГАДНАХ ЖИЛ БҮР
+            {t.services.title}
           </h2>
           <p className="mt-4.5 text-base leading-relaxed text-muted">
-            Талбай дээрх амжилтыг талбайн гадна тогтвортой карьер болгон хувиргах бол бидний ажил.
+            {t.services.lead}
           </p>
         </RevealOnScroll>
 

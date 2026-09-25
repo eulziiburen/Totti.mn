@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Booking } from "@/components/BookingForm";
+import { getI18n } from "@/lib/locale";
 
-export const metadata: Metadata = {
-  title: "Уулзалт товлох | ТОТТИ Спортын агент",
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const { t } = await getI18n();
+  return { title: t.meta.meetingTitle };
+}
 
 export default function MeetingPage() {
   return (

@@ -42,6 +42,7 @@ export async function upsertPlayer(formData: FormData) {
     statsJson: statsFromForm(formData),
     height: String(formData.get("height") ?? "").trim() || null,
     bio: String(formData.get("bio") ?? "").trim() || null,
+    bioEn: String(formData.get("bioEn") ?? "").trim() || null,
     videoUrl: String(formData.get("videoUrl") ?? "").trim() || null,
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };

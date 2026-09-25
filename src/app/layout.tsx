@@ -5,34 +5,34 @@ import { ThemeProvider } from "@/components/ThemeProvider";
 import { ScrollProgress } from "@/components/ScrollProgress";
 import { GrainOverlay } from "@/components/GrainOverlay";
 import { PdfModalProvider } from "@/components/PdfModalProvider";
+import { LocaleProvider } from "@/components/LocaleProvider";
 import { getPlayerDocuments } from "@/lib/content";
+import { getI18n } from "@/lib/locale";
 import { SITE_URL } from "@/lib/site";
 
-const description =
-  "ТОТТИ Спортын Агентлаг — сагсан бөмбөгийн тамирчдын карьерыг стратегийн түвшинд төлөвлөж, мэргэжлийн түвшинд удирдан хэрэгжүүлдэг агентлаг.";
-
-export const metadata: Metadata = {
-  metadataBase: new URL(SITE_URL),
-  title: "ТОТТИ | Спортын агент",
-  description,
-  openGraph: {
-    title: "ТОТТИ | Спортын агент",
-    description,
-    siteName: "ТОТТИ Спортын агент",
-    locale: "mn_MN",
-    type: "website",
-    images: [{ url: "/images/hero-basketball.png", width: 2200, height: 782 }],
-  },
-  twitter: { card: "summary_large_image" },
-};
-
-export const revalidate = 60;
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale, t } = await getI18n();
+  return {
+    metadataBase: new URL(SITE_URL),
+    title: t.meta.title,
+    description: t.meta.description,
+    openGraph: {
+      title: t.meta.title,
+      description: t.meta.description,
+      siteName: t.meta.siteName,
+      locale: locale === "en" ? "en_US" : "mn_MN",
+      type: "website",
+      images: [{ url: "/images/hero-basketball.png", width: 2200, height: 782 }],
+    },
+    twitter: { card: "summary_large_image" },
+  };
+}
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const documents = await getPlayerDocuments();
+  const [{ locale }, documents] = await Promise.all([getI18n(), getPlayerDocuments()]);
 
   return (
-    <html lang="mn" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <head>
         <link rel="preconnect" href="https://fonts.googleapis.com/" />
         <link
@@ -42,11 +42,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body className="antialiased">
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <PdfModalProvider documents={documents}>
-            <ScrollProgress />
-            <GrainOverlay />
-            {children}
-          </PdfModalProvider>
+          <LocaleProvider locale={locale}>
+            <PdfModalProvider documents={documents}>
+              <ScrollProgress />
+              <GrainOverlay />
+              {children}
+            </PdfModalProvider>
+          </LocaleProvider>
         </ThemeProvider>
         <Analytics />
       </body>

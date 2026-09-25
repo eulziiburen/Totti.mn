@@ -16,6 +16,7 @@ export async function upsertStat(formData: FormData) {
   const data = {
     value: Number(formData.get("value") ?? 0),
     label: String(formData.get("label") ?? "").trim(),
+    labelEn: String(formData.get("labelEn") ?? "").trim() || null,
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };
   if (!data.label) throw new Error("label шаардлагатай");

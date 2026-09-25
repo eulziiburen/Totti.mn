@@ -4,9 +4,12 @@ import Image from "next/image";
 import { useEffect, useState } from "react";
 import { navLinks } from "@/lib/data";
 import { ThemeSwitch } from "@/components/ThemeSwitch";
+import { LanguageSwitch } from "@/components/LanguageSwitch";
+import { useI18n } from "@/components/LocaleProvider";
 
 export function Header() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t } = useI18n();
 
   useEffect(() => {
     document.body.style.overflow = menuOpen ? "hidden" : "";
@@ -23,7 +26,7 @@ export function Header() {
         <a href="/" className="flex items-center gap-2.5">
           <Image
             src="/images/logo.png"
-            alt="ТОТТИ Спортын Агентлаг"
+            alt={t.brand.logoAlt}
             width={220}
             height={88}
             priority
@@ -38,16 +41,17 @@ export function Header() {
               href={link.href}
               className="rounded-full px-4 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
             >
-              {link.label}
+              {t.nav[link.key]}
             </a>
           ))}
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <LanguageSwitch />
           <ThemeSwitch />
           <button
             type="button"
-            aria-label="Цэс нээх"
+            aria-label={t.nav.openMenu}
             aria-expanded={menuOpen}
             aria-controls="mobileMenu"
             onClick={() => setMenuOpen((v) => !v)}
@@ -85,7 +89,7 @@ export function Header() {
             onClick={() => setMenuOpen(false)}
             className="border-b border-line px-0.5 py-3.5 text-[15px] font-semibold uppercase tracking-wide text-chalk"
           >
-            {link.label}
+            {t.nav[link.key]}
           </a>
         ))}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
@@ -95,7 +99,7 @@ export function Header() {
           onClick={() => setMenuOpen(false)}
           className="mt-4 inline-flex items-center justify-center gap-2.5 rounded-full bg-amber px-8 py-4 text-sm font-extrabold uppercase tracking-wider text-ink"
         >
-          Хамтран ажиллах
+          {t.nav.partner}
         </a>
       </div>
     </header>

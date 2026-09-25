@@ -10,30 +10,6 @@ export const scoreboardStats: Stat[] = [
   { value: 11, label: "Жилийн туршлага" },
 ];
 
-export type AboutItem = {
-  idx: string;
-  title: string;
-  desc: string;
-};
-
-export const aboutItems: AboutItem[] = [
-  {
-    idx: "01",
-    title: "Гэрээний хамгаалалт",
-    desc: "Клубтэй хийх гэрээ бүрийг тамирчны эрх ашгийг тэргүүнд тавьж хянана.",
-  },
-  {
-    idx: "02",
-    title: "Карьерын төлөвлөгөө",
-    desc: "Улирал болгонд зорилтоо шинэчилж, дараагийн алхмыг хамтдаа тодорхойлно.",
-  },
-  {
-    idx: "03",
-    title: "Брэнд, санхүү",
-    desc: "Спонсорын гэрээ, орлогын менежментийг тамирчны нэрийн өмнөөс удирдана.",
-  },
-];
-
 export type RosterStat = { value: string; label: string };
 
 export type RosterPlayer = {
@@ -173,8 +149,8 @@ export const pdfDocuments: PdfDocuments = {
 };
 
 export const navLinks = [
-  { href: "/#about", label: "Бидний тухай" },
-  { href: "/#roster", label: "Тамирчид" },
-  { href: "/#services", label: "Үйлчилгээ" },
-  { href: "/#contact", label: "Холбоо барих" },
-];
+  { href: "/#about", key: "about" },
+  { href: "/#roster", key: "roster" },
+  { href: "/#services", key: "services" },
+  { href: "/#contact", key: "contact" },
+] as const;

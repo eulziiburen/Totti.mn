@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react";
 import type { PdfDocuments, PdfKey } from "@/lib/data";
+import { localizeContent } from "@/lib/i18n";
+import { useI18n } from "@/components/LocaleProvider";
 
 type PdfModalContextValue = {
   openKey: PdfKey | null;
@@ -85,12 +87,13 @@ function PdfModal({
   onSelect: (key: PdfKey) => void;
 }) {
   const doc = documents[activeKey];
+  const { locale, t } = useI18n();
 
   return (
     <div
       role="dialog"
       aria-modal="true"
-      aria-label="Тоглогчдын танилцуулга"
+      aria-label={t.pdf.dialog}
       className="fixed inset-0 z-[300] flex items-center justify-center bg-[rgba(13,12,10,0.72)] p-0 backdrop-blur-sm sm:p-6"
       onClick={(e) => {
         if (e.target === e.currentTarget) onClose();
@@ -110,7 +113,7 @@ function PdfModal({
                     : "border border-line-strong text-chalk hover:border-chalk"
                 }`}
               >
-                {documents[key].label}
+                {localizeContent(locale, documents[key].label)}
               </button>
             ))}
           </div>
@@ -121,18 +124,18 @@ function PdfModal({
               rel="noopener"
               className="rounded-full border border-line-strong px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
-              Шинэ цонхонд нээх
+              {t.pdf.openNew}
             </a>
             <a
               href={doc.url}
               download
               className="rounded-full border border-line-strong px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
-              Татах
+              {t.pdf.download}
             </a>
             <button
               type="button"
-              aria-label="Хаах"
+              aria-label={t.pdf.close}
               onClick={onClose}
               className="rounded-full border border-line-strong px-4 py-2.5 text-[13px] font-bold uppercase tracking-wider text-chalk transition-all hover:border-chalk hover:bg-chalk hover:text-bg-0"
             >
@@ -142,7 +145,7 @@ function PdfModal({
         </div>
         <div className="min-h-0 flex-1 bg-bg-2">
           <iframe
-            title="Тоглогчдын танилцуулга PDF"
+            title={t.pdf.frameTitle}
             src={doc.url + "#view=FitH"}
             className="block h-full w-full border-0"
           />
