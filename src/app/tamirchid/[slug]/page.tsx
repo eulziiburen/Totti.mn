@@ -7,6 +7,10 @@ import { getRosterPlayer } from "@/lib/content";
 import { normalizeUrl, youtubeEmbedUrl } from "@/lib/video";
 import { getI18n } from "@/lib/locale";
 import { linkHost } from "@/lib/links";
+import { playerPath } from "@/lib/paths";
+import { alternatesFor, localizedPath } from "@/lib/seo";
+import { SITE_URL } from "@/lib/site";
+import { JsonLd } from "@/components/JsonLd";
 
 export async function generateMetadata({
   params,
@@ -19,10 +23,13 @@ export async function generateMetadata({
   if (!player) return {};
 
   const title = `${player.name} · ${player.pos}`;
-  const description = player.bio?.slice(0, 160) ?? `${player.name}, ${player.pos}, ${player.team}. ${t.player.metaSuffix}`;
+  const description = (player.bio ?? `${player.name}, ${player.pos}, ${player.team}. ${t.player.metaSuffix}`)
+    .replace(/\s+/g, " ")
+    .slice(0, 160);
   return {
     title: `${title} | ${t.meta.siteName}`,
     description,
+    alternates: alternatesFor(playerPath(player.id), locale),
     openGraph: {
       title,
       description,
@@ -46,8 +53,37 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
     player.jersey && { label: t.player.jersey, value: player.jersey },
   ].filter((f): f is { label: string; value: string } => !!f);
 
+  const pageUrl = `${SITE_URL}${localizedPath(playerPath(player.id), locale)}`;
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Person",
+        "@id": `${pageUrl}#person`,
+        name: player.name,
+        url: pageUrl,
+        image: player.photo,
+        description: player.bio?.replace(/\s+/g, " ").slice(0, 300),
+        jobTitle: `Basketball player · ${player.pos}`,
+        height: player.height,
+        memberOf: player.team ? { "@type": "SportsTeam", name: player.team, sport: "Basketball" } : undefined,
+        affiliation: { "@id": `${SITE_URL}/#organization` },
+        sameAs: player.links?.map((l) => l.url),
+      },
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: [
+          { "@type": "ListItem", position: 1, name: t.meta.siteName, item: `${SITE_URL}${localizedPath("/", locale)}` },
+          { "@type": "ListItem", position: 2, name: t.nav.roster, item: `${SITE_URL}${localizedPath("/", locale)}#roster` },
+          { "@type": "ListItem", position: 3, name: player.name, item: pageUrl },
+        ],
+      },
+    ],
+  };
+
   return (
     <>
+      <JsonLd data={jsonLd} />
       <Header />
       <main className="pb-[90px] pt-[110px]">
         <div className="mx-auto max-w-[1180px] px-8 max-[600px]:px-4">

@@ -3,10 +3,11 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { Booking } from "@/components/BookingForm";
 import { getI18n } from "@/lib/locale";
+import { alternatesFor } from "@/lib/seo";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const { t } = await getI18n();
-  return { title: t.meta.meetingTitle };
+  const { locale, t } = await getI18n();
+  return { title: t.meta.meetingTitle, alternates: alternatesFor("/meeting", locale) };
 }
 
 export default function MeetingPage() {

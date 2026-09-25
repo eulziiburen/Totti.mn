@@ -3,6 +3,7 @@ export type Locale = "mn" | "en";
 export const LOCALES: Locale[] = ["mn", "en"];
 export const DEFAULT_LOCALE: Locale = "mn";
 export const LOCALE_COOKIE = "lang";
+export const LOCALE_HEADER = "x-locale";
 
 export function isLocale(value: unknown): value is Locale {
   return value === "mn" || value === "en";
@@ -105,11 +106,22 @@ const mn = {
     metaSuffix: "ТОТТИ Спортын агентын тамирчин.",
   },
   meta: {
-    title: "ТОТТИ | Спортын агент",
+    title: "ТОТТИ Спортын Агентлаг | Сагсан бөмбөгийн тамирчдын агент, Монгол",
     description:
-      "ТОТТИ Спортын Агентлаг — сагсан бөмбөгийн тамирчдын карьерыг стратегийн түвшинд төлөвлөж, мэргэжлийн түвшинд удирдан хэрэгжүүлдэг агентлаг.",
+      "ТОТТИ бол Улаанбаатарт төвтэй сагсан бөмбөгийн спортын агентлаг. Тамирчдын гэрээ хэлэлцээр, гадаадад тоглох боломж, карьерын стратеги, спонсорлолтыг мэргэжлийн түвшинд удирдана.",
     siteName: "ТОТТИ Спортын агент",
     meetingTitle: "Уулзалт товлох | ТОТТИ Спортын агент",
+    keywords: [
+      "сагсан бөмбөг",
+      "спортын агент",
+      "спортын агентлаг",
+      "сагсан бөмбөгийн агент",
+      "тамирчин",
+      "гэрээ хэлэлцээр",
+      "Монгол",
+      "Улаанбаатар",
+      "ТОТТИ",
+    ],
   },
   booking: {
     back: "← Нүүр хуудас руу буцах",
@@ -277,11 +289,20 @@ const en: Dictionary = {
     metaSuffix: "Represented by TOTTI Sports Agency.",
   },
   meta: {
-    title: "TOTTI | Sports Agency",
+    title: "TOTTI Sports Agency | Basketball Player Agent in Mongolia",
     description:
-      "TOTTI Sports Agency plans and manages the careers of basketball players, from contracts to brand partnerships.",
+      "TOTTI is a basketball sports agency based in Ulaanbaatar, Mongolia. We represent players in contract negotiations, moves abroad, career strategy and sponsorships.",
     siteName: "TOTTI Sports Agency",
     meetingTitle: "Book a meeting | TOTTI Sports Agency",
+    keywords: [
+      "basketball agent",
+      "basketball agency",
+      "sports agency Mongolia",
+      "Mongolian basketball players",
+      "player representation",
+      "Ulaanbaatar",
+      "TOTTI",
+    ],
   },
   booking: {
     back: "← Back to home",

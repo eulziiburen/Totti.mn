@@ -7,11 +7,19 @@ import { Services } from "@/components/Services";
 import { Partners } from "@/components/Partners";
 import { CTA } from "@/components/CTA";
 import { Footer } from "@/components/Footer";
+import type { Metadata } from "next";
+import { JsonLd } from "@/components/JsonLd";
 import { getPartners, getRosterPlayers, getScoreboardStats, getServices } from "@/lib/content";
-import { getLocale } from "@/lib/locale";
+import { getI18n } from "@/lib/locale";
+import { alternatesFor, organizationJsonLd } from "@/lib/seo";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const { locale } = await getI18n();
+  return { alternates: alternatesFor("/", locale) };
+}
 
 export default async function HomePage() {
-  const locale = await getLocale();
+  const { locale, t } = await getI18n();
   const [players, services, partners, stats] = await Promise.all([
     getRosterPlayers(locale),
     getServices(locale),
@@ -21,6 +29,7 @@ export default async function HomePage() {
 
   return (
     <>
+      <JsonLd data={organizationJsonLd(t.meta.description)} />
       <Header />
       <main>
         <Hero />

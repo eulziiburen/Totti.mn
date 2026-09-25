@@ -16,6 +16,11 @@ export async function generateMetadata(): Promise<Metadata> {
     metadataBase: new URL(SITE_URL),
     title: t.meta.title,
     description: t.meta.description,
+    keywords: t.meta.keywords,
+    applicationName: t.meta.siteName,
+    robots: { index: true, follow: true, googleBot: { index: true, follow: true, "max-image-preview": "large" } },
+    // Search Console "HTML tag" verification code, set as an env var in Vercel.
+    verification: process.env.GOOGLE_SITE_VERIFICATION ? { google: process.env.GOOGLE_SITE_VERIFICATION } : undefined,
     openGraph: {
       title: t.meta.title,
       description: t.meta.description,
