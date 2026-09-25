@@ -128,7 +128,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                   aria-hidden="true"
                   className={`pointer-events-none absolute left-5 top-[18px] z-[2] whitespace-nowrap font-display text-[300px] leading-[.85] tracking-[.01em] text-transparent transition-colors duration-500 [-webkit-text-stroke:2px_rgba(255,255,255,.16)] group-hover:[-webkit-text-stroke-color:rgba(212,175,55,.45)] max-[900px]:left-auto max-[900px]:right-3.5 max-[900px]:top-[-26px] max-[900px]:text-[230px] ${
                     active ? "[-webkit-text-stroke-color:rgba(212,175,55,.6)]" : ""
-                  }`}
+                  } ${active && player.ghost.length > 2 ? "min-[901px]:text-[170px]" : ""}`}
                 >
                   {player.ghost}
                 </div>

@@ -4,7 +4,7 @@ import { notFound } from "next/navigation";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { getRosterPlayer } from "@/lib/content";
-import { youtubeEmbedUrl } from "@/lib/video";
+import { normalizeUrl, youtubeEmbedUrl } from "@/lib/video";
 import { getI18n } from "@/lib/locale";
 
 export async function generateMetadata({
@@ -96,7 +96,9 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <div className="relative flex flex-col justify-end px-10 pb-10 pt-16 min-[901px]:min-h-[560px] max-[600px]:px-6 max-[600px]:pb-7 max-[600px]:pt-6">
               <div
                 aria-hidden="true"
-                className="pointer-events-none absolute left-6 top-4 font-display text-[clamp(140px,20vw,260px)] leading-[.85] text-transparent [-webkit-text-stroke:2px_rgba(212,175,55,.35)] max-[900px]:hidden"
+                className={`pointer-events-none absolute left-6 top-4 whitespace-nowrap font-display leading-[.85] text-transparent [-webkit-text-stroke:2px_rgba(212,175,55,.35)] max-[900px]:hidden ${
+                  player.ghost.length > 2 ? "text-[clamp(90px,10vw,140px)]" : "text-[clamp(140px,20vw,260px)]"
+                }`}
               >
                 {player.ghost}
               </div>
@@ -151,7 +153,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               )}
               {!embedUrl && player.videoUrl && (
                 <a
-                  href={player.videoUrl}
+                  href={normalizeUrl(player.videoUrl)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="mb-12 inline-flex items-center gap-2.5 rounded-full border border-line-strong px-6 py-3 text-sm font-bold uppercase tracking-wider transition-colors hover:border-chalk"
