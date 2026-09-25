@@ -174,5 +174,4 @@ export const navLinks = [
   { href: "/#roster", label: "Тамирчид" },
   { href: "/#services", label: "Үйлчилгээ" },
   { href: "/#contact", label: "Холбоо барих" },
-  { href: "/delguur", label: "Онлайн дэлгүүр" },
 ];
