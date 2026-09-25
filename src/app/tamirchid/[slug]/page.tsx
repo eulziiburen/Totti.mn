@@ -59,34 +59,48 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             {t.player.back}
           </a>
 
-          <section className="relative mt-6 overflow-hidden rounded-3xl bg-ink text-white">
+          <section
+            className="relative mt-6 grid overflow-hidden rounded-3xl text-white min-[901px]:grid-cols-[1.15fr_1fr]"
+            style={{
+              background:
+                "radial-gradient(80% 90% at 0% 0%, rgba(212,175,55,.16), transparent 60%), linear-gradient(160deg, #1c1a15 0%, #0d0c0a 70%)",
+            }}
+          >
             {player.photo && (
-              <Image
-                src={player.photo}
-                alt={player.name}
-                fill
-                priority
-                sizes="(min-width: 1180px) 1180px, 100vw"
-                className="object-cover object-[center_20%] brightness-[.8]"
-              />
+              <div className="relative aspect-[4/5] min-[901px]:order-2 min-[901px]:aspect-auto min-[901px]:min-h-[560px]">
+                <Image
+                  src={player.photo}
+                  alt={player.name}
+                  fill
+                  priority
+                  sizes="(min-width: 1180px) 520px, (min-width: 901px) 46vw, 100vw"
+                  quality={90}
+                  className="object-cover object-top brightness-[1.04] contrast-[1.06] saturate-[1.1]"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 mix-blend-soft-light"
+                  style={{
+                    background:
+                      "radial-gradient(90% 70% at 100% 0%, rgba(232,196,90,.55), transparent 60%), radial-gradient(70% 60% at 0% 100%, rgba(212,175,55,.25), transparent 70%)",
+                  }}
+                  aria-hidden="true"
+                />
+                {/* Fade the photo into the dark text panel: downward on mobile, leftward on desktop */}
+                <div
+                  className="pointer-events-none absolute inset-0 bg-[linear-gradient(to_top,#0d0c0a_0%,rgba(13,12,10,0)_35%)] min-[901px]:bg-[linear-gradient(to_right,#15130f_0%,rgba(21,19,15,0)_30%)]"
+                  aria-hidden="true"
+                />
+              </div>
             )}
-            <div
-              className="absolute inset-0"
-              style={{
-                background:
-                  "linear-gradient(to top, rgba(13,12,10,.96) 0%, rgba(13,12,10,.55) 45%, rgba(13,12,10,.12) 100%)",
-              }}
-              aria-hidden="true"
-            />
-            <div
-              aria-hidden="true"
-              className="pointer-events-none absolute right-6 top-2 font-display text-[clamp(160px,26vw,320px)] leading-[.85] text-transparent [-webkit-text-stroke:2px_rgba(212,175,55,.5)]"
-            >
-              {player.ghost}
-            </div>
 
-            <div className="relative flex min-h-[520px] flex-col justify-end px-10 pb-10 pt-40 max-[600px]:min-h-[440px] max-[600px]:px-6 max-[600px]:pb-7">
-              <div className="flex items-center gap-2">
+            <div className="relative flex flex-col justify-end px-10 pb-10 pt-16 min-[901px]:min-h-[560px] max-[600px]:px-6 max-[600px]:pb-7 max-[600px]:pt-6">
+              <div
+                aria-hidden="true"
+                className="pointer-events-none absolute left-6 top-4 font-display text-[clamp(140px,20vw,260px)] leading-[.85] text-transparent [-webkit-text-stroke:2px_rgba(212,175,55,.35)] max-[900px]:hidden"
+              >
+                {player.ghost}
+              </div>
+              <div className="relative flex items-center gap-2">
                 <span className="rounded-full bg-amber px-3.5 py-1.5 text-xs font-extrabold tracking-[.1em] text-ink">
                   {player.pos}
                 </span>
@@ -96,13 +110,13 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
                   </span>
                 )}
               </div>
-              <h1 className="mt-4.5 font-display text-[clamp(40px,7vw,88px)] uppercase leading-[.95] [overflow-wrap:anywhere]">
+              <h1 className="relative mt-4.5 font-display text-[clamp(40px,6vw,80px)] uppercase leading-[.95] [overflow-wrap:anywhere]">
                 {player.name}
               </h1>
-              <div className="mt-2.5 text-[15px] text-white/72">{player.team}</div>
+              <div className="relative mt-2.5 text-[15px] text-white/72">{player.team}</div>
 
               {player.stats.length > 0 && (
-                <div className="mt-6.5 flex flex-wrap gap-10 border-t border-white/22 pt-5.5 max-[600px]:gap-7">
+                <div className="relative mt-6.5 flex flex-wrap gap-10 border-t border-white/22 pt-5.5 max-[600px]:gap-7">
                   {player.stats.map((s) => (
                     <div key={s.label}>
                       <b className="block font-display text-[46px] leading-none tabular-nums text-amber max-[600px]:text-[38px]">

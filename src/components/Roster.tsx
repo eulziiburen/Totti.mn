@@ -69,7 +69,11 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     focusPanel(i - 1);
                   }
                 }}
-                className={`group relative min-w-0 cursor-pointer overflow-hidden rounded-3xl bg-ink text-white transition-[flex-grow] duration-700 ease-[cubic-bezier(.2,.8,.2,1)] max-[900px]:h-[88px] max-[900px]:flex-none max-[900px]:transition-[height] ${
+                style={{
+                  background:
+                    "radial-gradient(circle at 30% 0%, rgba(212,175,55,.16), transparent 60%), linear-gradient(160deg, #1c1a15 0%, #0d0c0a 70%)",
+                }}
+                className={`group relative min-w-0 cursor-pointer overflow-hidden rounded-3xl text-white transition-[flex-grow] duration-700 ease-[cubic-bezier(.2,.8,.2,1)] max-[900px]:h-[88px] max-[900px]:flex-none max-[900px]:transition-[height] ${
                   active
                     ? "flex-[3.4_1_0%] cursor-default max-[900px]:h-[470px]"
                     : "flex-[1_1_0%]"
@@ -87,18 +91,36 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     src={player.photo}
                     alt=""
                     fill
-                    sizes="(min-width: 901px) 40vw, 100vw"
+                    sizes="(min-width: 1200px) 760px, (min-width: 901px) 64vw, 100vw"
+                    quality={90}
                     className={`absolute inset-0 object-cover object-[center_20%] transition-[filter,transform] duration-[1200ms] ease-out ${
-                      active ? "scale-100 grayscale-0 brightness-[.85]" : "scale-[1.06] grayscale brightness-[.6]"
+                      active
+                        ? "scale-100 brightness-[1.04] contrast-[1.06] saturate-[1.1]"
+                        : "scale-[1.06] grayscale sepia-[.3] brightness-[.5] contrast-[1.1] group-hover:brightness-[.7]"
                     }`}
                   />
                 )}
+                {/* Readability scrim: only the lower part while active so the photo stays clear */}
                 <div
-                  className="absolute inset-0 z-[1]"
+                  className="absolute inset-0 z-[1] transition-opacity duration-700"
+                  style={{
+                    background: active
+                      ? "linear-gradient(to top, rgba(13,12,10,.94) 0%, rgba(13,12,10,.62) 24%, rgba(13,12,10,0) 58%)"
+                      : "linear-gradient(to top, rgba(13,12,10,.9) 0%, rgba(13,12,10,.35) 55%, rgba(13,12,10,.15) 100%)",
+                  }}
+                  aria-hidden="true"
+                />
+                {/* Warm gold light from the top corner plus a soft vignette */}
+                <div
+                  className="pointer-events-none absolute inset-0 z-[1] mix-blend-soft-light"
                   style={{
                     background:
-                      "linear-gradient(to top, rgba(13,12,10,.96) 0%, rgba(13,12,10,.55) 45%, rgba(13,12,10,.12) 100%)",
+                      "radial-gradient(90% 70% at 100% 0%, rgba(232,196,90,.55), transparent 60%), radial-gradient(70% 60% at 0% 100%, rgba(212,175,55,.25), transparent 70%)",
                   }}
+                  aria-hidden="true"
+                />
+                <div
+                  className="pointer-events-none absolute inset-0 z-[1] shadow-[inset_0_0_120px_rgba(0,0,0,.45)]"
                   aria-hidden="true"
                 />
 
@@ -126,7 +148,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                 </div>
 
                 <div
-                  className={`absolute inset-x-0 bottom-0 z-[3] w-full min-w-[340px] px-10 pb-10 transition-[opacity,transform] max-[900px]:min-w-0 max-[900px]:px-6 max-[900px]:pb-7 ${
+                  className={`absolute inset-x-0 bottom-0 z-[3] w-full min-w-[340px] px-10 pb-10 [text-shadow:0_2px_18px_rgba(0,0,0,.45)] transition-[opacity,transform] max-[900px]:min-w-0 max-[900px]:px-6 max-[900px]:pb-7 ${
                     active
                       ? "translate-y-0 pointer-events-auto opacity-100 duration-500 delay-300"
                       : "translate-y-[18px] pointer-events-none opacity-0 duration-300"
