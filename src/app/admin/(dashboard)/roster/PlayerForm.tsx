@@ -55,7 +55,7 @@ export function PlayerForm({ player, onDone }: { player?: Player; onDone?: () =>
       className="grid grid-cols-2 gap-4 border border-line-strong bg-bg-0 p-5 sm:grid-cols-3"
     >
       {player && <input type="hidden" name="id" value={player.id} />}
-      <Field label="Slug" name="slug" defaultValue={player?.slug} placeholder="ganbaatar" required />
+      <Field label="Slug (хаягт орно, зайгүй)" name="slug" defaultValue={player?.slug} placeholder="crawford-gregory" required />
       <Field label="Нэр" name="name" defaultValue={player?.name} placeholder="Б. Ганбаатар" required />
       <Field label="Клуб" name="team" defaultValue={player?.team} placeholder='"Улаанбаатар Тахь" клуб' />
       <Field label="Байрлал (богино)" name="pos" defaultValue={player?.pos} placeholder="POINT GUARD" />

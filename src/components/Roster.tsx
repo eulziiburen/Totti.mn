@@ -6,6 +6,7 @@ import type { RosterPlayer } from "@/lib/data";
 import { RevealOnScroll } from "@/components/RevealOnScroll";
 import { PdfTriggerLink } from "@/components/PdfTriggerLink";
 import { useI18n } from "@/components/LocaleProvider";
+import { playerPath } from "@/lib/paths";
 
 export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) {
   const [activeId, setActiveId] = useState(rosterPlayers[0]?.id ?? "");
@@ -187,7 +188,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     ))}
                   </div>
                   <a
-                    href={`/tamirchid/${player.id}`}
+                    href={playerPath(player.id)}
                     tabIndex={active ? 0 : -1}
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}

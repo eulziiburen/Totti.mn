@@ -20,6 +20,7 @@ import {
   type Stat,
 } from "./data";
 import { localizeContent, type Locale } from "./i18n";
+import { decodeSlug } from "./paths";
 
 export async function getRosterPlayers(locale: Locale = "mn"): Promise<RosterPlayer[]> {
   try {
@@ -46,7 +47,8 @@ export async function getRosterPlayers(locale: Locale = "mn"): Promise<RosterPla
 
 export async function getRosterPlayer(slug: string, locale: Locale = "mn"): Promise<RosterPlayer | null> {
   const players = await getRosterPlayers(locale);
-  return players.find((p) => p.id === slug) ?? null;
+  const wanted = decodeSlug(slug);
+  return players.find((p) => p.id === wanted) ?? null;
 }
 
 export async function getPartners(): Promise<Partner[]> {

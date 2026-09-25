@@ -6,6 +6,7 @@ import { db } from "@/db/client";
 import { rosterPlayers } from "@/db/schema";
 import { isAuthenticated } from "@/lib/auth";
 import { uploadImage } from "@/lib/upload";
+import { sanitizeSlug } from "@/lib/paths";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) throw new Error("Not authenticated");
@@ -32,7 +33,7 @@ export async function upsertPlayer(formData: FormData) {
   }
 
   const data = {
-    slug: String(formData.get("slug") ?? "").trim(),
+    slug: sanitizeSlug(String(formData.get("slug") ?? "")),
     ghost: String(formData.get("ghost") ?? "").trim(),
     pos: String(formData.get("pos") ?? "").trim(),
     jersey: String(formData.get("jersey") ?? "").trim() || null,
