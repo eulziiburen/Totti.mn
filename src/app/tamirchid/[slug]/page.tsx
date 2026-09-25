@@ -6,6 +6,7 @@ import { Footer } from "@/components/Footer";
 import { getRosterPlayer } from "@/lib/content";
 import { normalizeUrl, youtubeEmbedUrl } from "@/lib/video";
 import { getI18n } from "@/lib/locale";
+import { linkHost } from "@/lib/links";
 
 export async function generateMetadata({
   params,
@@ -168,6 +169,35 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
                   {player.bio ?? t.player.bioEmpty}
                 </p>
               </section>
+
+              {player.links && player.links.length > 0 && (
+                <section className="mt-12">
+                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.links}</p>
+                  <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+                    {player.links.map((link) => (
+                      <li key={link.url}>
+                        <a
+                          href={link.url}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="group flex items-center justify-between gap-4 rounded-2xl border border-line-strong bg-bg-1 px-5 py-4 transition-all hover:-translate-y-0.5 hover:border-amber"
+                        >
+                          <span className="min-w-0">
+                            <span className="block truncate text-[15px] font-semibold">{link.label || linkHost(link.url)}</span>
+                            <span className="mt-0.5 block truncate text-xs text-muted">{linkHost(link.url)}</span>
+                          </span>
+                          <span
+                            aria-hidden="true"
+                            className="flex h-8 w-8 flex-none items-center justify-center rounded-full border border-line-strong text-sm transition-colors group-hover:border-amber group-hover:bg-amber group-hover:text-ink"
+                          >
+                            ↗
+                          </span>
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </section>
+              )}
             </div>
 
             <aside className="flex flex-col gap-6">

@@ -24,6 +24,7 @@ export type RosterPlayer = {
   height?: string;
   bio?: string;
   videoUrl?: string;
+  links?: { label: string; url: string }[];
 };
 
 export const rosterPlayers: RosterPlayer[] = [

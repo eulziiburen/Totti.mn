@@ -34,6 +34,7 @@ export const rosterPlayers = sqliteTable("roster_players", {
   bio: text("bio"),
   bioEn: text("bio_en"),
   videoUrl: text("video_url"),
+  linksJson: text("links_json").notNull().default("[]"),
   sortOrder: integer("sort_order").notNull().default(0),
 });
 

@@ -7,6 +7,7 @@ import { rosterPlayers } from "@/db/schema";
 import { isAuthenticated } from "@/lib/auth";
 import { uploadImage } from "@/lib/upload";
 import { sanitizeSlug } from "@/lib/paths";
+import { sanitizeLinks } from "@/lib/links";
 
 async function requireAuth() {
   if (!(await isAuthenticated())) throw new Error("Not authenticated");
@@ -20,6 +21,16 @@ function statsFromForm(formData: FormData) {
     if (label && value) stats.push({ label, value });
   }
   return JSON.stringify(stats);
+}
+
+function linksFromForm(formData: FormData) {
+  let raw: unknown = [];
+  try {
+    raw = JSON.parse(String(formData.get("linksJson") ?? "[]"));
+  } catch {
+    // keep empty
+  }
+  return JSON.stringify(sanitizeLinks(raw));
 }
 
 export async function upsertPlayer(formData: FormData) {
@@ -45,6 +56,7 @@ export async function upsertPlayer(formData: FormData) {
     bio: String(formData.get("bio") ?? "").trim() || null,
     bioEn: String(formData.get("bioEn") ?? "").trim() || null,
     videoUrl: String(formData.get("videoUrl") ?? "").trim() || null,
+    linksJson: linksFromForm(formData),
     sortOrder: Number(formData.get("sortOrder") ?? 0),
   };
 

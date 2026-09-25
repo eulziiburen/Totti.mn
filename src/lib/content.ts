@@ -21,6 +21,7 @@ import {
 } from "./data";
 import { localizeContent, type Locale } from "./i18n";
 import { decodeSlug } from "./paths";
+import { parseLinks } from "./links";
 
 export async function getRosterPlayers(locale: Locale = "mn"): Promise<RosterPlayer[]> {
   try {
@@ -38,6 +39,7 @@ export async function getRosterPlayers(locale: Locale = "mn"): Promise<RosterPla
       height: r.height ?? undefined,
       bio: (locale === "en" ? r.bioEn || r.bio : r.bio) ?? undefined,
       videoUrl: r.videoUrl ?? undefined,
+      links: parseLinks(r.linksJson),
     }));
   } catch (err) {
     console.error("getRosterPlayers failed, falling back to static data", err);

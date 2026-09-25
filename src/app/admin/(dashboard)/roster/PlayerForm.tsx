@@ -4,6 +4,8 @@ import { useState } from "react";
 import { upsertPlayer, deletePlayer } from "./actions";
 import { ImageUploadField } from "@/components/admin/ImageUploadField";
 import { SubmitButton } from "@/components/admin/SubmitButton";
+import { parseLinks } from "@/lib/links";
+import { LinksField } from "./LinksField";
 
 type Stat = { label: string; value: string };
 
@@ -21,6 +23,7 @@ type Player = {
   bio: string | null;
   bioEn: string | null;
   videoUrl: string | null;
+  linksJson: string;
   sortOrder: number;
 };
 
@@ -106,6 +109,8 @@ export function PlayerForm({ player, onDone }: { player?: Player; onDone?: () =>
           </div>
         ))}
       </div>
+
+      <LinksField initial={parseLinks(player?.linksJson)} />
 
       <div className="col-span-2 flex items-center gap-3 sm:col-span-3">
         <SubmitButton />
