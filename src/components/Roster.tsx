@@ -96,7 +96,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     className={`absolute inset-0 object-cover object-[center_20%] transition-[filter,transform] duration-[1200ms] ease-out ${
                       active
                         ? "scale-100 brightness-[1.04] contrast-[1.06] saturate-[1.1]"
-                        : "scale-[1.06] grayscale sepia-[.3] brightness-[.5] contrast-[1.1] group-hover:brightness-[.7]"
+                        : "scale-[1.06] grayscale sepia-[.3] brightness-[.62] contrast-[1.1] group-hover:brightness-[.8]"
                     }`}
                   />
                 )}
@@ -105,7 +105,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                   className="absolute inset-0 z-[1] transition-opacity duration-700"
                   style={{
                     background: active
-                      ? "linear-gradient(to top, rgba(13,12,10,.94) 0%, rgba(13,12,10,.62) 24%, rgba(13,12,10,0) 58%)"
+                      ? "linear-gradient(to top, rgba(13,12,10,.88) 0%, rgba(13,12,10,.45) 20%, rgba(13,12,10,0) 42%)"
                       : "linear-gradient(to top, rgba(13,12,10,.9) 0%, rgba(13,12,10,.35) 55%, rgba(13,12,10,.15) 100%)",
                   }}
                   aria-hidden="true"
@@ -120,15 +120,20 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                   aria-hidden="true"
                 />
                 <div
-                  className="pointer-events-none absolute inset-0 z-[1] shadow-[inset_0_0_120px_rgba(0,0,0,.45)]"
+                  className="pointer-events-none absolute inset-0 z-[1] shadow-[inset_0_0_100px_rgba(0,0,0,.3)]"
                   aria-hidden="true"
                 />
 
                 <div
                   aria-hidden="true"
-                  className={`pointer-events-none absolute left-5 top-[18px] z-[2] whitespace-nowrap font-display text-[300px] leading-[.85] tracking-[.01em] text-transparent transition-colors duration-500 [-webkit-text-stroke:2px_rgba(255,255,255,.16)] group-hover:[-webkit-text-stroke-color:rgba(212,175,55,.45)] max-[900px]:left-auto max-[900px]:right-3.5 max-[900px]:top-[-26px] max-[900px]:text-[230px] ${
-                    active ? "[-webkit-text-stroke-color:rgba(212,175,55,.6)]" : ""
-                  } ${active && player.ghost.length > 2 ? "min-[901px]:text-[170px]" : ""}`}
+                  className={`pointer-events-none absolute left-5 top-[18px] z-[2] whitespace-nowrap font-display leading-[.85] tracking-[.01em] text-transparent transition-colors duration-500 [-webkit-text-stroke:2px_rgba(255,255,255,.16)] group-hover:[-webkit-text-stroke-color:rgba(212,175,55,.45)] max-[900px]:left-auto max-[900px]:right-3.5 max-[900px]:top-[-26px] ${
+                    // Smaller and fainter on the open card so the outline doesn't sit on the player's face
+                    !active
+                      ? "text-[230px] min-[901px]:text-[300px]"
+                      : player.ghost.length > 2
+                        ? "text-[140px] min-[901px]:text-[120px] [-webkit-text-stroke-color:rgba(212,175,55,.3)]"
+                        : "text-[230px] min-[901px]:text-[200px] [-webkit-text-stroke-color:rgba(212,175,55,.3)]"
+                  }`}
                 >
                   {player.ghost}
                 </div>
@@ -148,34 +153,34 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                 </div>
 
                 <div
-                  className={`absolute inset-x-0 bottom-0 z-[3] w-full min-w-[340px] px-10 pb-10 [text-shadow:0_2px_18px_rgba(0,0,0,.45)] transition-[opacity,transform] max-[900px]:min-w-0 max-[900px]:px-6 max-[900px]:pb-7 ${
+                  className={`absolute inset-x-0 bottom-0 z-[3] w-full min-w-[300px] px-7 pb-7 [text-shadow:0_2px_14px_rgba(0,0,0,.55)] transition-[opacity,transform] max-[900px]:min-w-0 max-[900px]:px-5 max-[900px]:pb-5 ${
                     active
                       ? "translate-y-0 pointer-events-auto opacity-100 duration-500 delay-300"
                       : "translate-y-[18px] pointer-events-none opacity-0 duration-300"
                   }`}
-                  style={{ width: "min(580px, 100%)" }}
+                  style={{ width: "min(460px, 100%)" }}
                 >
                   <div className="flex items-center gap-2">
-                    <span className="rounded-full bg-amber px-3.5 py-1.5 text-xs font-extrabold tracking-[.1em] text-ink">
+                    <span className="rounded-full bg-amber px-2.5 py-1 text-[10px] font-extrabold uppercase tracking-[.1em] text-ink">
                       {player.pos}
                     </span>
                     {player.jersey && (
-                      <span className="rounded-full border border-white/40 px-3 py-1 font-display text-sm tracking-[.04em]">
+                      <span className="rounded-full border border-white/40 px-2.5 py-0.5 font-display text-xs tracking-[.04em]">
                         {player.jersey}
                       </span>
                     )}
                   </div>
-                  <h3 className="mt-4.5 font-display text-[clamp(44px,5vw,68px)] uppercase leading-[.95] max-[900px]:text-[clamp(30px,9vw,44px)] max-[900px]:[overflow-wrap:anywhere]">
+                  <h3 className="mt-3 font-display text-[clamp(28px,3vw,40px)] uppercase leading-[.95] max-[900px]:text-[clamp(24px,7vw,32px)] max-[900px]:[overflow-wrap:anywhere]">
                     {player.name}
                   </h3>
-                  <div className="mt-2.5 text-[15px] text-white/72">{player.team}</div>
-                  <div className="mt-6.5 flex gap-10 border-t border-white/22 pt-5.5 max-[900px]:gap-7">
+                  <div className="mt-1.5 text-[13px] text-white/75">{player.team}</div>
+                  <div className="mt-4 flex gap-7 border-t border-white/22 pt-3.5 max-[900px]:gap-6">
                     {player.stats.map((s) => (
                       <div key={s.label}>
-                        <b className="block font-display text-[46px] leading-none tabular-nums text-amber max-[900px]:text-[38px]">
+                        <b className="block font-display text-[28px] leading-none tabular-nums text-amber max-[900px]:text-[24px]">
                           {s.value}
                         </b>
-                        <span className="mt-1.5 block text-xs font-semibold tracking-[.12em] text-white/62">
+                        <span className="mt-1 block text-[10px] font-semibold tracking-[.12em] text-white/65">
                           {s.label}
                         </span>
                       </div>
@@ -186,7 +191,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
                     tabIndex={active ? 0 : -1}
                     onClick={(e) => e.stopPropagation()}
                     onKeyDown={(e) => e.stopPropagation()}
-                    className="mt-6 inline-flex items-center gap-2 rounded-full border border-white/40 px-5 py-2.5 text-xs font-bold uppercase tracking-[.12em] transition-colors hover:border-amber hover:bg-amber hover:text-ink"
+                    className="mt-4 inline-flex items-center gap-2 rounded-full border border-white/40 px-4 py-2 text-[11px] font-bold uppercase tracking-[.12em] transition-colors hover:border-amber hover:bg-amber hover:text-ink"
                   >
                     {t.roster.details}
                   </a>
