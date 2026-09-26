@@ -1,7 +1,7 @@
 import type { MetadataRoute } from "next";
-import { getRosterPlayers } from "@/lib/content";
+import { getNews, getRosterPlayers } from "@/lib/content";
 import { SITE_URL } from "@/lib/site";
-import { playerPath } from "@/lib/paths";
+import { newsPath, playerPath } from "@/lib/paths";
 import { localizedPath } from "@/lib/seo";
 
 export const revalidate = 3600;
@@ -24,10 +24,12 @@ function entries(
 }
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const players = await getRosterPlayers();
+  const [players, news] = await Promise.all([getRosterPlayers(), getNews()]);
   return [
     ...entries("/", "weekly", 1),
     ...entries("/meeting", "monthly", 0.6),
+    ...entries("/medee", "daily", 0.7),
     ...players.flatMap((p) => entries(playerPath(p.id), "weekly", 0.8)),
+    ...news.flatMap((n) => entries(newsPath(n.slug), "monthly", 0.6)),
   ];
 }

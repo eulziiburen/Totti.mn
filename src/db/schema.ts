@@ -75,6 +75,23 @@ export const playerDocuments = sqliteTable("player_documents", {
     .default(sql`(current_timestamp)`),
 });
 
+export const news = sqliteTable("news", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  slug: text("slug").notNull().unique(),
+  title: text("title").notNull(),
+  titleEn: text("title_en"),
+  summary: text("summary"),
+  summaryEn: text("summary_en"),
+  body: text("body").notNull(),
+  bodyEn: text("body_en"),
+  imageUrl: text("image_url"),
+  publishedAt: text("published_at").notNull(), // YYYY-MM-DD
+  isPublished: integer("is_published", { mode: "boolean" }).notNull().default(true),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(current_timestamp)`),
+});
+
 export const products = sqliteTable("products", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   slug: text("slug").notNull().unique(),

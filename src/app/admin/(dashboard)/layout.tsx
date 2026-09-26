@@ -7,6 +7,7 @@ const navItems = [
   { href: "/admin/bookings", label: "Хүсэлтүүд" },
   { href: "/admin/stats", label: "Тоо баримт" },
   { href: "/admin/roster", label: "Тамирчид" },
+  { href: "/admin/news", label: "Мэдээ" },
   { href: "/admin/partners", label: "Түншүүд" },
   { href: "/admin/services", label: "Үйлчилгээ" },
 ];

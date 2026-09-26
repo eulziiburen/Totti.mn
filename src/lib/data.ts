@@ -153,5 +153,6 @@ export const navLinks = [
   { href: "/#about", key: "about" },
   { href: "/#roster", key: "roster" },
   { href: "/#services", key: "services" },
+  { href: "/medee", key: "news" },
   { href: "/#contact", key: "contact" },
 ] as const;

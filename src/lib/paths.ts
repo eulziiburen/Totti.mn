@@ -2,6 +2,10 @@ export function playerPath(slug: string): string {
   return `/tamirchid/${encodeURIComponent(slug)}`;
 }
 
+export function newsPath(slug: string): string {
+  return `/medee/${encodeURIComponent(slug)}`;
+}
+
 // Route params can arrive still percent-encoded (e.g. "Crawford%20Gregory").
 export function decodeSlug(slug: string): string {
   try {

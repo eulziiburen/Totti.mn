@@ -1,6 +1,7 @@
-import { asc } from "drizzle-orm";
+import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import {
+  news as newsTable,
   partners as partnersTable,
   playerDocuments as playerDocumentsTable,
   rosterPlayers as rosterTable,
@@ -95,6 +96,42 @@ export async function getScoreboardStats(locale: Locale = "mn"): Promise<Stat[]>
     console.error("getScoreboardStats failed, falling back to static data", err);
     return localizeStatic(staticScoreboardStats);
   }
+}
+
+export type NewsItem = {
+  slug: string;
+  title: string;
+  summary?: string;
+  body: string;
+  image?: string;
+  publishedAt: string;
+};
+
+export async function getNews(locale: Locale = "mn"): Promise<NewsItem[]> {
+  try {
+    const rows = await db
+      .select()
+      .from(newsTable)
+      .where(eq(newsTable.isPublished, true))
+      .orderBy(desc(newsTable.publishedAt), desc(newsTable.id));
+    return rows.map((n) => ({
+      slug: n.slug,
+      title: localizeContent(locale, n.title, n.titleEn),
+      summary: (locale === "en" ? n.summaryEn || n.summary : n.summary) ?? undefined,
+      body: localizeContent(locale, n.body, n.bodyEn),
+      image: n.imageUrl ?? undefined,
+      publishedAt: n.publishedAt,
+    }));
+  } catch (err) {
+    console.error("getNews failed", err);
+    return [];
+  }
+}
+
+export async function getNewsItem(slug: string, locale: Locale = "mn"): Promise<NewsItem | null> {
+  const items = await getNews(locale);
+  const wanted = decodeSlug(slug);
+  return items.find((n) => n.slug === wanted) ?? null;
 }
 
 export async function getPlayerDocuments(): Promise<PdfDocuments> {
