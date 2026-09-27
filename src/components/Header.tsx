@@ -34,12 +34,12 @@ export function Header() {
           />
         </a>
 
-        <div className="hidden items-center gap-1 text-sm font-semibold uppercase tracking-wide md:flex">
+        <div className="hidden items-center gap-1 text-sm font-semibold uppercase tracking-wide min-[1200px]:flex">
           {navLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
-              className="rounded-full px-4 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
+              className="whitespace-nowrap rounded-full px-2.5 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
             >
               {t.nav[link.key]}
             </a>
@@ -55,7 +55,7 @@ export function Header() {
             aria-expanded={menuOpen}
             aria-controls="mobileMenu"
             onClick={() => setMenuOpen((v) => !v)}
-            className="flex h-9 w-9 flex-none flex-col items-center justify-center gap-[5px] md:hidden"
+            className="flex h-9 w-9 flex-none flex-col items-center justify-center gap-[5px] min-[1200px]:hidden"
           >
             <span
               className={`block h-0.5 w-full bg-chalk transition-transform ${
@@ -78,7 +78,7 @@ export function Header() {
 
       <div
         id="mobileMenu"
-        className={`mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-b-3xl px-5 transition-[max-height,opacity,padding] duration-300 md:hidden ${
+        className={`mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-b-3xl px-5 transition-[max-height,opacity,padding] duration-300 min-[1200px]:hidden ${
           menuOpen ? "max-h-[420px] pt-1.5 pb-6 opacity-100" : "max-h-0 opacity-0"
         }`}
       >

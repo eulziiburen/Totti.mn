@@ -38,6 +38,26 @@ export const rosterPlayers = sqliteTable("roster_players", {
   sortOrder: integer("sort_order").notNull().default(0),
 });
 
+export const coaches = sqliteTable("coaches", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  role: text("role").notNull(), // e.g. "Ахлах дасгалжуулагч"
+  roleEn: text("role_en"),
+  team: text("team").notNull(),
+  photoUrl: text("photo_url"),
+  experience: text("experience"), // free text, e.g. "15 жил"
+  license: text("license"), // e.g. "FIBA Level 3"
+  achievements: text("achievements"), // one per line
+  achievementsEn: text("achievements_en"),
+  bio: text("bio"),
+  bioEn: text("bio_en"),
+  videoUrl: text("video_url"),
+  linksJson: text("links_json").notNull().default("[]"),
+  sortOrder: integer("sort_order").notNull().default(0),
+  isPublished: integer("is_published", { mode: "boolean" }).notNull().default(true),
+});
+
 export const partners = sqliteTable("partners", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   name: text("name").notNull(),

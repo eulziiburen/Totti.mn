@@ -69,6 +69,20 @@ export const rosterPlayers: RosterPlayer[] = [
   },
 ];
 
+export type Coach = {
+  id: string; // slug
+  name: string;
+  role: string;
+  team: string;
+  photo?: string;
+  experience?: string;
+  license?: string;
+  achievements: string[];
+  bio?: string;
+  videoUrl?: string;
+  links?: { label: string; url: string }[];
+};
+
 export type ServiceItem = {
   idx: string;
   title: string;
@@ -152,6 +166,7 @@ export const pdfDocuments: PdfDocuments = {
 export const navLinks = [
   { href: "/#about", key: "about" },
   { href: "/#roster", key: "roster" },
+  { href: "/#coaches", key: "coaches" },
   { href: "/#services", key: "services" },
   { href: "/medee", key: "news" },
   { href: "/#contact", key: "contact" },

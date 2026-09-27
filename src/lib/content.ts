@@ -1,6 +1,7 @@
 import { asc, desc, eq } from "drizzle-orm";
 import { db } from "@/db/client";
 import {
+  coaches as coachesTable,
   news as newsTable,
   partners as partnersTable,
   playerDocuments as playerDocumentsTable,
@@ -14,6 +15,7 @@ import {
   rosterPlayers as staticRoster,
   scoreboardStats as staticScoreboardStats,
   services as staticServices,
+  type Coach,
   type Partner,
   type PdfDocuments,
   type RosterPlayer,
@@ -52,6 +54,48 @@ export async function getRosterPlayer(slug: string, locale: Locale = "mn"): Prom
   const players = await getRosterPlayers(locale);
   const wanted = decodeSlug(slug);
   return players.find((p) => p.id === wanted) ?? null;
+}
+
+const lines = (text: string | null | undefined) =>
+  (text ?? "")
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+
+// No static fallback: the section simply stays hidden until coaches are added in admin
+export async function getCoaches(locale: Locale = "mn"): Promise<Coach[]> {
+  try {
+    const rows = await db
+      .select()
+      .from(coachesTable)
+      .where(eq(coachesTable.isPublished, true))
+      .orderBy(asc(coachesTable.sortOrder), asc(coachesTable.id));
+    return rows.map((c) => {
+      const achievementsEn = lines(c.achievementsEn);
+      return {
+        id: c.slug,
+        name: c.name,
+        role: localizeContent(locale, c.role, c.roleEn),
+        team: c.team,
+        photo: c.photoUrl ?? undefined,
+        experience: c.experience ?? undefined,
+        license: c.license ?? undefined,
+        achievements: locale === "en" && achievementsEn.length ? achievementsEn : lines(c.achievements),
+        bio: (locale === "en" ? c.bioEn || c.bio : c.bio) ?? undefined,
+        videoUrl: c.videoUrl ?? undefined,
+        links: parseLinks(c.linksJson),
+      };
+    });
+  } catch (err) {
+    console.error("getCoaches failed", err);
+    return [];
+  }
+}
+
+export async function getCoach(slug: string, locale: Locale = "mn"): Promise<Coach | null> {
+  const list = await getCoaches(locale);
+  const wanted = decodeSlug(slug);
+  return list.find((c) => c.id === wanted) ?? null;
 }
 
 export async function getPartners(): Promise<Partner[]> {

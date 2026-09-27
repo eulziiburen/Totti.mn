@@ -2,6 +2,10 @@ export function playerPath(slug: string): string {
   return `/tamirchid/${encodeURIComponent(slug)}`;
 }
 
+export function coachPath(slug: string): string {
+  return `/dasgaljuulagch/${encodeURIComponent(slug)}`;
+}
+
 export function newsPath(slug: string): string {
   return `/medee/${encodeURIComponent(slug)}`;
 }
