@@ -167,7 +167,8 @@ export const navLinks = [
   { href: "/#about", key: "about" },
   { href: "/#roster", key: "roster" },
   { href: "/#coaches", key: "coaches" },
-  { href: "/#services", key: "services" },
+  // Sub-items open in a new tab: /sponsor redirects to School 52's shared sponsorship book
+  { href: "/#services", key: "services", children: [{ href: "/sponsor", key: "sponsor", external: true }] },
   { href: "/medee", key: "news" },
   { href: "/#contact", key: "contact" },
 ] as const;

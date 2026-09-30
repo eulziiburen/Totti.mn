@@ -35,15 +35,47 @@ export function Header() {
         </a>
 
         <div className="hidden items-center gap-1 text-sm font-semibold uppercase tracking-wide min-[1200px]:flex">
-          {navLinks.map((link) => (
-            <a
-              key={link.href}
-              href={link.href}
-              className="whitespace-nowrap rounded-full px-2.5 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
-            >
-              {t.nav[link.key]}
-            </a>
-          ))}
+          {navLinks.map((link) =>
+            "children" in link ? (
+              // Opens on hover and on keyboard focus, so it works without JavaScript state
+              <div key={link.href} className="group relative">
+                <a
+                  href={link.href}
+                  aria-haspopup="true"
+                  className="inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2.5 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk group-focus-within:text-chalk group-hover:text-chalk"
+                >
+                  {t.nav[link.key]}
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" aria-hidden="true" className="transition-transform group-focus-within:rotate-180 group-hover:rotate-180">
+                    <path d="M6 9l6 6 6-6" />
+                  </svg>
+                </a>
+                <div className="invisible absolute left-0 top-full z-10 pt-2 opacity-0 transition-[opacity,visibility] duration-150 group-focus-within:visible group-focus-within:opacity-100 group-hover:visible group-hover:opacity-100">
+                  <ul className="min-w-[200px] rounded-2xl border border-line bg-bg-0 p-2 shadow-xl">
+                    {link.children.map((child) => (
+                      <li key={child.href}>
+                        <a
+                          href={child.href}
+                          {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                          className="flex items-center justify-between gap-3 rounded-xl px-3 py-2.5 text-chalk transition-colors hover:bg-bg-1"
+                        >
+                          {t.nav[child.key]}
+                          {child.external && <span aria-hidden="true">↗</span>}
+                        </a>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            ) : (
+              <a
+                key={link.href}
+                href={link.href}
+                className="whitespace-nowrap rounded-full px-2.5 py-2 text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
+              >
+                {t.nav[link.key]}
+              </a>
+            ),
+          )}
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
@@ -79,18 +111,28 @@ export function Header() {
       <div
         id="mobileMenu"
         className={`mx-auto flex max-w-[1180px] flex-col overflow-hidden rounded-b-3xl px-5 transition-[max-height,opacity,padding] duration-300 min-[1200px]:hidden ${
-          menuOpen ? "max-h-[420px] pt-1.5 pb-6 opacity-100" : "max-h-0 opacity-0"
+          menuOpen ? "max-h-[520px] pt-1.5 pb-6 opacity-100" : "max-h-0 opacity-0"
         }`}
       >
         {navLinks.map((link) => (
-          <a
-            key={link.href}
-            href={link.href}
-            onClick={() => setMenuOpen(false)}
-            className="border-b border-line px-0.5 py-3.5 text-[15px] font-semibold uppercase tracking-wide text-chalk"
-          >
-            {t.nav[link.key]}
-          </a>
+          <div key={link.href} className="flex flex-col border-b border-line">
+            <a href={link.href} onClick={() => setMenuOpen(false)} className="px-0.5 py-3.5 text-[15px] font-semibold uppercase tracking-wide text-chalk">
+              {t.nav[link.key]}
+            </a>
+            {"children" in link &&
+              link.children.map((child) => (
+                <a
+                  key={child.href}
+                  href={child.href}
+                  onClick={() => setMenuOpen(false)}
+                  {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                  className="-mt-1 mb-2.5 ml-4 flex items-center gap-2 border-l-2 border-amber py-1.5 pl-3 text-[14px] font-semibold uppercase tracking-wide text-muted"
+                >
+                  {t.nav[child.key]}
+                  {child.external && <span aria-hidden="true">↗</span>}
+                </a>
+              ))}
+          </div>
         ))}
         {/* eslint-disable-next-line @next/next/no-html-link-for-pages -- plain <a> avoids a Next.js
             client-navigation scroll-restoration bug (jumps to a random scroll offset on <Link>) */}
