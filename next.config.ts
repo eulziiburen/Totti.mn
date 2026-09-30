@@ -10,11 +10,12 @@ const nextConfig: NextConfig = {
       },
     ],
   },
-  async redirects() {
+  async rewrites() {
     return [
-      // Short link for School 52's sponsorship book, hosted as a shared Claude artifact.
-      // Not permanent, so the target can change without browsers caching the old one.
-      { source: "/sponsor", destination: "https://claude.ai/artifact/DuKWawLScUrgrx5XBnMzLD", permanent: false },
+      // School 52's sponsorship book: a static copy of the Claude artifact
+      // (https://claude.ai/artifact/DuKWawLScUrgrx5XBnMzLD) served from /public, so the URL stays totti.mn/sponsor.
+      // Edits to the artifact don't flow here automatically; re-export public/sponsor/index.html after changing it.
+      { source: "/sponsor", destination: "/sponsor/index.html" },
     ];
   },
 };
