@@ -61,6 +61,20 @@ export function Header() {
                           {t.nav[child.key]}
                           {child.external && <span aria-hidden="true">↗</span>}
                         </a>
+                        {"children" in child && (
+                          <ul className="mb-1 ml-3 border-l-2 border-amber pl-1">
+                            {child.children.map((sub) => (
+                              <li key={sub.href}>
+                                <a
+                                  href={sub.href}
+                                  className="block rounded-xl px-3 py-2 text-[13px] text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
+                                >
+                                  {t.nav[sub.key]}
+                                </a>
+                              </li>
+                            ))}
+                          </ul>
+                        )}
                       </li>
                     ))}
                   </ul>
@@ -121,16 +135,28 @@ export function Header() {
             </a>
             {"children" in link &&
               link.children.map((child) => (
-                <a
-                  key={child.href}
-                  href={child.href}
-                  onClick={() => setMenuOpen(false)}
-                  {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
-                  className="-mt-1 mb-2.5 ml-4 flex items-center gap-2 border-l-2 border-amber py-1.5 pl-3 text-[14px] font-semibold uppercase tracking-wide text-muted"
-                >
-                  {t.nav[child.key]}
-                  {child.external && <span aria-hidden="true">↗</span>}
-                </a>
+                <div key={child.href} className="flex flex-col">
+                  <a
+                    href={child.href}
+                    onClick={() => setMenuOpen(false)}
+                    {...(child.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                    className="-mt-1 mb-2.5 ml-4 flex items-center gap-2 border-l-2 border-amber py-1.5 pl-3 text-[14px] font-semibold uppercase tracking-wide text-muted"
+                  >
+                    {t.nav[child.key]}
+                    {child.external && <span aria-hidden="true">↗</span>}
+                  </a>
+                  {"children" in child &&
+                    child.children.map((sub) => (
+                      <a
+                        key={sub.href}
+                        href={sub.href}
+                        onClick={() => setMenuOpen(false)}
+                        className="-mt-1 mb-2.5 ml-8 border-l-2 border-line py-1.5 pl-3 text-[13px] font-semibold uppercase tracking-wide text-muted"
+                      >
+                        {t.nav[sub.key]}
+                      </a>
+                    ))}
+                </div>
               ))}
           </div>
         ))}

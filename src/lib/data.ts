@@ -167,8 +167,14 @@ export const navLinks = [
   { href: "/#about", key: "about" },
   { href: "/#roster", key: "roster" },
   { href: "/#coaches", key: "coaches" },
-  // /sponsor serves School 52's sponsorship book from public/sponsor (same tab)
-  { href: "/#services", key: "services", children: [{ href: "/sponsor", key: "sponsor", external: false }] },
+  // Sponsor books are static pages under public/sponsor; /sponsor redirects to School 52's book
+  {
+    href: "/#services",
+    key: "services",
+    children: [
+      { href: "/sponsor", key: "sponsor", external: false, children: [{ href: "/sponsor/52-r-surguuli", key: "school52" }] },
+    ],
+  },
   { href: "/medee", key: "news" },
   { href: "/#contact", key: "contact" },
 ] as const;
