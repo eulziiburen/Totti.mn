@@ -67,9 +67,11 @@ export function Header() {
                               <li key={sub.href}>
                                 <a
                                   href={sub.href}
-                                  className="block rounded-xl px-3 py-2 text-[13px] text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
+                                  {...(sub.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                                  className="flex items-center justify-between gap-3 rounded-xl px-3 py-2 text-[13px] text-muted transition-colors hover:bg-bg-1 hover:text-chalk"
                                 >
                                   {t.nav[sub.key]}
+                                  {sub.external && <span aria-hidden="true">↗</span>}
                                 </a>
                               </li>
                             ))}
@@ -151,9 +153,11 @@ export function Header() {
                         key={sub.href}
                         href={sub.href}
                         onClick={() => setMenuOpen(false)}
-                        className="-mt-1 mb-2.5 ml-8 border-l-2 border-line py-1.5 pl-3 text-[13px] font-semibold uppercase tracking-wide text-muted"
+                        {...(sub.external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                        className="-mt-1 mb-2.5 ml-8 flex items-center gap-2 border-l-2 border-line py-1.5 pl-3 text-[13px] font-semibold uppercase tracking-wide text-muted"
                       >
                         {t.nav[sub.key]}
+                        {sub.external && <span aria-hidden="true">↗</span>}
                       </a>
                     ))}
                 </div>
