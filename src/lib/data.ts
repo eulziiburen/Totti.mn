@@ -178,8 +178,8 @@ export const navLinks = [
         external: false,
         children: [
           { href: "/sponsor/52-r-surguuli", key: "school52", external: false },
-          // UFE's book is hosted on FlipHTML5, so it opens in a new tab
-          { href: "https://online.fliphtml5.com/wwaqg/0_merged_compressed/", key: "ufe", external: true },
+          // Embeds UFE's FlipHTML5 book (public/sponsor/sezis)
+          { href: "/sponsor/sezis", key: "ufe", external: false },
         ],
       },
     ],
