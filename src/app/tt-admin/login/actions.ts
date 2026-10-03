@@ -11,12 +11,12 @@ export async function loginAction(
 ): Promise<LoginState> {
   const username = String(formData.get("username") ?? "").trim();
   const password = String(formData.get("password") ?? "");
-  const next = String(formData.get("next") ?? "/admin");
+  const next = String(formData.get("next") ?? "/tt-admin");
 
   if (!checkCredentials(username, password)) {
     return { error: "Нэвтрэх нэр эсвэл нууц үг буруу байна." };
   }
 
   await createSession();
-  redirect(next.startsWith("/admin") ? next : "/admin");
+  redirect(next.startsWith("/tt-admin") ? next : "/tt-admin");
 }

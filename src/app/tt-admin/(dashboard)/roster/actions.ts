@@ -67,7 +67,7 @@ export async function upsertPlayer(formData: FormData) {
   } else {
     await db.insert(rosterPlayers).values(data);
   }
-  revalidatePath("/admin/roster");
+  revalidatePath("/tt-admin/roster");
   revalidatePath("/");
   revalidatePath(`/tamirchid/${data.slug}`);
 }
@@ -75,6 +75,6 @@ export async function upsertPlayer(formData: FormData) {
 export async function deletePlayer(id: number) {
   await requireAuth();
   await db.delete(rosterPlayers).where(eq(rosterPlayers.id, id));
-  revalidatePath("/admin/roster");
+  revalidatePath("/tt-admin/roster");
   revalidatePath("/");
 }

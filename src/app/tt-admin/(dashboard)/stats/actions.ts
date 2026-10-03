@@ -26,13 +26,13 @@ export async function upsertStat(formData: FormData) {
   } else {
     await db.insert(scoreboardStats).values(data);
   }
-  revalidatePath("/admin/stats");
+  revalidatePath("/tt-admin/stats");
   revalidatePath("/");
 }
 
 export async function deleteStat(id: number) {
   await requireAuth();
   await db.delete(scoreboardStats).where(eq(scoreboardStats.id, id));
-  revalidatePath("/admin/stats");
+  revalidatePath("/tt-admin/stats");
   revalidatePath("/");
 }

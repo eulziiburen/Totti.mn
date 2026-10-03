@@ -31,6 +31,6 @@ export async function uploadPlayerDocument(key: PdfKey, formData: FormData) {
     await db.insert(playerDocuments).values({ key, label, fileName: file.name, url });
   }
 
-  revalidatePath("/admin/roster");
+  revalidatePath("/tt-admin/roster");
   revalidatePath("/", "layout");
 }

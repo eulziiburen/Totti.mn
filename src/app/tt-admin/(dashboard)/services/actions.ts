@@ -29,13 +29,13 @@ export async function upsertService(formData: FormData) {
   } else {
     await db.insert(services).values(data);
   }
-  revalidatePath("/admin/services");
+  revalidatePath("/tt-admin/services");
   revalidatePath("/");
 }
 
 export async function deleteService(id: number) {
   await requireAuth();
   await db.delete(services).where(eq(services.id, id));
-  revalidatePath("/admin/services");
+  revalidatePath("/tt-admin/services");
   revalidatePath("/");
 }

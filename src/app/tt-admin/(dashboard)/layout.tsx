@@ -3,20 +3,20 @@ import { redirect } from "next/navigation";
 import { isAuthenticated, destroySession } from "@/lib/auth";
 
 const navItems = [
-  { href: "/admin", label: "Тойм" },
-  { href: "/admin/bookings", label: "Хүсэлтүүд" },
-  { href: "/admin/stats", label: "Тоо баримт" },
-  { href: "/admin/roster", label: "Тамирчид" },
-  { href: "/admin/coaches", label: "Дасгалжуулагчид" },
-  { href: "/admin/news", label: "Мэдээ" },
-  { href: "/admin/partners", label: "Түншүүд" },
-  { href: "/admin/services", label: "Үйлчилгээ" },
+  { href: "/tt-admin", label: "Тойм" },
+  { href: "/tt-admin/bookings", label: "Хүсэлтүүд" },
+  { href: "/tt-admin/stats", label: "Тоо баримт" },
+  { href: "/tt-admin/roster", label: "Тамирчид" },
+  { href: "/tt-admin/coaches", label: "Дасгалжуулагчид" },
+  { href: "/tt-admin/news", label: "Мэдээ" },
+  { href: "/tt-admin/partners", label: "Түншүүд" },
+  { href: "/tt-admin/services", label: "Үйлчилгээ" },
 ];
 
 async function logoutAction() {
   "use server";
   await destroySession();
-  redirect("/admin/login");
+  redirect("/tt-admin/login");
 }
 
 export default async function AdminDashboardLayout({
@@ -25,7 +25,7 @@ export default async function AdminDashboardLayout({
   children: React.ReactNode;
 }) {
   if (!(await isAuthenticated())) {
-    redirect("/admin/login");
+    redirect("/tt-admin/login");
   }
 
   return (
@@ -33,7 +33,7 @@ export default async function AdminDashboardLayout({
       <header className="border-b border-line bg-bg-0">
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-8">
-            <Link href="/admin" className="font-display text-lg uppercase tracking-wide">
+            <Link href="/tt-admin" className="font-display text-lg uppercase tracking-wide">
               ТОТТИ <span className="text-amber">Admin</span>
             </Link>
             <nav className="flex flex-wrap items-center gap-5 text-[13px] font-semibold uppercase tracking-wide text-muted">

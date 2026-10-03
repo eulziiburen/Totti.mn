@@ -12,7 +12,7 @@ export default async function AdminDashboardPage() {
     .where(eq(bookings.status, "new"));
 
   const cards = [
-    { label: "Шинэ уулзалтын хүсэлт", value: String(newBookingCount), href: "/admin/bookings" },
+    { label: "Шинэ уулзалтын хүсэлт", value: String(newBookingCount), href: "/tt-admin/bookings" },
   ];
 
   return (

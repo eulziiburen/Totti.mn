@@ -13,7 +13,7 @@ async function requireAuth() {
 }
 
 function revalidateNews(slug?: string) {
-  revalidatePath("/admin/news");
+  revalidatePath("/tt-admin/news");
   revalidatePath("/medee");
   if (slug) revalidatePath(newsPath(slug));
 }

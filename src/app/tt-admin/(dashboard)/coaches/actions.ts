@@ -61,7 +61,7 @@ export async function upsertCoach(formData: FormData) {
   } else {
     await db.insert(coaches).values(data);
   }
-  revalidatePath("/admin/coaches");
+  revalidatePath("/tt-admin/coaches");
   revalidatePath("/");
   revalidatePath(coachPath(data.slug));
 }
@@ -69,6 +69,6 @@ export async function upsertCoach(formData: FormData) {
 export async function deleteCoach(id: number) {
   await requireAuth();
   await db.delete(coaches).where(eq(coaches.id, id));
-  revalidatePath("/admin/coaches");
+  revalidatePath("/tt-admin/coaches");
   revalidatePath("/");
 }

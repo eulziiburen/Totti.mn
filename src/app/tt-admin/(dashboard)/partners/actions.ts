@@ -33,13 +33,13 @@ export async function upsertPartner(formData: FormData) {
   } else {
     await db.insert(partners).values(data);
   }
-  revalidatePath("/admin/partners");
+  revalidatePath("/tt-admin/partners");
   revalidatePath("/");
 }
 
 export async function deletePartner(id: number) {
   await requireAuth();
   await db.delete(partners).where(eq(partners.id, id));
-  revalidatePath("/admin/partners");
+  revalidatePath("/tt-admin/partners");
   revalidatePath("/");
 }

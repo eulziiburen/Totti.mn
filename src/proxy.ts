@@ -5,10 +5,10 @@ import { LOCALE_COOKIE, LOCALE_HEADER, isLocale } from "@/lib/i18n";
 export async function proxy(req: NextRequest) {
   const { pathname, searchParams } = req.nextUrl;
 
-  if (pathname.startsWith("/admin") && pathname !== "/admin/login") {
+  if (pathname.startsWith("/tt-admin") && pathname !== "/tt-admin/login") {
     const token = req.cookies.get(SESSION_COOKIE_NAME)?.value;
     if (!(await verifySessionToken(token))) {
-      const loginUrl = new URL("/admin/login", req.url);
+      const loginUrl = new URL("/tt-admin/login", req.url);
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
     }
