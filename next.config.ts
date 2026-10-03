@@ -23,6 +23,8 @@ const nextConfig: NextConfig = {
       // (https://claude.ai/artifact/DuKWawLScUrgrx5XBnMzLD) served from /public.
       // Edits to the artifact don't flow here automatically; re-export public/sponsor/52-r-surguuli/index.html after changing it.
       { source: "/sponsor/52-r-surguuli", destination: "/sponsor/52-r-surguuli/index.html" },
+      // UFE's book: a full-page embed of its FlipHTML5 book, so the URL stays totti.mn/sponsor/sezis.
+      { source: "/sponsor/sezis", destination: "/sponsor/sezis/index.html" },
     ];
   },
 };
