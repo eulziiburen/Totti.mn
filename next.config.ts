@@ -15,6 +15,10 @@ const nextConfig: NextConfig = {
       // /sponsor used to serve School 52's book directly; keep old links working.
       // Not permanent, so /sponsor can become its own page later.
       { source: "/sponsor", destination: "/sponsor/52-r-surguuli", permanent: false },
+      // UFE's book is temporarily hidden: send its URLs home. Remove these two (and restore the
+      // rewrite below and the menu item in src/lib/data.ts) to bring it back.
+      { source: "/sponsor/sezis", destination: "/", permanent: false },
+      { source: "/sponsor/sezis/index.html", destination: "/", permanent: false },
     ];
   },
   async rewrites() {
@@ -24,7 +28,7 @@ const nextConfig: NextConfig = {
       // Edits to the artifact don't flow here automatically; re-export public/sponsor/52-r-surguuli/index.html after changing it.
       { source: "/sponsor/52-r-surguuli", destination: "/sponsor/52-r-surguuli/index.html" },
       // UFE's book: a full-page embed of its FlipHTML5 book, so the URL stays totti.mn/sponsor/sezis.
-      { source: "/sponsor/sezis", destination: "/sponsor/sezis/index.html" },
+      // { source: "/sponsor/sezis", destination: "/sponsor/sezis/index.html" },
     ];
   },
 };

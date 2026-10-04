@@ -178,8 +178,9 @@ export const navLinks = [
         external: false,
         children: [
           { href: "/sponsor/52-r-surguuli", key: "school52", external: false },
+          // Temporarily hidden; uncomment together with the /sponsor/sezis rewrite in next.config.ts.
           // Embeds UFE's FlipHTML5 book (public/sponsor/sezis)
-          { href: "/sponsor/sezis", key: "ufe", external: false },
+          // { href: "/sponsor/sezis", key: "ufe", external: false },
         ],
       },
     ],
