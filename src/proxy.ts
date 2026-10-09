@@ -1,5 +1,10 @@
 import { NextRequest, NextResponse } from "next/server";
-import { SESSION_COOKIE_NAME, verifySessionToken } from "@/lib/session-token";
+import {
+  CRM_SESSION_COOKIE_NAME,
+  CRM_SESSION_SUBJECT,
+  SESSION_COOKIE_NAME,
+  verifySessionToken,
+} from "@/lib/session-token";
 import { LOCALE_COOKIE, LOCALE_HEADER, isLocale } from "@/lib/i18n";
 
 export async function proxy(req: NextRequest) {
@@ -11,6 +16,16 @@ export async function proxy(req: NextRequest) {
       const loginUrl = new URL("/tt-admin/login", req.url);
       loginUrl.searchParams.set("next", pathname);
       return NextResponse.redirect(loginUrl);
+    }
+    return NextResponse.next();
+  }
+
+  // Covers /crm and the static app it rewrites to (public/crm/app.html), so the page
+  // itself is never served without a login. Its data API checks the cookie on its own.
+  if ((pathname === "/crm" || pathname.startsWith("/crm/")) && pathname !== "/crm/login") {
+    const token = req.cookies.get(CRM_SESSION_COOKIE_NAME)?.value;
+    if (!(await verifySessionToken(token, CRM_SESSION_SUBJECT))) {
+      return NextResponse.redirect(new URL("/crm/login", req.url));
     }
     return NextResponse.next();
   }

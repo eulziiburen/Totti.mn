@@ -29,6 +29,8 @@ const nextConfig: NextConfig = {
       { source: "/sponsor/52-r-surguuli", destination: "/sponsor/52-r-surguuli/index.html" },
       // UFE's book: a full-page embed of its FlipHTML5 book, so the URL stays totti.mn/sponsor/sezis.
       // { source: "/sponsor/sezis", destination: "/sponsor/sezis/index.html" },
+      // Totti CRM: static app behind the CRM login (see src/proxy.ts); data via /api/crm.
+      { source: "/crm", destination: "/crm/app.html" },
     ];
   },
 };

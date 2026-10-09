@@ -35,13 +35,14 @@ async function hmacSign(value: string): Promise<string> {
   return toBase64Url(sig);
 }
 
-export async function buildSessionToken(): Promise<string> {
-  const payload = `admin.${Date.now() + MAX_AGE_SECONDS * 1000}`;
+// `subject` keeps admin and CRM sessions apart: a token signed for one is rejected by the other.
+export async function buildSessionToken(subject = "admin", maxAgeSeconds = MAX_AGE_SECONDS): Promise<string> {
+  const payload = `${subject}.${Date.now() + maxAgeSeconds * 1000}`;
   const sig = await hmacSign(payload);
   return `${payload}.${sig}`;
 }
 
-export async function verifySessionToken(token: string | undefined): Promise<boolean> {
+export async function verifySessionToken(token: string | undefined, expectedSubject = "admin"): Promise<boolean> {
   if (!token) return false;
   const parts = token.split(".");
   if (parts.length !== 3) return false;
@@ -50,8 +51,12 @@ export async function verifySessionToken(token: string | undefined): Promise<boo
   const expected = await hmacSign(payload);
   if (!timingSafeStringEqual(expected, sig)) return false;
   if (Date.now() > Number(expiry)) return false;
-  return subject === "admin";
+  return subject === expectedSubject;
 }
 
 export const SESSION_COOKIE_NAME = "totti_admin_session";
 export const SESSION_MAX_AGE_SECONDS = MAX_AGE_SECONDS;
+
+export const CRM_SESSION_COOKIE_NAME = "totti_crm_session";
+export const CRM_SESSION_SUBJECT = "crm";
+export const CRM_SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 14; // 14 days: the team uses the CRM daily

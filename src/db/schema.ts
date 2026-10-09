@@ -1,5 +1,5 @@
 import { sql } from "drizzle-orm";
-import { sqliteTable, text, integer } from "drizzle-orm/sqlite-core";
+import { sqliteTable, text, integer, primaryKey } from "drizzle-orm/sqlite-core";
 
 export const bookings = sqliteTable("bookings", {
   id: integer("id").primaryKey({ autoIncrement: true }),
@@ -201,3 +201,18 @@ export const orderItems = sqliteTable("order_items", {
   quantity: integer("quantity").notNull(),
   lineTotal: integer("line_total").notNull(),
 });
+
+// Totti CRM (/crm): players, clubs, deals and todos stored as JSON documents, one row each,
+// so the CRM page can keep its document-shaped data model.
+export const crmDocs = sqliteTable(
+  "crm_docs",
+  {
+    collection: text("collection").notNull(), // players | clubs | deals | todos
+    id: text("id").notNull(),
+    dataJson: text("data_json").notNull().default("{}"),
+    updatedAt: text("updated_at")
+      .notNull()
+      .default(sql`(current_timestamp)`),
+  },
+  (t) => [primaryKey({ columns: [t.collection, t.id] })]
+);

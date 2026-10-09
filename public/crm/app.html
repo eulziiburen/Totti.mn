@@ -1,0 +1,392 @@
+<!doctype html><html lang="mn"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>Totti CRM</title>
+<link rel="icon" href="/favicon.ico">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=Unbounded:wght@500;700&display=swap">
+<!-- Ported from the Claude artifact https://claude.ai/artifact/JSzSQfTnKAGM9L48Cc8mjj.
+     Served at /crm behind the CRM login (src/proxy.ts); data lives in the crm_docs table via /api/crm. -->
+<style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style>
+<style>
+/* Layout: one sticky bar with five work areas; each area is a scannable list, details open in a side drawer. */
+:root{
+  --bg:#fafaf8; --surface:#ffffff; --fg:#16150f; --muted:#6b675c; --line:#e4e1d6; --chip:#f0eee6;
+  --accent:#c9a227; --accent-ink:#1a1608; --accent-text:#80610a;
+  --good:#1f7a4d; --warn:#a85a08; --bad:#b3261e;
+  --display:"Unbounded","Manrope",system-ui,sans-serif; --body:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#12110d; --surface:#1b1a15; --fg:#f1eee4; --muted:#a39e8e; --line:#302e25; --chip:#27251d;
+  --accent:#d9b43a; --accent-ink:#1a1608; --accent-text:#e2c35a;
+  --good:#5fc48f; --warn:#f0a35a; --bad:#f08a80; color-scheme:dark } }
+:root[data-theme="dark"]{
+  --bg:#12110d; --surface:#1b1a15; --fg:#f1eee4; --muted:#a39e8e; --line:#302e25; --chip:#27251d;
+  --accent:#d9b43a; --accent-ink:#1a1608; --accent-text:#e2c35a;
+  --good:#5fc48f; --warn:#f0a35a; --bad:#f08a80; color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--fg);font-family:var(--body);font-size:15px;line-height:1.45}
+button,input,select,textarea{font:inherit;color:inherit}
+.wrap{max-width:1120px;margin-inline:auto;padding-inline:16px}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line)}
+.bar{display:flex;align-items:center;gap:20px;min-height:56px}
+.brand{font-family:var(--display);font-weight:700;font-size:15px;letter-spacing:.14em;white-space:nowrap}
+.brand span{color:var(--accent-text)}
+.tabs{display:flex;gap:4px;overflow-x:auto;min-width:0;flex:1;scrollbar-width:none}
+.tab{background:none;border:0;padding:8px 12px;border-radius:999px;cursor:pointer;color:var(--muted);font-weight:600;white-space:nowrap}
+.tab[aria-current="true"]{background:var(--accent);color:var(--accent-ink)}
+.tab .n{font-variant-numeric:tabular-nums;opacity:.7;margin-left:4px;font-weight:500}
+main{padding-block:24px 64px;display:flex;flex-direction:column;gap:20px}
+h1{font-family:var(--display);font-weight:500;font-size:22px;margin:0;text-wrap:balance}
+h2{font-size:12px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin:0;font-weight:700}
+.head{display:flex;flex-wrap:wrap;align-items:center;gap:12px;justify-content:space-between}
+.tools{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.btn{border:1px solid var(--line);background:var(--surface);padding:8px 14px;border-radius:8px;cursor:pointer;font-weight:600}
+.btn.pri{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--bad)}
+.btn.sm{padding:4px 10px;font-size:13px}
+.btn:focus-visible,.tab:focus-visible,.row:focus-visible,.chipb:focus-visible,.check:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+input[type=search],input[type=text],input[type=number],input[type=date],select,textarea{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:8px 10px;width:100%;min-width:0}
+.search{max-width:260px}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chipb{border:1px solid var(--line);background:none;border-radius:999px;padding:4px 12px;cursor:pointer;font-size:13px;font-weight:600;color:var(--muted)}
+.chipb[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.list{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--surface);overflow:hidden}
+.row{display:flex;align-items:center;gap:12px;padding:12px 14px;border:0;border-top:1px solid var(--line);background:none;text-align:left;cursor:pointer;width:100%}
+.row:first-child{border-top:0}
+.row:hover{background:var(--chip)}
+.row .main{flex:1;min-width:0}
+.row .t{font-weight:700;overflow-wrap:anywhere}
+.row .s{color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.row .side{display:flex;flex-direction:column;align-items:flex-end;gap:4px;text-align:right;flex-shrink:0;max-width:45%}
+.num{font-variant-numeric:tabular-nums}
+.jersey{width:44px;flex-shrink:0;font-family:var(--display);font-size:11px;color:var(--accent-text);text-align:center;line-height:1.2}
+.pill{display:inline-block;border-radius:999px;padding:2px 10px;font-size:12px;font-weight:700;border:1px solid currentColor;white-space:nowrap}
+.pill.good{color:var(--good)} .pill.warn{color:var(--warn)} .pill.bad{color:var(--bad)} .pill.mut{color:var(--muted)} .pill.acc{color:var(--accent-text)}
+.group{display:flex;flex-direction:column;gap:8px}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.kpi{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:2px;cursor:pointer;text-align:left}
+.kpi b{font-family:var(--display);font-weight:500;font-size:26px;font-variant-numeric:tabular-nums}
+.kpi span{color:var(--muted);font-size:13px}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:20px}
+.stage{display:grid;grid-template-columns:minmax(0,150px) 1fr auto;gap:10px;align-items:center;padding:8px 0;border-top:1px solid var(--line)}
+.stage:first-child{border-top:0}
+.track{height:8px;background:var(--chip);border-radius:4px;overflow:hidden}
+.track i{display:block;height:100%;background:var(--accent)}
+.panel{border:1px solid var(--line);background:var(--surface);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0}
+.todo{display:flex;gap:12px;align-items:flex-start;padding:10px 14px;border-top:1px solid var(--line)}
+.todo:first-child{border-top:0}
+.check{width:22px;height:22px;border-radius:6px;border:2px solid var(--muted);background:none;cursor:pointer;flex-shrink:0;margin-top:1px;display:grid;place-items:center;font-size:14px;line-height:1;color:var(--accent-ink);padding:0}
+.check[aria-checked="true"]{background:var(--accent);border-color:var(--accent)}
+.todo .body{flex:1;min-width:0;border:0;background:none;text-align:left;cursor:pointer;padding:0}
+.todo.done .t{text-decoration:line-through;color:var(--muted);font-weight:500}
+.todo .t{font-weight:600;overflow-wrap:anywhere}
+.meta{display:flex;flex-wrap:wrap;gap:6px 10px;color:var(--muted);font-size:13px;margin-top:2px}
+.tag{background:var(--chip);border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;color:var(--fg)}
+.quick{display:flex;flex-wrap:wrap;gap:8px}
+.quick input{flex:1 1 220px}
+.quick select{flex:0 1 170px}
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;align-items:start}
+.lane{background:var(--chip);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.lane header{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:13px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:6px}
+.card .open{border:0;background:none;padding:0;text-align:left;cursor:pointer}
+.card select{padding:4px 6px;font-size:13px}
+.empty{color:var(--muted);padding:20px 14px;font-size:14px}
+.banner{border:1px solid var(--warn);color:var(--warn);border-radius:10px;padding:10px 14px}
+#scrim{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:9}
+#drawer{position:fixed;top:0;right:0;bottom:0;width:min(520px,100%);background:var(--bg);border-left:1px solid var(--line);z-index:10;overflow-y:auto;padding:calc(16px + env(safe-area-inset-top,0px)) 20px calc(24px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:16px}
+.dhead{display:flex;justify-content:space-between;gap:12px;align-items:flex-start}
+.dhead h1{overflow-wrap:anywhere}
+.specs{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:1px;background:var(--line);border:1px solid var(--line);border-radius:12px;overflow:hidden}
+.spec{background:var(--surface);padding:10px 12px;min-width:0}
+.spec small{display:block;color:var(--muted);font-size:11px;letter-spacing:.08em;text-transform:uppercase;font-weight:700}
+.spec div{font-weight:700;overflow-wrap:anywhere}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{color:var(--accent-text);font-weight:700;text-decoration:none;border:1px solid var(--line);background:var(--surface);border-radius:8px;padding:6px 12px}
+.note{white-space:pre-wrap;overflow-wrap:anywhere;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:12px}
+.copy{display:flex;gap:8px;align-items:center;justify-content:space-between;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:8px 12px}
+.copy span{user-select:all;overflow-wrap:anywhere;min-width:0}
+form{display:flex;flex-direction:column;gap:12px}
+label.f{display:flex;flex-direction:column;gap:4px;font-size:13px;font-weight:600;color:var(--muted)}
+label.f.c{flex-direction:row;align-items:center;gap:8px;color:var(--fg)}
+label.f.c input{width:18px;height:18px}
+.two{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
+textarea{min-height:84px;resize:vertical}
+.actions{display:flex;flex-wrap:wrap;gap:8px}
+#toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:20;font-weight:600;max-width:calc(100% - 32px)}
+</style>
+</head><body>
+
+<header class="top"><div class="wrap bar">
+  <div class="brand">TOTTI <span>CRM</span></div>
+  <nav class="tabs" id="tabs" aria-label="Хэсгүүд"></nav>
+  <button class="btn sm" data-act="logout">Гарах</button>
+</div></header>
+<main class="wrap" id="view"></main>
+<div id="scrim" hidden></div>
+<aside id="drawer" hidden aria-label="Дэлгэрэнгүй"></aside>
+<div id="toast" hidden role="status"></div>
+
+<script>
+const STAGES=['Санал болгосон','Сонирхсон','Хэлэлцээр','Гэрээ байгуулсан','Амжилтгүй'];
+const OPEN_STAGES=STAGES.slice(0,3);
+const PSTAT=['Идэвхтэй','Боломжит','Тодруулж байгаа','Гэрээ хийсэн','Хасагдсан'];
+const CSTAT=['Холбогдоогүй','Холбогдсон','Хэлэлцэж байгаа','Харилцагч'];
+const OWNERS=['Өлзийбүрэн','Хонгорбаяр','Билгүүн','Мөнхжаргал'];
+const TABS=[['home','Самбар'],['todos','Ажлууд'],['players','Тоглогчид'],['clubs','Клубууд'],['deals','Хэлцэл']];
+const COLS=['players','clubs','deals','todos'];
+const SCHEMA={
+  players:{one:'Тоглогч',fields:[
+    ['name','Нэр','text',{req:1}],['pos','Байрлал','text'],['age','Нас','text'],['height','Өндөр (см)','text'],
+    ['country','Иргэншил','text'],['salary','Хүссэн цалин ($/сар)','text'],['share','Totti-ийн хувь','text'],['coagent','Co-agent','text'],
+    ['status','Статус','select',{opts:PSTAT}],['source','Эх сурвалж','text'],['published','Сошиалд нийтэлсэн','check'],
+    ['links','Видео, профайл линк (мөр бүрт нэг)','lines'],['notes','Тэмдэглэл','area']]},
+  clubs:{one:'Клуб',fields:[
+    ['name','Клубын нэр','text',{req:1}],['league','Лиг','text'],['conf','Бүс','text'],['coach','Дасгалжуулагч','text'],
+    ['phone','Утас','text'],['email','И-мэйл','text'],['facebook','Facebook линк','text'],
+    ['imp1','Import 1','text'],['imp2','Import 2','text'],['asia','Asia Import','text'],
+    ['status','Харилцааны төлөв','select',{opts:['',...CSTAT]}],['lastContact','Сүүлд холбогдсон','date'],['next','Дараагийн алхам','text'],['notes','Тэмдэглэл','area']]},
+  deals:{one:'Хэлцэл',fields:[
+    ['playerId','Тоглогч','ref',{col:'players',req:1}],['clubId','Клуб','ref',{col:'clubs',req:1}],['stage','Үе шат','select',{opts:STAGES}],
+    ['salary','Сарын цалин ($)','number'],['months','Гэрээний хугацаа (сар)','number'],['owner','Хариуцагч','owner'],
+    ['next','Дараагийн алхам','text'],['due','Хугацаа','date'],['notes','Тэмдэглэл','area']]},
+  todos:{one:'Ажил',fields:[
+    ['title','Хийх ажил','area',{req:1}],['area','Чиглэл','area_list'],['owner','Хариуцагч','owner'],['due','Хугацаа','date'],
+    ['progress','Явц','area'],['done','Дууссан','check']]}
+};
+const S={players:[],clubs:[],deals:[],todos:[]}, loaded={};
+const UI={tab:'home',q:'',pStatus:'',pPos:'',cq:'',cConf:'',tOwner:'',tHide:false};
+let db=null, dbState='loading', drawer=null;
+const $=id=>document.getElementById(id);
+const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const byId=(col,id)=>S[col].find(x=>x.id===id);
+const money=n=>(n||n===0)&&!isNaN(n)?'$'+Number(n).toLocaleString('en-US'):'';
+const ftIn=cm=>{const n=parseFloat(cm);if(!n||n<120||n>240)return '';const t=Math.round(n/2.54);return Math.floor(t/12)+"'"+(t%12)+'"'};
+const posGroup=p=>{p=(p||'').toLowerCase();const g=[];if(/\bpg\b|\bsg\b|guard|\bg\b/.test(p))g.push('G');if(/\bsf\b|\bpf\b|forward|wing|swing/.test(p))g.push('F');if(/\bc\b|cent/.test(p))g.push('C');return g};
+const pillCls=s=>({'Идэвхтэй':'good','Гэрээ хийсэн':'acc','Гэрээ байгуулсан':'good','Боломжит':'acc','Тодруулж байгаа':'warn','Хасагдсан':'bad','Амжилтгүй':'bad','Харилцагч':'good','Хэлэлцэж байгаа':'acc','Хэлэлцээр':'acc','Холбогдсон':'warn'}[s]||'mut');
+const pill=s=>s?`<span class="pill ${pillCls(s)}">${esc(s)}</span>`:'';
+const linkLabel=u=>{try{const h=new URL(u).hostname.replace(/^www\./,'');if(/youtu/.test(h))return 'Видео';if(/eurobasket|usbasket/.test(h))return 'Профайл';if(/facebook/.test(h))return 'Facebook';if(/wikipedia/.test(h))return 'Wikipedia';return h}catch(e){return 'Линк'}};
+const safeUrl=u=>/^https?:\/\//i.test(u||'')?u:'';
+const today=()=>new Date().toISOString().slice(0,10);
+function toast(m){const t=$('toast');t.textContent=m;t.hidden=false;clearTimeout(toast.t);toast.t=setTimeout(()=>t.hidden=true,2600)}
+function fail(e){toast(e&&e.code==='unauthenticated'?'Нэвтрэх хугацаа дууссан. Дахин нэвтэрнэ үү.':'Хадгалж чадсангүй. Дахин оролдоно уу.')}
+
+/* ---------- views ---------- */
+function renderTabs(){
+  const n={todos:S.todos.filter(t=>!t.done).length,players:S.players.length,clubs:S.clubs.length,deals:S.deals.filter(d=>OPEN_STAGES.includes(d.stage)).length};
+  $('tabs').innerHTML=TABS.map(([k,l])=>`<button class="tab" data-act="tab" data-k="${k}" aria-current="${UI.tab===k}">${l}${n[k]!=null&&loaded[k]?`<span class="n">${n[k]}</span>`:''}</button>`).join('');
+}
+function notice(){
+  if(dbState==='none')return `<div class="banner">Өгөгдөл ачаалж чадсангүй. Хуудсыг дахин ачаална уу.</div>`;
+  return '';
+}
+const loading=col=>!loaded[col]&&dbState!=='none'?`<div class="empty">Ачаалж байна…</div>`:'';
+function render(){
+  renderTabs();
+  const v=$('view');
+  const keep=document.activeElement&&document.activeElement.id&&v.contains(document.activeElement)?{id:document.activeElement.id,s:document.activeElement.selectionStart}:null;
+  v.innerHTML=notice()+({home:vHome,todos:vTodos,players:vPlayers,clubs:vClubs,deals:vDeals}[UI.tab])();
+  if(keep){const el=$(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.s)}catch(e){}}}
+}
+function vHome(){
+  const open=S.deals.filter(d=>OPEN_STAGES.includes(d.stage)), max=Math.max(1,...STAGES.map(s=>S.deals.filter(d=>d.stage===s).length));
+  const todo=S.todos.filter(t=>!t.done);
+  const k=(tab,n,l)=>`<button class="kpi" data-act="tab" data-k="${tab}"><b>${n}</b><span>${l}</span></button>`;
+  return `<div class="head"><h1>Өнөөдрийн байдал</h1></div>
+  <div class="kpis">${k('players',S.players.filter(p=>p.status==='Идэвхтэй').length,'Идэвхтэй тоглогч · нийт '+S.players.length)}${k('clubs',S.clubs.length,'Клуб')}${k('deals',open.length,'Нээлттэй хэлцэл')}${k('deals',S.deals.filter(d=>d.stage==='Гэрээ байгуулсан').length,'Байгуулсан гэрээ')}${k('todos',todo.length,'Хийх ажил')}</div>
+  <div class="cols">
+    <section class="panel"><h2>Хэлцлийн үе шат</h2><div>${STAGES.map(s=>{const ds=S.deals.filter(d=>d.stage===s),sum=ds.reduce((a,d)=>a+(Number(d.salary)||0),0);return `<div class="stage"><span>${s}</span><span class="track"><i style="width:${ds.length/max*100}%"></i></span><span class="num"><b>${ds.length}</b>${sum?' · '+money(sum)+'/сар':''}</span></div>`}).join('')}</div></section>
+    <section class="panel"><h2>Хариуцагчаар · дуусаагүй ажил</h2><div>${OWNERS.map(o=>{const n=todo.filter(t=>(t.owner||'').includes(o)).length;return `<div class="stage"><span>${o}</span><span class="track"><i style="width:${todo.length?n/todo.length*100:0}%"></i></span><span class="num"><b>${n}</b></span></div>`}).join('')}</div></section>
+  </div>
+  <section class="group"><div class="head"><h2>Дараагийн ажлууд</h2><button class="btn sm" data-act="tab" data-k="todos">Бүгдийг харах</button></div>
+  <div class="list">${loading('todos')||todo.slice(0,6).map(todoRow).join('')||'<div class="empty">Хийх ажил алга. «Ажлууд» хэсэгт шинэ ажил нэмнэ үү.</div>'}</div></section>`;
+}
+function todoRow(t){
+  const late=t.due&&!t.done&&t.due<today();
+  return `<div class="todo${t.done?' done':''}"><button class="check" role="checkbox" aria-checked="${!!t.done}" aria-label="Дууссан гэж тэмдэглэх" data-act="toggle" data-id="${t.id}">${t.done?'✓':''}</button>
+  <button class="body" data-act="edit" data-col="todos" data-id="${t.id}"><div class="t">${esc(t.title)}</div>
+  <div class="meta">${t.owner?`<span class="tag">${esc(t.owner)}</span>`:''}${t.due?`<span class="num" style="${late?'color:var(--bad);font-weight:700':''}">${late?'Хугацаа хэтэрсэн · ':''}${esc(t.due)}</span>`:''}${t.progress&&t.progress!=='?'?`<span>${esc(t.progress)}</span>`:''}</div></button></div>`;
+}
+function vTodos(){
+  let ts=S.todos.filter(t=>(!UI.tOwner||(t.owner||'').includes(UI.tOwner))&&(!UI.tHide||!t.done));
+  const areas=[];ts.forEach(t=>{const a=t.area||'Бусад';if(!areas.includes(a))areas.push(a)});
+  const done=S.todos.filter(t=>t.done).length;
+  return `<div class="head"><h1>Ажлууд <span class="num" style="color:var(--muted);font-size:14px;font-family:var(--body)">${done}/${S.todos.length} дууссан</span></h1><button class="btn pri" data-act="new" data-col="todos">+ Ажил нэмэх</button></div>
+  <form class="quick" id="quickTodo"><input type="text" id="qt_title" placeholder="Шинэ ажил бичээд Enter дарна уу" aria-label="Шинэ ажил"><select id="qt_owner" aria-label="Хариуцагч"><option value="">Хариуцагч</option>${OWNERS.map(o=>`<option>${o}</option>`).join('')}</select><button class="btn" type="submit">Нэмэх</button></form>
+  <div class="tools"><div class="chips"><button class="chipb" data-act="set" data-k="tOwner" data-v="" aria-pressed="${!UI.tOwner}">Бүгд</button>${OWNERS.map(o=>`<button class="chipb" data-act="set" data-k="tOwner" data-v="${o}" aria-pressed="${UI.tOwner===o}">${o}</button>`).join('')}</div>
+  <button class="chipb" data-act="flip" data-k="tHide" aria-pressed="${UI.tHide}">Дууссаныг нуух</button></div>
+  ${loading('todos')||(areas.length?areas.map(a=>{const g=ts.filter(t=>(t.area||'Бусад')===a);return `<section class="group"><h2>${esc(a)} · ${g.filter(t=>t.done).length}/${g.length}</h2><div class="list">${g.map(todoRow).join('')}</div></section>`}).join(''):'<div class="list"><div class="empty">Энэ шүүлтүүрт тохирох ажил алга.</div></div>')}`;
+}
+function vPlayers(){
+  const q=UI.q.toLowerCase();
+  const ps=S.players.filter(p=>(!q||[p.name,p.pos,p.country,p.coagent,p.notes].join(' ').toLowerCase().includes(q))&&(!UI.pStatus||p.status===UI.pStatus)&&(!UI.pPos||posGroup(p.pos).includes(UI.pPos)));
+  const chip=(k,v,l)=>`<button class="chipb" data-act="set" data-k="${k}" data-v="${v}" aria-pressed="${UI[k]===v}">${l}</button>`;
+  return `<div class="head"><h1>Тоглогчид</h1><button class="btn pri" data-act="new" data-col="players">+ Тоглогч нэмэх</button></div>
+  <div class="tools"><input class="search" type="search" id="pq" data-k="q" placeholder="Нэр, байрлал, улсаар хайх" aria-label="Тоглогч хайх" value="${esc(UI.q)}">
+  <div class="chips">${chip('pPos','','Бүх байрлал')}${chip('pPos','G','Хамгаалагч')}${chip('pPos','F','Довтлогч')}${chip('pPos','C','Төвийн')}</div></div>
+  <div class="chips">${chip('pStatus','','Бүх статус')}${PSTAT.map(s=>chip('pStatus',s,s+' '+S.players.filter(p=>p.status===s).length)).join('')}</div>
+  <div class="list">${loading('players')||ps.map(p=>{const f=ftIn(p.height);return `<button class="row" data-act="open" data-col="players" data-id="${p.id}">
+    <span class="jersey">${esc((p.pos||'—').split(/[ /]/)[0].slice(0,6).toUpperCase())}</span>
+    <span class="main"><span class="t">${esc(p.name)}</span><br><span class="s">${[p.pos,p.height?p.height+' см'+(f?' ('+f+')':''):'',p.age?p.age+' нас':'',p.country].filter(Boolean).map(esc).join(' · ')}</span></span>
+    <span class="side"><span class="num"><b>${p.salary?esc(/^[\d,.\s-]+$/.test(p.salary)?'$'+p.salary:p.salary):''}</b></span>${pill(p.status)}</span></button>`}).join('')||'<div class="empty">Тохирох тоглогч олдсонгүй.</div>'}</div>`;
+}
+function vClubs(){
+  const q=UI.cq.toLowerCase();
+  const cs=S.clubs.filter(c=>(!q||[c.name,c.coach,c.league,c.imp1,c.imp2,c.asia].join(' ').toLowerCase().includes(q))&&(!UI.cConf||c.conf===UI.cConf));
+  const confs=[...new Set(S.clubs.map(c=>c.conf).filter(Boolean))];
+  const groups=[];cs.forEach(c=>{const g=[c.league,c.conf].filter(Boolean).join(' · ')||'Бусад';if(!groups.includes(g))groups.push(g)});
+  return `<div class="head"><h1>Клубууд</h1><button class="btn pri" data-act="new" data-col="clubs">+ Клуб нэмэх</button></div>
+  <div class="tools"><input class="search" type="search" id="cq" data-k="cq" placeholder="Клуб, дасгалжуулагч, импортоор хайх" aria-label="Клуб хайх" value="${esc(UI.cq)}">
+  <div class="chips"><button class="chipb" data-act="set" data-k="cConf" data-v="" aria-pressed="${!UI.cConf}">Бүх бүс</button>${confs.map(c=>`<button class="chipb" data-act="set" data-k="cConf" data-v="${esc(c)}" aria-pressed="${UI.cConf===c}">${esc(c)}</button>`).join('')}</div></div>
+  ${loading('clubs')||groups.map(g=>`<section class="group"><h2>${esc(g)}</h2><div class="list">${cs.filter(c=>([c.league,c.conf].filter(Boolean).join(' · ')||'Бусад')===g).map(c=>{const n=S.deals.filter(d=>d.clubId===c.id&&OPEN_STAGES.includes(d.stage)).length;const imp=[c.imp1,c.imp2,c.asia].filter(x=>x&&x!=='?');
+    return `<button class="row" data-act="open" data-col="clubs" data-id="${c.id}"><span class="main"><span class="t">${esc(c.name)}</span><br><span class="s">${[c.coach?'Дасгалжуулагч: '+c.coach:'',imp.length?'Импорт: '+imp.join(', '):'Импорт тодорхойгүй'].filter(Boolean).map(esc).join(' · ')}</span></span>
+    <span class="side">${n?`<span class="pill acc">${n} хэлцэл</span>`:''}${pill(c.status)}<span class="s num">${esc(c.phone||c.email||'')}</span></span></button>`}).join('')}</div></section>`).join('')||'<div class="list"><div class="empty">Тохирох клуб олдсонгүй.</div></div>'}`;
+}
+function vDeals(){
+  return `<div class="head"><h1>Хэлцэл</h1><button class="btn pri" data-act="new" data-col="deals">+ Хэлцэл нэмэх</button></div>
+  ${loading('deals')||`<div class="board">${STAGES.map(s=>{const ds=S.deals.filter(d=>d.stage===s);return `<section class="lane"><header><span>${s}</span><span class="num">${ds.length}</span></header>${ds.map(d=>{const p=byId('players',d.playerId),c=byId('clubs',d.clubId);
+    return `<div class="card"><button class="open" data-act="edit" data-col="deals" data-id="${d.id}"><div class="t" style="font-weight:700">${esc(p?p.name:'Тоглогч устсан')}</div><div class="s" style="color:var(--muted);font-size:13px">${esc(c?c.name:'Клуб устсан')}${d.salary?' · <span class="num">'+money(d.salary)+'/сар</span>':''}${d.months?' · '+esc(d.months)+' сар':''}</div>
+    ${d.next||d.owner||d.due?`<div class="meta">${d.owner?`<span class="tag">${esc(d.owner)}</span>`:''}${d.next?`<span>${esc(d.next)}</span>`:''}${d.due?`<span class="num">${esc(d.due)}</span>`:''}</div>`:''}</button>
+    <select aria-label="Үе шат солих" data-act="stage" data-id="${d.id}" id="st_${d.id}">${STAGES.map(x=>`<option${x===s?' selected':''}>${x}</option>`).join('')}</select></div>`}).join('')||'<div class="s" style="color:var(--muted);font-size:13px">Хэлцэл алга</div>'}</section>`}).join('')}</div>`}`;
+}
+
+/* ---------- drawer ---------- */
+function openDrawer(d){drawer=d;$('drawer').hidden=false;$('scrim').hidden=false;renderDrawer();$('drawer').scrollTop=0}
+function closeDrawer(){drawer=null;$('drawer').hidden=true;$('scrim').hidden=true}
+function renderDrawer(){
+  if(!drawer)return;const el=$('drawer');
+  if(drawer.mode==='form'){el.innerHTML=formHtml(drawer.col,drawer.id,drawer.preset);const f=el.querySelector('input,textarea,select');if(f)f.focus();return}
+  const x=byId(drawer.col,drawer.id);if(!x){closeDrawer();return}
+  el.innerHTML=drawer.col==='players'?playerDetail(x):clubDetail(x);
+}
+const spec=(l,v)=>v?`<div class="spec"><small>${l}</small><div>${esc(v)}</div></div>`:'';
+const copyRow=(v)=>v?`<div class="copy"><span>${esc(v)}</span><button class="btn sm" data-act="copy" data-v="${esc(v)}">Хуулах</button></div>`:'';
+function dealList(ds,who){return ds.length?`<div class="list">${ds.map(d=>{const o=who==='club'?byId('clubs',d.clubId):byId('players',d.playerId);return `<button class="row" data-act="edit" data-col="deals" data-id="${d.id}"><span class="main"><span class="t">${esc(o?o.name:'—')}</span><br><span class="s">${[d.salary?money(d.salary)+'/сар':'',d.next].filter(Boolean).map(esc).join(' · ')}</span></span><span class="side">${pill(d.stage)}</span></button>`}).join('')}</div>`:'<div class="s" style="color:var(--muted)">Хэлцэл хараахан алга.</div>'}
+function dActions(col,x,extra){return `<div class="actions"><button class="btn pri" data-act="edit" data-col="${col}" data-id="${x.id}">Засах</button>${extra||''}${drawer.confirm?`<button class="btn danger" data-act="del" data-col="${col}" data-id="${x.id}">Тийм, устга</button><button class="btn" data-act="nodel">Болих</button>`:`<button class="btn danger" data-act="askdel">Устгах</button>`}</div>`}
+function playerDetail(p){
+  const f=ftIn(p.height), links=(p.links||[]).map(safeUrl).filter(Boolean);
+  return `<div class="dhead"><div><h1>${esc(p.name)}</h1><div class="meta" style="margin-top:8px">${pill(p.status)}${p.published?'<span class="pill mut">Сошиалд нийтэлсэн</span>':''}</div></div><button class="btn sm" data-act="close">Хаах</button></div>
+  <div class="specs">${spec('Байрлал',p.pos)}${spec('Өндөр',p.height?p.height+' см'+(f?' · '+f:''):'')}${spec('Нас',p.age)}${spec('Иргэншил',p.country)}${spec('Хүссэн цалин',p.salary?(/^[\d,.\s-]+$/.test(p.salary)?'$'+p.salary+' / сар':p.salary):'')}${spec('Totti-ийн хувь',p.share)}${spec('Co-agent',p.coagent)}${spec('Эх сурвалж',p.source)}</div>
+  ${links.length?`<div class="links">${links.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(linkLabel(u))}${links.filter(l=>linkLabel(l)===linkLabel(u)).length>1?' '+(links.slice(0,i+1).filter(l=>linkLabel(l)===linkLabel(u)).length):''} ↗</a>`).join('')}</div>`:''}
+  ${p.notes?`<section class="group"><h2>Тэмдэглэл</h2><div class="note">${esc(p.notes)}</div></section>`:''}
+  <section class="group"><h2>Хэлцлүүд</h2>${dealList(S.deals.filter(d=>d.playerId===p.id),'club')}</section>
+  ${dActions('players',p,`<button class="btn" data-act="new" data-col="deals" data-preset="playerId:${p.id}">+ Клубт санал болгох</button>`)}`;
+}
+function clubDetail(c){
+  const fb=safeUrl(c.facebook);
+  return `<div class="dhead"><div><h1>${esc(c.name)}</h1><div class="meta" style="margin-top:8px">${pill(c.status)}</div></div><button class="btn sm" data-act="close">Хаах</button></div>
+  <div class="specs">${spec('Лиг',c.league)}${spec('Бүс',c.conf)}${spec('Дасгалжуулагч',c.coach)}${spec('Import 1',c.imp1)}${spec('Import 2',c.imp2)}${spec('Asia Import',c.asia)}${spec('Сүүлд холбогдсон',c.lastContact)}${spec('Дараагийн алхам',c.next)}</div>
+  ${c.phone||c.email||fb?`<section class="group"><h2>Холбоо барих</h2>${copyRow(c.phone)}${copyRow(c.email)}${fb?`<div class="links"><a href="${esc(fb)}" target="_blank" rel="noopener">Facebook хуудас ↗</a></div>`:''}</section>`:''}
+  ${c.notes?`<section class="group"><h2>Тэмдэглэл</h2><div class="note">${esc(c.notes)}</div></section>`:''}
+  <section class="group"><h2>Санал болгосон тоглогчид</h2>${dealList(S.deals.filter(d=>d.clubId===c.id),'player')}</section>
+  ${dActions('clubs',c,`<button class="btn" data-act="new" data-col="deals" data-preset="clubId:${c.id}">+ Тоглогч санал болгох</button>`)}`;
+}
+function formHtml(col,id,preset){
+  const sc=SCHEMA[col], x=id?byId(col,id)||{}:Object.assign({stage:STAGES[0],status:col==='players'?'Идэвхтэй':''},preset||{});
+  const areas=[...new Set(S.todos.map(t=>t.area).filter(Boolean))];
+  const inp=([k,l,t,o={}])=>{const v=x[k], idn='f_'+k, r=o.req?' required':'';
+    if(t==='check')return `<label class="f c"><input type="checkbox" id="${idn}"${v?' checked':''}> ${l}</label>`;
+    if(t==='select')return `<label class="f">${l}<select id="${idn}">${o.opts.map(op=>`<option value="${esc(op)}"${op===(v||'')?' selected':''}>${esc(op||'—')}</option>`).join('')}</select></label>`;
+    if(t==='ref')return `<label class="f">${l}<select id="${idn}"${r}><option value="">Сонгоно уу</option>${[...S[o.col]].sort((a,b)=>a.name.localeCompare(b.name)).map(y=>`<option value="${y.id}"${y.id===v?' selected':''}>${esc(y.name)}</option>`).join('')}</select></label>`;
+    if(t==='area')return `<label class="f">${l}<textarea id="${idn}"${r}>${esc(v)}</textarea></label>`;
+    if(t==='lines')return `<label class="f">${l}<textarea id="${idn}">${esc((v||[]).join('\n'))}</textarea></label>`;
+    if(t==='owner'||t==='area_list')return `<label class="f">${l}<input type="text" id="${idn}" list="${idn}_l" value="${esc(v)}"><datalist id="${idn}_l">${(t==='owner'?OWNERS:areas).map(a=>`<option value="${esc(a)}">`).join('')}</datalist></label>`;
+    return `<label class="f">${l}<input type="${t}" id="${idn}" value="${esc(v)}"${r}></label>`};
+  return `<div class="dhead"><h1>${id?sc.one+' засах':'Шинэ '+sc.one.toLowerCase()}</h1><button class="btn sm" data-act="close">Хаах</button></div>
+  <form id="entityForm" data-col="${col}" data-id="${id||''}">${sc.fields.map(inp).join('')}
+  <div class="actions"><button class="btn pri" type="submit">Хадгалах</button><button class="btn" type="button" data-act="close">Болих</button>${id&&(col==='deals'||col==='todos')?`<button class="btn danger" type="button" data-act="del" data-col="${col}" data-id="${id}">Устгах</button>`:''}</div></form>`;
+}
+async function saveForm(form){
+  const col=form.dataset.col,id=form.dataset.id,data={};
+  for(const [k,l,t,o={}] of SCHEMA[col].fields){const el=$('f_'+k);if(!el)continue;
+    data[k]=t==='check'?el.checked:t==='lines'?el.value.split('\n').map(s=>s.trim()).filter(Boolean):t==='number'?(el.value===''?null:Number(el.value)):el.value.trim();
+    if(o.req&&!data[k]){toast(l+' хоосон байна');el.focus();return}}
+  if(!db){toast('Өгөгдлийн сан холбогдоогүй байна');return}
+  try{
+    if(id)await db.doc(col+'/'+id).update(data);else await db.collection(col).add({...data,order:Date.now()});
+    toast('Хадгаллаа');
+    if(id&&(col==='players'||col==='clubs'))openDrawer({mode:'detail',col,id});else closeDrawer();
+  }catch(e){fail(e)}
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',async e=>{
+  if(e.target.id==='scrim'){closeDrawer();return}
+  const b=e.target.closest('[data-act]');if(!b||b.tagName==='SELECT')return;const a=b.dataset.act,d=b.dataset;
+  if(a==='tab'){UI.tab=d.k;render();window.scrollTo(0,0);try{localStorage.setItem('totti_tab',d.k)}catch(e){}}
+  else if(a==='set'){UI[d.k]=d.v;render()}
+  else if(a==='flip'){UI[d.k]=!UI[d.k];render()}
+  else if(a==='open')openDrawer({mode:'detail',col:d.col,id:d.id});
+  else if(a==='edit')openDrawer({mode:'form',col:d.col,id:d.id});
+  else if(a==='new'){let preset=null;if(d.preset){const[k,v]=d.preset.split(':');preset={[k]:v}}openDrawer({mode:'form',col:d.col,preset})}
+  else if(a==='close')closeDrawer();
+  else if(a==='askdel'){drawer.confirm=true;renderDrawer()}
+  else if(a==='nodel'){drawer.confirm=false;renderDrawer()}
+  else if(a==='del'){if(!db)return;try{await db.doc(d.col+'/'+d.id).delete();closeDrawer();toast('Устгалаа')}catch(err){fail(err)}}
+  else if(a==='toggle'){const t=byId('todos',d.id);if(!t||!db)return;try{await db.doc('todos/'+d.id).update({done:!t.done})}catch(err){fail(err)}}
+  else if(a==='copy'){try{await navigator.clipboard.writeText(d.v);toast('Хууллаа')}catch(err){toast('Хуулж чадсангүй. Текстийг гараар сонгоно уу.')}}
+  else if(a==='logout'){try{await fetch('/api/crm/logout',{method:'POST'})}catch(err){}location.href='/crm/login'}
+});
+document.addEventListener('change',async e=>{
+  const s=e.target;if(s.dataset&&s.dataset.act==='stage'&&db){try{await db.doc('deals/'+s.dataset.id).update({stage:s.value})}catch(err){fail(err)}}
+});
+document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&e.target.type==='search'){UI[k]=e.target.value;render()}});
+document.addEventListener('submit',async e=>{
+  e.preventDefault();
+  if(e.target.id==='entityForm')return saveForm(e.target);
+  if(e.target.id==='quickTodo'){const t=$('qt_title').value.trim();if(!t){$('qt_title').focus();return}
+    if(!db){toast('Өгөгдлийн сан холбогдоогүй байна');return}
+    try{await db.collection('todos').add({title:t,owner:$('qt_owner').value,area:'Шинэ ажил',done:false,progress:'',due:'',order:Date.now()});toast('Ажил нэмлээ')}catch(err){fail(err)}}
+});
+document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawer)closeDrawer()});
+
+/* ---------- data ---------- */
+// Stands in for the artifact database: the same collection()/doc()/onSnapshot() calls,
+// backed by /api/crm. Changes by teammates show up on the next poll or when the tab regains focus.
+function crmDb(){
+  const subs={}, errs=[];let timer=null, started=false;
+  const toLogin=()=>{location.href='/crm/login'};
+  async function refresh(){
+    const r=await fetch('/api/crm',{cache:'no-store'});
+    if(r.status===401){toLogin();return}
+    if(!r.ok)throw new Error('load '+r.status);
+    const all=await r.json();
+    for(const col in subs){const docs=(all[col]||[]).map(({id,...rest})=>({id,data:()=>rest}));subs[col].forEach(cb=>cb({docs}))}
+  }
+  const poll=()=>{clearTimeout(timer);timer=setTimeout(()=>refresh().catch(()=>{}).finally(poll),20000)};
+  function start(){if(started)return;started=true;setTimeout(()=>refresh().then(poll,e=>errs.forEach(f=>f(e))),0)}
+  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&started)refresh().catch(()=>{})});
+  async function write(body){
+    const r=await fetch('/api/crm',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    if(r.status===401){toLogin();throw {code:'unauthenticated'}}
+    if(!r.ok)throw {code:'failed'};
+    const out=await r.json();
+    await refresh().catch(()=>{});
+    return out;
+  }
+  return {
+    collection:col=>({
+      limit:()=>({onSnapshot:(cb,err)=>{(subs[col]=subs[col]||[]).push(cb);if(err)errs.push(err);start()}}),
+      add:data=>write({op:'add',col,data})
+    }),
+    doc:path=>{const[col,id]=path.split('/');return{update:data=>write({op:'update',col,id,data}),delete:()=>write({op:'delete',col,id})}}
+  };
+}
+function start(){
+  try{const t=localStorage.getItem('totti_tab');if(t&&TABS.some(x=>x[0]===t))UI.tab=t}catch(e){}
+  const h=location.hash.slice(1);if(TABS.some(x=>x[0]===h))UI.tab=h;
+  render();
+  const ready=Promise.resolve(crmDb());
+  ready.then(d=>{
+    db=d;dbState=d?'ok':'none';
+    if(!d){render();return}
+    COLS.forEach(col=>d.collection(col).limit(1000).onSnapshot(snap=>{
+      S[col]=snap.docs.map(x=>({id:x.id,...x.data()})).sort((a,b)=>(a.order||0)-(b.order||0));
+      loaded[col]=true;render();
+      if(drawer&&drawer.mode==='detail')renderDrawer();
+    },()=>{dbState='none';render()}));
+  }).catch(()=>{dbState='none';render()});
+}
+start();
+</script>
+
+</body></html>
