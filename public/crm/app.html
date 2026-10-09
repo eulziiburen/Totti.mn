@@ -81,9 +81,11 @@ input[type=search],input[type=text],input[type=number],input[type=date],select,t
 .todo .t{font-weight:600;overflow-wrap:anywhere}
 .meta{display:flex;flex-wrap:wrap;gap:6px 10px;color:var(--muted);font-size:13px;margin-top:2px}
 .tag{background:var(--chip);border-radius:6px;padding:1px 8px;font-size:12px;font-weight:600;color:var(--fg)}
-.quick{display:flex;flex-wrap:wrap;gap:8px}
+.quick{display:flex;flex-direction:row;flex-wrap:wrap;gap:8px;align-items:center}
 .quick input{flex:1 1 220px}
-.quick select{flex:0 1 170px}
+.quick .chips{flex-basis:100%}
+fieldset.f{border:0;padding:0;margin:0;min-width:0}
+fieldset.f legend{padding:0;margin-bottom:4px}
 .board{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:12px;align-items:start}
 .lane{background:var(--chip);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .lane header{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:13px}
@@ -144,6 +146,10 @@ const OPEN_STAGES=STAGES.slice(0,3);
 const PSTAT=['Идэвхтэй','Боломжит','Тодруулж байгаа','Гэрээ хийсэн','Хасагдсан'];
 const CSTAT=['Холбогдоогүй','Холбогдсон','Хэлэлцэж байгаа','Харилцагч'];
 const OWNERS=['Өлзийбүрэн','Хонгорбаяр','Билгүүн','Мөнхжаргал'];
+// A task or deal can have several owners, stored as one string "Билгүүн / Мөнхжаргал".
+const OWNER_SEP=' / ';
+const ownerList=s=>String(s||'').split(/s*[/,]s*/).map(x=>x.trim()).filter(Boolean);
+const ownerChips=(sel,act)=>[...OWNERS,...sel.filter(o=>!OWNERS.includes(o))].map(o=>`<button type="button" class="chipb" data-act="${act}" data-v="${esc(o)}" aria-pressed="${sel.includes(o)}">${esc(o)}</button>`).join('');
 const TABS=[['home','Самбар'],['todos','Ажлууд'],['players','Тоглогчид'],['clubs','Клубууд'],['deals','Хэлцэл'],['history','Түүх']];
 const COLS=['players','clubs','deals','todos'];
 const SCHEMA={
@@ -166,7 +172,7 @@ const SCHEMA={
     ['progress','Явц','area'],['done','Дууссан','check']]}
 };
 const S={players:[],clubs:[],deals:[],todos:[]}, loaded={};
-const UI={tab:'home',q:'',pStatus:'',pPos:'',cq:'',cConf:'',tOwner:'',tHide:false,hWho:'',hCol:''};
+const UI={tab:'home',q:'',pStatus:'',pPos:'',cq:'',cConf:'',tOwner:'',tHide:false,hWho:'',hCol:'',qtTitle:'',qtOwners:[]};
 let ME='', AUDIT=[];
 let db=null, dbState='loading', drawer=null;
 const $=id=>document.getElementById(id);
@@ -218,14 +224,15 @@ function todoRow(t){
   const late=t.due&&!t.done&&t.due<today();
   return `<div class="todo${t.done?' done':''}"><button class="check" role="checkbox" aria-checked="${!!t.done}" aria-label="Дууссан гэж тэмдэглэх" data-act="toggle" data-id="${t.id}">${t.done?'✓':''}</button>
   <button class="body" data-act="edit" data-col="todos" data-id="${t.id}"><div class="t">${esc(t.title)}</div>
-  <div class="meta">${t.owner?`<span class="tag">${esc(t.owner)}</span>`:''}${t.due?`<span class="num" style="${late?'color:var(--bad);font-weight:700':''}">${late?'Хугацаа хэтэрсэн · ':''}${esc(t.due)}</span>`:''}${t.progress&&t.progress!=='?'?`<span>${esc(t.progress)}</span>`:''}</div></button></div>`;
+  <div class="meta">${ownerList(t.owner).map(o=>`<span class="tag">${esc(o)}</span>`).join('')}${t.due?`<span class="num" style="${late?'color:var(--bad);font-weight:700':''}">${late?'Хугацаа хэтэрсэн · ':''}${esc(t.due)}</span>`:''}${t.progress&&t.progress!=='?'?`<span>${esc(t.progress)}</span>`:''}</div></button></div>`;
 }
 function vTodos(){
   let ts=S.todos.filter(t=>(!UI.tOwner||(t.owner||'').includes(UI.tOwner))&&(!UI.tHide||!t.done));
   const areas=[];ts.forEach(t=>{const a=t.area||'Бусад';if(!areas.includes(a))areas.push(a)});
   const done=S.todos.filter(t=>t.done).length;
   return `<div class="head"><h1>Ажлууд <span class="num" style="color:var(--muted);font-size:14px;font-family:var(--body)">${done}/${S.todos.length} дууссан</span></h1><button class="btn pri" data-act="new" data-col="todos">+ Ажил нэмэх</button></div>
-  <form class="quick" id="quickTodo"><input type="text" id="qt_title" placeholder="Шинэ ажил бичээд Enter дарна уу" aria-label="Шинэ ажил"><select id="qt_owner" aria-label="Хариуцагч"><option value="">Хариуцагч</option>${OWNERS.map(o=>`<option>${o}</option>`).join('')}</select><button class="btn" type="submit">Нэмэх</button></form>
+  <form class="quick" id="quickTodo"><input type="text" id="qt_title" data-draft="qtTitle" placeholder="Шинэ ажил бичээд Enter дарна уу" aria-label="Шинэ ажил" value="${esc(UI.qtTitle)}"><button class="btn" type="submit">Нэмэх</button>
+  <div class="chips" role="group" aria-label="Хариуцагч (хэд хэдэн хүн сонгож болно)">${ownerChips(UI.qtOwners,'qtowner')}</div></form>
   <div class="tools"><div class="chips"><button class="chipb" data-act="set" data-k="tOwner" data-v="" aria-pressed="${!UI.tOwner}">Бүгд</button>${OWNERS.map(o=>`<button class="chipb" data-act="set" data-k="tOwner" data-v="${o}" aria-pressed="${UI.tOwner===o}">${o}</button>`).join('')}</div>
   <button class="chipb" data-act="flip" data-k="tHide" aria-pressed="${UI.tHide}">Дууссаныг нуух</button></div>
   ${loading('todos')||(areas.length?areas.map(a=>{const g=ts.filter(t=>(t.area||'Бусад')===a);return `<section class="group"><h2>${esc(a)} · ${g.filter(t=>t.done).length}/${g.length}</h2><div class="list">${g.map(todoRow).join('')}</div></section>`}).join(''):'<div class="list"><div class="empty">Энэ шүүлтүүрт тохирох ажил алга.</div></div>')}`;
@@ -341,7 +348,8 @@ function formHtml(col,id,preset){
     if(t==='ref')return `<label class="f">${l}<select id="${idn}"${r}><option value="">Сонгоно уу</option>${[...S[o.col]].sort((a,b)=>a.name.localeCompare(b.name)).map(y=>`<option value="${y.id}"${y.id===v?' selected':''}>${esc(y.name)}</option>`).join('')}</select></label>`;
     if(t==='area')return `<label class="f">${l}<textarea id="${idn}"${r}>${esc(v)}</textarea></label>`;
     if(t==='lines')return `<label class="f">${l}<textarea id="${idn}">${esc((v||[]).join('\n'))}</textarea></label>`;
-    if(t==='owner'||t==='area_list')return `<label class="f">${l}<input type="text" id="${idn}" list="${idn}_l" value="${esc(v)}"><datalist id="${idn}_l">${(t==='owner'?OWNERS:areas).map(a=>`<option value="${esc(a)}">`).join('')}</datalist></label>`;
+    if(t==='owner')return `<fieldset class="f"><legend>${l} <span style="font-weight:500">(хэд хэдэн хүн сонгож болно)</span></legend><div class="chips" id="${idn}">${ownerChips(ownerList(v),'pickowner')}</div></fieldset>`;
+    if(t==='area_list')return `<label class="f">${l}<input type="text" id="${idn}" list="${idn}_l" value="${esc(v)}"><datalist id="${idn}_l">${(areas).map(a=>`<option value="${esc(a)}">`).join('')}</datalist></label>`;
     return `<label class="f">${l}<input type="${t}" id="${idn}" value="${esc(v)}"${r}></label>`};
   return `<div class="dhead"><div><h1>${id?sc.one+' засах':'Шинэ '+sc.one.toLowerCase()}</h1>${id?lastLine(col,id):''}</div><button class="btn sm" data-act="close">Хаах</button></div>
   <form id="entityForm" data-col="${col}" data-id="${id||''}">${sc.fields.map(inp).join('')}
@@ -350,6 +358,7 @@ function formHtml(col,id,preset){
 async function saveForm(form){
   const col=form.dataset.col,id=form.dataset.id,data={};
   for(const [k,l,t,o={}] of SCHEMA[col].fields){const el=$('f_'+k);if(!el)continue;
+    if(t==='owner'){data[k]=[...el.querySelectorAll('[aria-pressed="true"]')].map(b=>b.dataset.v).join(OWNER_SEP);continue}
     data[k]=t==='check'?el.checked:t==='lines'?el.value.split('\n').map(s=>s.trim()).filter(Boolean):t==='number'?(el.value===''?null:Number(el.value)):el.value.trim();
     if(o.req&&!data[k]){toast(l+' хоосон байна');el.focus();return}}
   if(!db){toast('Өгөгдлийн сан холбогдоогүй байна');return}
@@ -375,19 +384,22 @@ document.addEventListener('click',async e=>{
   else if(a==='nodel'){drawer.confirm=false;renderDrawer()}
   else if(a==='del'){if(!db)return;try{await db.doc(d.col+'/'+d.id).delete();closeDrawer();toast('Устгалаа')}catch(err){fail(err)}}
   else if(a==='toggle'){const t=byId('todos',d.id);if(!t||!db)return;try{await db.doc('todos/'+d.id).update({done:!t.done})}catch(err){fail(err)}}
+  else if(a==='pickowner')b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');
+  else if(a==='qtowner'){UI.qtOwners=UI.qtOwners.includes(d.v)?UI.qtOwners.filter(o=>o!==d.v):[...UI.qtOwners,d.v];render()}
   else if(a==='copy'){try{await navigator.clipboard.writeText(d.v);toast('Хууллаа')}catch(err){toast('Хуулж чадсангүй. Текстийг гараар сонгоно уу.')}}
   else if(a==='logout'){try{await fetch('/api/crm/logout',{method:'POST'})}catch(err){}location.href='/crm/login'}
 });
 document.addEventListener('change',async e=>{
   const s=e.target;if(s.dataset&&s.dataset.act==='stage'&&db){try{await db.doc('deals/'+s.dataset.id).update({stage:s.value})}catch(err){fail(err)}}
 });
-document.addEventListener('input',e=>{const k=e.target.dataset&&e.target.dataset.k;if(k&&e.target.type==='search'){UI[k]=e.target.value;render()}});
+document.addEventListener('input',e=>{const dr=e.target.dataset&&e.target.dataset.draft;if(dr){UI[dr]=e.target.value;return}
+  const k=e.target.dataset&&e.target.dataset.k;if(k&&e.target.type==='search'){UI[k]=e.target.value;render()}});
 document.addEventListener('submit',async e=>{
   e.preventDefault();
   if(e.target.id==='entityForm')return saveForm(e.target);
   if(e.target.id==='quickTodo'){const t=$('qt_title').value.trim();if(!t){$('qt_title').focus();return}
     if(!db){toast('Өгөгдлийн сан холбогдоогүй байна');return}
-    try{await db.collection('todos').add({title:t,owner:$('qt_owner').value,area:'Шинэ ажил',done:false,progress:'',due:'',order:Date.now()});toast('Ажил нэмлээ')}catch(err){fail(err)}}
+    try{await db.collection('todos').add({title:t,owner:UI.qtOwners.join(OWNER_SEP),area:'Шинэ ажил',done:false,progress:'',due:'',order:Date.now()});UI.qtTitle='';UI.qtOwners=[];render();toast('Ажил нэмлээ')}catch(err){fail(err)}}
 });
 document.addEventListener('keydown',e=>{if(e.key==='Escape'&&drawer)closeDrawer()});
 
