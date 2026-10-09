@@ -19,6 +19,22 @@ export function checkCrmCredentials(username: string, password: string): boolean
   );
 }
 
+// Google sign-in: only addresses listed in CRM_ALLOWED_EMAILS (comma-separated) get in.
+export function isAllowedCrmEmail(email: string): boolean {
+  const allowed = (process.env.CRM_ALLOWED_EMAILS ?? "")
+    .split(",")
+    .map((e) => e.trim().toLowerCase())
+    .filter(Boolean);
+  return allowed.includes(email.trim().toLowerCase());
+}
+
+// One-time state for the Google round trip (set in /api/crm/google, checked in its callback).
+export const GOOGLE_STATE_COOKIE = "totti_crm_oauth_state";
+
+export function isGoogleLoginConfigured(): boolean {
+  return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
+}
+
 export async function createCrmSession() {
   const store = await cookies();
   store.set(
