@@ -46,7 +46,7 @@ export async function GET(req: NextRequest) {
   if (!claims.email || claims.email_verified !== true) return fail("google");
   if (!isAllowedCrmEmail(claims.email)) return fail("not_allowed");
 
-  await createCrmSession();
+  await createCrmSession(claims.email.toLowerCase());
   const res = NextResponse.redirect(new URL("/crm", req.url));
   res.cookies.delete({ name: GOOGLE_STATE_COOKIE, path: "/api/crm/google" });
   return res;

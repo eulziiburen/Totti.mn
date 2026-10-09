@@ -2,10 +2,9 @@ import { cookies } from "next/headers";
 import {
   CRM_SESSION_COOKIE_NAME,
   CRM_SESSION_MAX_AGE_SECONDS,
-  CRM_SESSION_SUBJECT,
-  buildSessionToken,
+  buildCrmSessionToken,
   timingSafeStringEqual,
-  verifySessionToken,
+  verifyCrmSessionToken,
 } from "./session-token";
 
 // The CRM has its own login (CRM_USERNAME / CRM_PASSWORD) so the team can use it
@@ -35,19 +34,16 @@ export function isGoogleLoginConfigured(): boolean {
   return Boolean(process.env.GOOGLE_CLIENT_ID && process.env.GOOGLE_CLIENT_SECRET);
 }
 
-export async function createCrmSession() {
+// `user` is the Google email, or the username for the code login; it is what the change log shows.
+export async function createCrmSession(user: string) {
   const store = await cookies();
-  store.set(
-    CRM_SESSION_COOKIE_NAME,
-    await buildSessionToken(CRM_SESSION_SUBJECT, CRM_SESSION_MAX_AGE_SECONDS),
-    {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/",
-      maxAge: CRM_SESSION_MAX_AGE_SECONDS,
-    }
-  );
+  store.set(CRM_SESSION_COOKIE_NAME, await buildCrmSessionToken(user), {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
+    path: "/",
+    maxAge: CRM_SESSION_MAX_AGE_SECONDS,
+  });
 }
 
 export async function destroyCrmSession() {
@@ -55,7 +51,12 @@ export async function destroyCrmSession() {
   store.delete(CRM_SESSION_COOKIE_NAME);
 }
 
-export async function isCrmAuthenticated(): Promise<boolean> {
+// The signed-in CRM user, or null when there is no valid session.
+export async function getCrmUser(): Promise<string | null> {
   const store = await cookies();
-  return verifySessionToken(store.get(CRM_SESSION_COOKIE_NAME)?.value, CRM_SESSION_SUBJECT);
+  return verifyCrmSessionToken(store.get(CRM_SESSION_COOKIE_NAME)?.value);
+}
+
+export async function isCrmAuthenticated(): Promise<boolean> {
+  return (await getCrmUser()) !== null;
 }
