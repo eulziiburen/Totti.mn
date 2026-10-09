@@ -112,6 +112,17 @@ label.f.c input{width:18px;height:18px}
 .two{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:12px}
 textarea{min-height:84px;resize:vertical}
 .actions{display:flex;flex-wrap:wrap;gap:8px}
+.me{color:var(--muted);font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:200px}
+@media (max-width:640px){.me{display:none}}
+.log{display:flex;flex-direction:column;gap:4px;padding:12px 14px;border-top:1px solid var(--line)}
+.log:first-child{border-top:0}
+.log .who{display:flex;flex-wrap:wrap;gap:4px 10px;align-items:baseline}
+.log .who b{font-weight:700}
+.log .rec{border:0;background:none;padding:0;cursor:pointer;font-weight:700;color:var(--accent-text);text-align:left;overflow-wrap:anywhere}
+.log .rec[disabled]{cursor:default;color:var(--fg)}
+.log ul{margin:0;padding-left:18px;color:var(--muted);font-size:13px;overflow-wrap:anywhere}
+.log ul b{color:var(--fg);font-weight:600}
+.last{color:var(--muted);font-size:13px}
 #toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--fg);color:var(--bg);padding:10px 16px;border-radius:10px;z-index:20;font-weight:600;max-width:calc(100% - 32px)}
 </style>
 </head><body>
@@ -119,6 +130,7 @@ textarea{min-height:84px;resize:vertical}
 <header class="top"><div class="wrap bar">
   <div class="brand">TOTTI <span>CRM</span></div>
   <nav class="tabs" id="tabs" aria-label="Хэсгүүд"></nav>
+  <span class="me" id="me"></span>
   <button class="btn sm" data-act="logout">Гарах</button>
 </div></header>
 <main class="wrap" id="view"></main>
@@ -132,7 +144,7 @@ const OPEN_STAGES=STAGES.slice(0,3);
 const PSTAT=['Идэвхтэй','Боломжит','Тодруулж байгаа','Гэрээ хийсэн','Хасагдсан'];
 const CSTAT=['Холбогдоогүй','Холбогдсон','Хэлэлцэж байгаа','Харилцагч'];
 const OWNERS=['Өлзийбүрэн','Хонгорбаяр','Билгүүн','Мөнхжаргал'];
-const TABS=[['home','Самбар'],['todos','Ажлууд'],['players','Тоглогчид'],['clubs','Клубууд'],['deals','Хэлцэл']];
+const TABS=[['home','Самбар'],['todos','Ажлууд'],['players','Тоглогчид'],['clubs','Клубууд'],['deals','Хэлцэл'],['history','Түүх']];
 const COLS=['players','clubs','deals','todos'];
 const SCHEMA={
   players:{one:'Тоглогч',fields:[
@@ -154,7 +166,8 @@ const SCHEMA={
     ['progress','Явц','area'],['done','Дууссан','check']]}
 };
 const S={players:[],clubs:[],deals:[],todos:[]}, loaded={};
-const UI={tab:'home',q:'',pStatus:'',pPos:'',cq:'',cConf:'',tOwner:'',tHide:false};
+const UI={tab:'home',q:'',pStatus:'',pPos:'',cq:'',cConf:'',tOwner:'',tHide:false,hWho:'',hCol:''};
+let ME='', AUDIT=[];
 let db=null, dbState='loading', drawer=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -184,7 +197,8 @@ function render(){
   renderTabs();
   const v=$('view');
   const keep=document.activeElement&&document.activeElement.id&&v.contains(document.activeElement)?{id:document.activeElement.id,s:document.activeElement.selectionStart}:null;
-  v.innerHTML=notice()+({home:vHome,todos:vTodos,players:vPlayers,clubs:vClubs,deals:vDeals}[UI.tab])();
+  $('me').textContent=ME;$('me').title=ME?'Нэвтэрсэн: '+ME:'';
+  v.innerHTML=notice()+({home:vHome,todos:vTodos,players:vPlayers,clubs:vClubs,deals:vDeals,history:vHistory}[UI.tab])();
   if(keep){const el=$(keep.id);if(el){el.focus();try{el.setSelectionRange(keep.s,keep.s)}catch(e){}}}
 }
 function vHome(){
@@ -249,6 +263,44 @@ function vDeals(){
     <select aria-label="Үе шат солих" data-act="stage" data-id="${d.id}" id="st_${d.id}">${STAGES.map(x=>`<option${x===s?' selected':''}>${x}</option>`).join('')}</select></div>`}).join('')||'<div class="s" style="color:var(--muted);font-size:13px">Хэлцэл алга</div>'}</section>`}).join('')}</div>`}`;
 }
 
+/* ---------- change log ---------- */
+const COL_ONE={players:'Тоглогч',clubs:'Клуб',deals:'Хэлцэл',todos:'Ажил'};
+const ACT_LBL={add:'нэмсэн',update:'зассан',delete:'устгасан'};
+const fieldLabel=(col,k)=>{const f=(SCHEMA[col]&&SCHEMA[col].fields||[]).find(x=>x[0]===k);return f?f[1]:k};
+const who=u=>String(u||'').replace(/@gmail\.com$/i,'');
+function logVal(k,v){
+  if(v===null||v===undefined||v==='')return '—';
+  if(k==='playerId'){const p=byId('players',v);return p?p.name:'(устсан тоглогч)'}
+  if(k==='clubId'){const c=byId('clubs',v);return c?c.name:'(устсан клуб)'}
+  if(typeof v==='boolean')return v?'Тийм':'Үгүй';
+  if(Array.isArray(v))return v.join(', ')||'—';
+  const s=String(v);return s.length>90?s.slice(0,90)+'…':s;
+}
+const when=iso=>{const d=new Date(iso);if(isNaN(d))return '';const p=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${p(d.getMonth()+1)}-${p(d.getDate())} ${p(d.getHours())}:${p(d.getMinutes())}`};
+// Latest log entry for one record, for the "Сүүлд засварласан" line.
+const lastChange=(col,id)=>AUDIT.find(a=>a.collection===col&&a.docId===id);
+const lastLine=(col,id)=>{const a=lastChange(col,id);return a?`<div class="last">Сүүлд ${ACT_LBL[a.action]||a.action}: <b>${esc(who(a.actor))}</b> · <span class="num">${esc(when(a.at))}</span></div>`:''};
+function logRow(a){
+  const exists=a.action!=='delete'&&byId(a.collection,a.docId);
+  const open=a.collection==='players'||a.collection==='clubs'?'open':'edit';
+  const ch=Object.entries(a.changes||{});
+  const lines=a.action==='update'?ch.map(([k,[b,c]])=>`<li><b>${esc(fieldLabel(a.collection,k))}:</b> ${esc(logVal(k,b))} → ${esc(logVal(k,c))}</li>`).join('')
+    :a.action==='delete'?ch.filter(([k])=>!['notes','links'].includes(k)).slice(0,4).map(([k,[b]])=>`<li><b>${esc(fieldLabel(a.collection,k))}:</b> ${esc(logVal(k,b))}</li>`).join(''):'';
+  return `<div class="log"><div class="who"><b>${esc(who(a.actor))}</b><span>${COL_ONE[a.collection]||a.collection} ${ACT_LBL[a.action]||a.action}</span>
+    <button class="rec"${exists?` data-act="${open}" data-col="${a.collection}" data-id="${esc(a.docId)}"`:' disabled'}>${esc(a.label||'—')}</button>
+    <span class="s num" style="color:var(--muted);font-size:13px;margin-left:auto">${esc(when(a.at))}</span></div>${lines?`<ul>${lines}</ul>`:''}</div>`;
+}
+function vHistory(){
+  const people=[...new Set(AUDIT.map(a=>a.actor))];
+  const rows=AUDIT.filter(a=>(!UI.hWho||a.actor===UI.hWho)&&(!UI.hCol||a.collection===UI.hCol));
+  const chip=(k,v,l)=>`<button class="chipb" data-act="set" data-k="${k}" data-v="${esc(v)}" aria-pressed="${UI[k]===v}">${esc(l)}</button>`;
+  const days=[];rows.forEach(a=>{const d=when(a.at).slice(0,10);if(!days.includes(d))days.push(d)});
+  return `<div class="head"><h1>Түүх</h1><span class="s" style="color:var(--muted);font-size:13px">Хэн, хэзээ, юуг өөрчилсөн · сүүлийн ${AUDIT.length}</span></div>
+  <div class="chips">${chip('hWho','','Бүх хүн')}${people.map(p=>chip('hWho',p,who(p))).join('')}</div>
+  <div class="chips">${chip('hCol','','Бүгд')}${Object.entries(COL_ONE).map(([k,l])=>chip('hCol',k,l)).join('')}</div>
+  ${!loaded.history&&dbState!=='none'?'<div class="list"><div class="empty">Ачаалж байна…</div></div>':days.length?days.map(d=>`<section class="group"><h2>${esc(d)}</h2><div class="list">${rows.filter(a=>when(a.at).slice(0,10)===d).map(logRow).join('')}</div></section>`).join(''):'<div class="list"><div class="empty">Өөрчлөлт бүртгэгдээгүй байна.</div></div>'}`;
+}
+
 /* ---------- drawer ---------- */
 function openDrawer(d){drawer=d;$('drawer').hidden=false;$('scrim').hidden=false;renderDrawer();$('drawer').scrollTop=0}
 function closeDrawer(){drawer=null;$('drawer').hidden=true;$('scrim').hidden=true}
@@ -264,7 +316,7 @@ function dealList(ds,who){return ds.length?`<div class="list">${ds.map(d=>{const
 function dActions(col,x,extra){return `<div class="actions"><button class="btn pri" data-act="edit" data-col="${col}" data-id="${x.id}">Засах</button>${extra||''}${drawer.confirm?`<button class="btn danger" data-act="del" data-col="${col}" data-id="${x.id}">Тийм, устга</button><button class="btn" data-act="nodel">Болих</button>`:`<button class="btn danger" data-act="askdel">Устгах</button>`}</div>`}
 function playerDetail(p){
   const f=ftIn(p.height), links=(p.links||[]).map(safeUrl).filter(Boolean);
-  return `<div class="dhead"><div><h1>${esc(p.name)}</h1><div class="meta" style="margin-top:8px">${pill(p.status)}${p.published?'<span class="pill mut">Сошиалд нийтэлсэн</span>':''}</div></div><button class="btn sm" data-act="close">Хаах</button></div>
+  return `<div class="dhead"><div><h1>${esc(p.name)}</h1><div class="meta" style="margin-top:8px">${pill(p.status)}${p.published?'<span class="pill mut">Сошиалд нийтэлсэн</span>':''}</div>${lastLine('players',p.id)}</div><button class="btn sm" data-act="close">Хаах</button></div>
   <div class="specs">${spec('Байрлал',p.pos)}${spec('Өндөр',p.height?p.height+' см'+(f?' · '+f:''):'')}${spec('Нас',p.age)}${spec('Иргэншил',p.country)}${spec('Хүссэн цалин',p.salary?(/^[\d,.\s-]+$/.test(p.salary)?'$'+p.salary+' / сар':p.salary):'')}${spec('Totti-ийн хувь',p.share)}${spec('Co-agent',p.coagent)}${spec('Эх сурвалж',p.source)}</div>
   ${links.length?`<div class="links">${links.map((u,i)=>`<a href="${esc(u)}" target="_blank" rel="noopener">${esc(linkLabel(u))}${links.filter(l=>linkLabel(l)===linkLabel(u)).length>1?' '+(links.slice(0,i+1).filter(l=>linkLabel(l)===linkLabel(u)).length):''} ↗</a>`).join('')}</div>`:''}
   ${p.notes?`<section class="group"><h2>Тэмдэглэл</h2><div class="note">${esc(p.notes)}</div></section>`:''}
@@ -273,7 +325,7 @@ function playerDetail(p){
 }
 function clubDetail(c){
   const fb=safeUrl(c.facebook);
-  return `<div class="dhead"><div><h1>${esc(c.name)}</h1><div class="meta" style="margin-top:8px">${pill(c.status)}</div></div><button class="btn sm" data-act="close">Хаах</button></div>
+  return `<div class="dhead"><div><h1>${esc(c.name)}</h1><div class="meta" style="margin-top:8px">${pill(c.status)}</div>${lastLine('clubs',c.id)}</div><button class="btn sm" data-act="close">Хаах</button></div>
   <div class="specs">${spec('Лиг',c.league)}${spec('Бүс',c.conf)}${spec('Дасгалжуулагч',c.coach)}${spec('Import 1',c.imp1)}${spec('Import 2',c.imp2)}${spec('Asia Import',c.asia)}${spec('Сүүлд холбогдсон',c.lastContact)}${spec('Дараагийн алхам',c.next)}</div>
   ${c.phone||c.email||fb?`<section class="group"><h2>Холбоо барих</h2>${copyRow(c.phone)}${copyRow(c.email)}${fb?`<div class="links"><a href="${esc(fb)}" target="_blank" rel="noopener">Facebook хуудас ↗</a></div>`:''}</section>`:''}
   ${c.notes?`<section class="group"><h2>Тэмдэглэл</h2><div class="note">${esc(c.notes)}</div></section>`:''}
@@ -291,7 +343,7 @@ function formHtml(col,id,preset){
     if(t==='lines')return `<label class="f">${l}<textarea id="${idn}">${esc((v||[]).join('\n'))}</textarea></label>`;
     if(t==='owner'||t==='area_list')return `<label class="f">${l}<input type="text" id="${idn}" list="${idn}_l" value="${esc(v)}"><datalist id="${idn}_l">${(t==='owner'?OWNERS:areas).map(a=>`<option value="${esc(a)}">`).join('')}</datalist></label>`;
     return `<label class="f">${l}<input type="${t}" id="${idn}" value="${esc(v)}"${r}></label>`};
-  return `<div class="dhead"><h1>${id?sc.one+' засах':'Шинэ '+sc.one.toLowerCase()}</h1><button class="btn sm" data-act="close">Хаах</button></div>
+  return `<div class="dhead"><div><h1>${id?sc.one+' засах':'Шинэ '+sc.one.toLowerCase()}</h1>${id?lastLine(col,id):''}</div><button class="btn sm" data-act="close">Хаах</button></div>
   <form id="entityForm" data-col="${col}" data-id="${id||''}">${sc.fields.map(inp).join('')}
   <div class="actions"><button class="btn pri" type="submit">Хадгалах</button><button class="btn" type="button" data-act="close">Болих</button>${id&&(col==='deals'||col==='todos')?`<button class="btn danger" type="button" data-act="del" data-col="${col}" data-id="${id}">Устгах</button>`:''}</div></form>`;
 }
@@ -350,6 +402,7 @@ function crmDb(){
     if(r.status===401){toLogin();return}
     if(!r.ok)throw new Error('load '+r.status);
     const all=await r.json();
+    ME=all.me||'';AUDIT=all.audit||[];loaded.history=true;
     for(const col in subs){const docs=(all[col]||[]).map(({id,...rest})=>({id,data:()=>rest}));subs[col].forEach(cb=>cb({docs}))}
   }
   const poll=()=>{clearTimeout(timer);timer=setTimeout(()=>refresh().catch(()=>{}).finally(poll),20000)};

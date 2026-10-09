@@ -16,6 +16,6 @@ export async function crmLoginAction(
     return { error: "Нэвтрэх нэр эсвэл код буруу байна." };
   }
 
-  await createCrmSession();
+  await createCrmSession(username);
   redirect("/crm");
 }

@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import {
   CRM_SESSION_COOKIE_NAME,
-  CRM_SESSION_SUBJECT,
   SESSION_COOKIE_NAME,
+  verifyCrmSessionToken,
   verifySessionToken,
 } from "@/lib/session-token";
 import { LOCALE_COOKIE, LOCALE_HEADER, isLocale } from "@/lib/i18n";
@@ -24,7 +24,7 @@ export async function proxy(req: NextRequest) {
   // itself is never served without a login. Its data API checks the cookie on its own.
   if ((pathname === "/crm" || pathname.startsWith("/crm/")) && pathname !== "/crm/login") {
     const token = req.cookies.get(CRM_SESSION_COOKIE_NAME)?.value;
-    if (!(await verifySessionToken(token, CRM_SESSION_SUBJECT))) {
+    if (!(await verifyCrmSessionToken(token))) {
       return NextResponse.redirect(new URL("/crm/login", req.url));
     }
     return NextResponse.next();

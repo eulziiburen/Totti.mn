@@ -35,14 +35,13 @@ async function hmacSign(value: string): Promise<string> {
   return toBase64Url(sig);
 }
 
-// `subject` keeps admin and CRM sessions apart: a token signed for one is rejected by the other.
-export async function buildSessionToken(subject = "admin", maxAgeSeconds = MAX_AGE_SECONDS): Promise<string> {
-  const payload = `${subject}.${Date.now() + maxAgeSeconds * 1000}`;
+export async function buildSessionToken(): Promise<string> {
+  const payload = `admin.${Date.now() + MAX_AGE_SECONDS * 1000}`;
   const sig = await hmacSign(payload);
   return `${payload}.${sig}`;
 }
 
-export async function verifySessionToken(token: string | undefined, expectedSubject = "admin"): Promise<boolean> {
+export async function verifySessionToken(token: string | undefined): Promise<boolean> {
   if (!token) return false;
   const parts = token.split(".");
   if (parts.length !== 3) return false;
@@ -51,12 +50,33 @@ export async function verifySessionToken(token: string | undefined, expectedSubj
   const expected = await hmacSign(payload);
   if (!timingSafeStringEqual(expected, sig)) return false;
   if (Date.now() > Number(expiry)) return false;
-  return subject === expectedSubject;
+  return subject === "admin";
 }
 
 export const SESSION_COOKIE_NAME = "totti_admin_session";
 export const SESSION_MAX_AGE_SECONDS = MAX_AGE_SECONDS;
 
 export const CRM_SESSION_COOKIE_NAME = "totti_crm_session";
-export const CRM_SESSION_SUBJECT = "crm";
 export const CRM_SESSION_MAX_AGE_SECONDS = 60 * 60 * 24 * 14; // 14 days: the team uses the CRM daily
+
+// CRM sessions carry who is signed in (a Google email, or the code-login username) so
+// every change can be attributed: "crm.<base64url user>.<expiry>.<sig>".
+export async function buildCrmSessionToken(user: string): Promise<string> {
+  const payload = `crm.${toBase64Url(new TextEncoder().encode(user).buffer as ArrayBuffer)}.${Date.now() + CRM_SESSION_MAX_AGE_SECONDS * 1000}`;
+  return `${payload}.${await hmacSign(payload)}`;
+}
+
+export async function verifyCrmSessionToken(token: string | undefined): Promise<string | null> {
+  if (!token) return null;
+  const parts = token.split(".");
+  if (parts.length !== 4 || parts[0] !== "crm") return null;
+  const [, user, expiry, sig] = parts;
+  if (!timingSafeStringEqual(await hmacSign(`crm.${user}.${expiry}`), sig)) return null;
+  if (Date.now() > Number(expiry)) return null;
+  try {
+    const binary = atob(user.replace(/-/g, "+").replace(/_/g, "/"));
+    return new TextDecoder().decode(Uint8Array.from(binary, (c) => c.charCodeAt(0)));
+  } catch {
+    return null;
+  }
+}

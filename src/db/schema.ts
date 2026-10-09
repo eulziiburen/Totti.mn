@@ -216,3 +216,16 @@ export const crmDocs = sqliteTable(
   },
   (t) => [primaryKey({ columns: [t.collection, t.id] })]
 );
+
+// Change log for the CRM: one row per add / update / delete, with who did it.
+// changes_json maps each touched field to [before, after] (null on the missing side).
+export const crmAudit = sqliteTable("crm_audit", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  at: text("at").notNull(), // ISO timestamp
+  actor: text("actor").notNull(), // Google email, or the code-login username
+  action: text("action").notNull(), // add | update | delete
+  collection: text("collection").notNull(),
+  docId: text("doc_id").notNull(),
+  label: text("label").notNull().default(""), // record name at the time, e.g. player name
+  changesJson: text("changes_json").notNull().default("{}"),
+});
