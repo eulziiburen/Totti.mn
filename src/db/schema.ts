@@ -237,3 +237,9 @@ export const crmOfferViews = sqliteTable("crm_offer_views", {
   at: text("at").notNull(), // ISO timestamp
   userAgent: text("user_agent"),
 });
+
+// When each CRM user last opened the notification bell; newer events count as unread.
+export const crmSeen = sqliteTable("crm_seen", {
+  actor: text("actor").primaryKey(),
+  seenAt: text("seen_at").notNull(), // ISO timestamp
+});
