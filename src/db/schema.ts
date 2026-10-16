@@ -229,3 +229,11 @@ export const crmAudit = sqliteTable("crm_audit", {
   label: text("label").notNull().default(""), // record name at the time, e.g. player name
   changesJson: text("changes_json").notNull().default("{}"),
 });
+
+// Opens of a club's offer page (/sanal/<token>), shown in the CRM as "seen N times, last …".
+export const crmOfferViews = sqliteTable("crm_offer_views", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  clubId: text("club_id").notNull(),
+  at: text("at").notNull(), // ISO timestamp
+  userAgent: text("user_agent"),
+});

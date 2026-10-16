@@ -173,7 +173,7 @@ const SCHEMA={
 };
 const S={players:[],clubs:[],deals:[],todos:[]}, loaded={};
 const UI={tab:'home',q:'',pStatus:'',pPos:'',cq:'',cConf:'',tOwner:'',tHide:false,hWho:'',hCol:'',qtTitle:'',qtOwners:[]};
-let ME='', AUDIT=[];
+let ME='', AUDIT=[], OFFER_VIEWS={};
 let db=null, dbState='loading', drawer=null;
 const $=id=>document.getElementById(id);
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
@@ -273,7 +273,7 @@ function vDeals(){
 /* ---------- change log ---------- */
 const COL_ONE={players:'Тоглогч',clubs:'Клуб',deals:'Хэлцэл',todos:'Ажил'};
 const ACT_LBL={add:'нэмсэн',update:'зассан',delete:'устгасан'};
-const fieldLabel=(col,k)=>{const f=(SCHEMA[col]&&SCHEMA[col].fields||[]).find(x=>x[0]===k);return f?f[1]:k};
+const fieldLabel=(col,k)=>{if(k==='shareToken')return 'Санал холбоос';const f=(SCHEMA[col]&&SCHEMA[col].fields||[]).find(x=>x[0]===k);return f?f[1]:k};
 const who=u=>String(u||'').replace(/@gmail\.com$/i,'');
 function logVal(k,v){
   if(v===null||v===undefined||v==='')return '—';
@@ -321,6 +321,13 @@ const spec=(l,v)=>v?`<div class="spec"><small>${l}</small><div>${esc(v)}</div></
 const copyRow=(v)=>v?`<div class="copy"><span>${esc(v)}</span><button class="btn sm" data-act="copy" data-v="${esc(v)}">Хуулах</button></div>`:'';
 function dealList(ds,who){return ds.length?`<div class="list">${ds.map(d=>{const o=who==='club'?byId('clubs',d.clubId):byId('players',d.playerId);return `<button class="row" data-act="edit" data-col="deals" data-id="${d.id}"><span class="main"><span class="t">${esc(o?o.name:'—')}</span><br><span class="s">${[d.salary?money(d.salary)+'/сар':'',d.next].filter(Boolean).map(esc).join(' · ')}</span></span><span class="side">${pill(d.stage)}</span></button>`}).join('')}</div>`:'<div class="s" style="color:var(--muted)">Хэлцэл хараахан алга.</div>'}
 function dActions(col,x,extra){return `<div class="actions"><button class="btn pri" data-act="edit" data-col="${col}" data-id="${x.id}">Засах</button>${extra||''}${drawer.confirm?`<button class="btn danger" data-act="del" data-col="${col}" data-id="${x.id}">Тийм, устга</button><button class="btn" data-act="nodel">Болих</button>`:`<button class="btn danger" data-act="askdel">Устгах</button>`}</div>`}
+// Public offer page for a club (/sanal/<token>): link, copy/open, and how often the club opened it.
+function offerBox(c){
+  if(!c.shareToken)return `<section class="group"><h2>Санал холбоос</h2><div class="s" style="color:var(--muted);font-size:13px">Клубт илгээх холбоос: санал болгосон тоглогчдын видео, өндөр, нас зэрэг нийтэд харагдах мэдээлэл (цалин, тэмдэглэл харагдахгүй).</div><div class="actions"><button class="btn" data-act="share" data-id="${c.id}">Санал холбоос үүсгэх</button></div></section>`;
+  const url=location.origin+'/sanal/'+c.shareToken, v=OFFER_VIEWS[c.id];
+  return `<section class="group"><h2>Санал холбоос</h2>${copyRow(url)}<div class="links"><a href="${esc(url)}" target="_blank" rel="noopener">Нээж харах ↗</a></div>
+  <div class="last">${v?`Клуб <b>${v.count}</b> удаа нээсэн · сүүлд <span class="num">${esc(when(v.last))}</span>`:'Клуб хараахан нээгээгүй'}</div></section>`;
+}
 function playerDetail(p){
   const f=ftIn(p.height), links=(p.links||[]).map(safeUrl).filter(Boolean);
   return `<div class="dhead"><div><h1>${esc(p.name)}</h1><div class="meta" style="margin-top:8px">${pill(p.status)}${p.published?'<span class="pill mut">Сошиалд нийтэлсэн</span>':''}</div>${lastLine('players',p.id)}</div><button class="btn sm" data-act="close">Хаах</button></div>
@@ -337,6 +344,7 @@ function clubDetail(c){
   ${c.phone||c.email||fb?`<section class="group"><h2>Холбоо барих</h2>${copyRow(c.phone)}${copyRow(c.email)}${fb?`<div class="links"><a href="${esc(fb)}" target="_blank" rel="noopener">Facebook хуудас ↗</a></div>`:''}</section>`:''}
   ${c.notes?`<section class="group"><h2>Тэмдэглэл</h2><div class="note">${esc(c.notes)}</div></section>`:''}
   <section class="group"><h2>Санал болгосон тоглогчид</h2>${dealList(S.deals.filter(d=>d.clubId===c.id),'player')}</section>
+  ${offerBox(c)}
   ${dActions('clubs',c,`<button class="btn" data-act="new" data-col="deals" data-preset="clubId:${c.id}">+ Тоглогч санал болгох</button>`)}`;
 }
 function formHtml(col,id,preset){
@@ -386,6 +394,7 @@ document.addEventListener('click',async e=>{
   else if(a==='toggle'){const t=byId('todos',d.id);if(!t||!db)return;try{await db.doc('todos/'+d.id).update({done:!t.done})}catch(err){fail(err)}}
   else if(a==='pickowner')b.setAttribute('aria-pressed',b.getAttribute('aria-pressed')!=='true');
   else if(a==='qtowner'){UI.qtOwners=UI.qtOwners.includes(d.v)?UI.qtOwners.filter(o=>o!==d.v):[...UI.qtOwners,d.v];render()}
+  else if(a==='share'){if(!db)return;try{await db.share(d.id);toast('Холбоос үүслээ')}catch(err){fail(err)}}
   else if(a==='copy'){try{await navigator.clipboard.writeText(d.v);toast('Хууллаа')}catch(err){toast('Хуулж чадсангүй. Текстийг гараар сонгоно уу.')}}
   else if(a==='logout'){try{await fetch('/api/crm/logout',{method:'POST'})}catch(err){}location.href='/crm/login'}
 });
@@ -414,7 +423,7 @@ function crmDb(){
     if(r.status===401){toLogin();return}
     if(!r.ok)throw new Error('load '+r.status);
     const all=await r.json();
-    ME=all.me||'';AUDIT=all.audit||[];loaded.history=true;
+    ME=all.me||'';AUDIT=all.audit||[];OFFER_VIEWS=all.offerViews||{};loaded.history=true;
     for(const col in subs){const docs=(all[col]||[]).map(({id,...rest})=>({id,data:()=>rest}));subs[col].forEach(cb=>cb({docs}))}
   }
   const poll=()=>{clearTimeout(timer);timer=setTimeout(()=>refresh().catch(()=>{}).finally(poll),20000)};
@@ -433,7 +442,8 @@ function crmDb(){
       limit:()=>({onSnapshot:(cb,err)=>{(subs[col]=subs[col]||[]).push(cb);if(err)errs.push(err);start()}}),
       add:data=>write({op:'add',col,data})
     }),
-    doc:path=>{const[col,id]=path.split('/');return{update:data=>write({op:'update',col,id,data}),delete:()=>write({op:'delete',col,id})}}
+    doc:path=>{const[col,id]=path.split('/');return{update:data=>write({op:'update',col,id,data}),delete:()=>write({op:'delete',col,id})}},
+    share:id=>write({op:'share',col:'clubs',id})
   };
 }
 function start(){
