@@ -22,7 +22,7 @@ export default async function NewsPage() {
       <main className="pb-[90px] pt-[150px]">
         <div className="mx-auto max-w-[1180px] px-8 max-[600px]:px-4">
           <div className="mb-14 max-w-[640px]">
-            <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.nav.news}</p>
+            <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.nav.news}</p>
             <h1 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
               {t.news.title}
             </h1>
@@ -58,7 +58,7 @@ export default async function NewsPage() {
                       </time>
                       <h2 className="mt-2 text-lg font-bold leading-snug">{n.title}</h2>
                       {n.summary && <p className="mt-2 line-clamp-3 text-sm leading-relaxed text-muted">{n.summary}</p>}
-                      <span className="mt-auto pt-4 text-xs font-bold uppercase tracking-[.12em] text-amber">
+                      <span className="mt-auto pt-4 text-xs font-bold uppercase tracking-[.12em] text-gold">
                         {t.news.readMore}
                       </span>
                     </div>

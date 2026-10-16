@@ -9,6 +9,9 @@
   --color-amber: #d4af37;
   --color-amber-dim: #8c6d1f;
   --color-amber-deep: #7a5c1c;
+  /* Gold for text on page backgrounds: dark enough to read on white/bg-1/bg-2 (≥4.5:1);
+     the bright amber stays for fills, borders and text on the dark cards. */
+  --color-gold: #866514;
   --color-ink: #0d0c0a;
   --color-chalk: #121210;
   --color-muted: #5c5952;
@@ -29,6 +32,7 @@
   --color-bg-1: #161310;
   --color-bg-2: #201b15;
   --color-amber-dim: #c7a53f;
+  --color-gold: #d4af37;
   --color-chalk: #f2f0ea;
   --color-muted: #a39c8f;
   --color-line: rgba(242, 240, 234, 0.12);
@@ -63,10 +67,6 @@ body {
   font-family: var(--font-sans);
   -webkit-font-smoothing: antialiased;
   transition: background-color 0.25s ease, color 0.25s ease;
-}
-
-* {
-  transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
 }
 
 ::selection {

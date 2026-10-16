@@ -127,11 +127,11 @@ export default async function CoachPage({ params }: { params: Promise<{ slug: st
             <div className="min-w-0">
               {coach.achievements.length > 0 && (
                 <section className="mb-12">
-                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.coach.achievements}</p>
+                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.coach.achievements}</p>
                   <ul className="mt-4 grid gap-3">
                     {coach.achievements.map((a) => (
                       <li key={a} className="flex gap-3 rounded-2xl border border-line-strong bg-bg-1 px-5 py-4 text-[15px] font-semibold">
-                        <span aria-hidden="true" className="text-amber">
+                        <span aria-hidden="true" className="text-gold">
                           ★
                         </span>
                         {a}
@@ -167,13 +167,13 @@ export default async function CoachPage({ params }: { params: Promise<{ slug: st
               )}
 
               <section>
-                <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.coach.bio}</p>
+                <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.coach.bio}</p>
                 <p className="mt-4 whitespace-pre-line text-base leading-relaxed text-muted">{coach.bio ?? t.coach.bioEmpty}</p>
               </section>
 
               {coach.links && coach.links.length > 0 && (
                 <section className="mt-12">
-                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.links}</p>
+                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.player.links}</p>
                   <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                     {coach.links.map((link) => (
                       <li key={link.url}>

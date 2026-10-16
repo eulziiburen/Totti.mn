@@ -18,7 +18,7 @@ export async function Hero() {
         className="absolute inset-0 z-0 hidden pointer-events-none md:block"
         style={{
           background:
-            "linear-gradient(90deg, var(--color-bg-0) 0%, var(--color-bg-0) 32%, rgba(var(--color-surface),0.75) 50%, rgba(var(--color-surface),0.35) 68%, rgba(var(--color-surface),0.08) 85%, transparent 97%), url('/images/hero-basketball.png') right center/cover no-repeat",
+            "linear-gradient(90deg, var(--color-bg-0) 0%, var(--color-bg-0) 32%, rgba(var(--color-surface),0.75) 50%, rgba(var(--color-surface),0.35) 68%, rgba(var(--color-surface),0.08) 85%, transparent 97%), url('/images/hero-basketball.webp') right center/cover no-repeat",
         }}
       />
       <div
@@ -26,7 +26,7 @@ export async function Hero() {
         className="absolute inset-0 z-0 opacity-55 pointer-events-none md:hidden"
         style={{
           background:
-            "linear-gradient(to bottom, rgba(var(--color-surface),0.55), rgba(var(--color-surface),0.8)), url('/images/hero-basketball.png') 82% 35%/cover no-repeat",
+            "linear-gradient(to bottom, rgba(var(--color-surface),0.55), rgba(var(--color-surface),0.8)), url('/images/hero-basketball.webp') 82% 35%/cover no-repeat",
         }}
       />
       <svg
@@ -45,7 +45,7 @@ export async function Hero() {
       <div className="relative z-[2] mx-auto w-full max-w-[1180px] px-8">
         <div className="mb-6 inline-flex items-center gap-2.5 rounded-full border border-amber/30 bg-amber/10 py-2 pl-2 pr-4">
           <span className="h-2 w-2 rounded-full bg-amber shadow-[0_0_8px_rgba(212,175,55,0.7)]" />
-          <span className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">
+          <span className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">
             {t.hero.badge}
           </span>
         </div>
@@ -56,7 +56,7 @@ export async function Hero() {
         >
           {t.hero.title1}
           <br />
-          <span className="text-amber"> {t.hero.title2}</span>
+          <span className="text-gold"> {t.hero.title2}</span>
         </h1>
 
         <p className="mt-7 max-w-[520px] text-[17px] leading-[1.65] text-muted">

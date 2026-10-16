@@ -37,7 +37,7 @@ function Counter({ target }: { target: number }) {
   }, [target]);
 
   return (
-    <div ref={ref} className="font-mono text-[clamp(30px,4vw,46px)] font-bold tabular-nums text-amber">
+    <div ref={ref} className="font-mono text-[clamp(30px,4vw,46px)] font-bold tabular-nums text-gold">
       {value}
     </div>
   );

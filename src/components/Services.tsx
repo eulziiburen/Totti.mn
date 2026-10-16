@@ -8,7 +8,7 @@ export async function Services({ items: services }: { items: ServiceItem[] }) {
     <section id="services" className="py-[120px]">
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mb-14 max-w-[640px]">
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.services.eyebrow}</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.services.eyebrow}</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
             {t.services.title}
           </h2>
@@ -39,7 +39,7 @@ export async function Services({ items: services }: { items: ServiceItem[] }) {
                   fill="none"
                   stroke="currentColor"
                   strokeWidth={1.5}
-                  className="block h-7 w-7 text-amber transition-transform duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:rotate-[-6deg] group-hover:scale-[1.15]"
+                  className="block h-7 w-7 text-gold transition-transform duration-[400ms] ease-[cubic-bezier(.2,.8,.2,1)] group-hover:rotate-[-6deg] group-hover:scale-[1.15]"
                 >
                   <path d={service.path} />
                 </svg>

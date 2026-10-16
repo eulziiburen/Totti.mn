@@ -72,7 +72,7 @@ export function StatRow({ stat }: { stat: Stat }) {
   return (
     <div className="flex items-center justify-between gap-4 border-b border-line px-5 py-3 last:border-b-0">
       <div>
-        <span className="font-mono font-semibold text-amber">{stat.value}</span>{" "}
+        <span className="font-mono font-semibold text-gold">{stat.value}</span>{" "}
         <span className="text-sm">{stat.label}</span>
       </div>
       <button
