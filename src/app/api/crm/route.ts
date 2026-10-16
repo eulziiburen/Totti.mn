@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
-import { desc, sql } from "drizzle-orm";
+import { desc, eq, sql } from "drizzle-orm";
 import { db } from "@/db/client";
-import { crmAudit, crmDocs, crmOfferViews } from "@/db/schema";
+import { crmAudit, crmDocs, crmOfferViews, crmSeen } from "@/db/schema";
 import { getCrmUser } from "@/lib/crm-auth";
 import {
   addCrmDoc,
@@ -32,13 +32,14 @@ const notFound = () => NextResponse.json({ error: "not found" }, { status: 404 }
 export async function GET() {
   const me = await getCrmUser();
   if (!me) return unauthorized();
-  const [rows, auditRows, viewRows] = await Promise.all([
+  const [rows, auditRows, viewRows, [seen]] = await Promise.all([
     db.select().from(crmDocs),
     db.select().from(crmAudit).orderBy(desc(crmAudit.id)).limit(AUDIT_LIMIT),
     db
       .select({ clubId: crmOfferViews.clubId, count: sql<number>`count(*)`, last: sql<string>`max(${crmOfferViews.at})` })
       .from(crmOfferViews)
       .groupBy(crmOfferViews.clubId),
+    db.select().from(crmSeen).where(eq(crmSeen.actor, me)),
   ]);
   const out: Record<CrmCollection, CrmDoc[]> = { players: [], clubs: [], deals: [], todos: [] };
   for (const row of rows) {
@@ -47,17 +48,30 @@ export async function GET() {
   }
   const audit = auditRows.map(({ changesJson, ...a }) => ({ ...a, changes: JSON.parse(changesJson) }));
   const offerViews = Object.fromEntries(viewRows.map((v) => [v.clubId, { count: v.count, last: v.last }]));
-  return NextResponse.json({ ...out, me, audit, offerViews }, { headers: { "Cache-Control": "no-store" } });
+  const seenAt = seen?.seenAt ?? null;
+  return NextResponse.json({ ...out, me, audit, offerViews, seenAt }, { headers: { "Cache-Control": "no-store" } });
 }
 
 // Body: { op: "add", col, data } | { op: "update", col, id, data } | { op: "delete", col, id }
 //     | { op: "share", col: "clubs", id } → gives the club an offer-page token (kept if it has one)
+//     | { op: "seen" } → marks the notification bell as read for this user
 export async function POST(req: Request) {
   const actor = await getCrmUser();
   if (!actor) return unauthorized();
   const body: unknown = await req.json().catch(() => null);
   if (!isPlainObject(body)) return badRequest("invalid body");
   const { op, col, id, data } = body;
+
+  // { op: "seen" }: the user opened the notification bell.
+  if (op === "seen") {
+    const seenAt = new Date().toISOString();
+    await db
+      .insert(crmSeen)
+      .values({ actor, seenAt })
+      .onConflictDoUpdate({ target: crmSeen.actor, set: { seenAt } });
+    return NextResponse.json({ seenAt });
+  }
+
   if (!isCrmCollection(col)) return badRequest("invalid collection");
 
   if (op === "add") {
