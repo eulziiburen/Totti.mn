@@ -96,7 +96,7 @@ export default async function OfferPage({ params }: { params: Promise<{ token: s
       <Header />
       <main className="pb-[90px] pt-[110px]">
         <div className="mx-auto max-w-[1180px] px-8 max-[600px]:px-4">
-          <p className="text-xs font-bold uppercase tracking-[.14em] text-amber">ТОТТИ · Тоглогчийн санал</p>
+          <p className="text-xs font-bold uppercase tracking-[.14em] text-gold">ТОТТИ · Тоглогчийн санал</p>
           <h1 className="mt-3 font-display text-4xl uppercase leading-none max-[600px]:text-3xl">{str(club.name)}</h1>
           <p className="mt-4 max-w-[640px] text-muted">
             Танай багт санал болгож буй тоглогчид. Дэлгэрэнгүй мэдээлэл, гэрээний нөхцөлийн талаар доорх
@@ -149,7 +149,7 @@ export default async function OfferPage({ params }: { params: Promise<{ token: s
                               href={url}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="rounded-full border border-line px-4 py-2 text-sm font-semibold transition-colors hover:border-amber hover:text-amber"
+                              className="rounded-full border border-line px-4 py-2 text-sm font-semibold transition-colors hover:border-amber hover:text-gold"
                             >
                               {linkLabel(url)} ↗
                             </a>

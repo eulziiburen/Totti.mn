@@ -175,7 +175,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
             <div className="min-w-0">
               {embedUrl && (
                 <section className="mb-12">
-                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.highlight}</p>
+                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.player.highlight}</p>
                   <div className="mt-4 aspect-video overflow-hidden rounded-3xl border border-line-strong bg-ink">
                     <iframe
                       src={embedUrl}
@@ -200,7 +200,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
               )}
 
               <section>
-                <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.bio}</p>
+                <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.player.bio}</p>
                 <p className="mt-4 whitespace-pre-line text-base leading-relaxed text-muted">
                   {player.bio ?? t.player.bioEmpty}
                 </p>
@@ -208,7 +208,7 @@ export default async function PlayerPage({ params }: { params: Promise<{ slug: s
 
               {player.links && player.links.length > 0 && (
                 <section className="mt-12">
-                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.player.links}</p>
+                  <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.player.links}</p>
                   <ul className="mt-4 grid gap-3 sm:grid-cols-2">
                     {player.links.map((link) => (
                       <li key={link.url}>

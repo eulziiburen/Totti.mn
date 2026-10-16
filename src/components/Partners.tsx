@@ -17,7 +17,7 @@ export async function Partners({ items: partners }: { items: Partner[] }) {
     >
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mx-auto mb-14 max-w-[640px] text-center">
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.partners.eyebrow}</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.partners.eyebrow}</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
             {t.partners.title}
           </h2>

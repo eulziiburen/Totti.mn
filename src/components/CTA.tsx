@@ -14,7 +14,7 @@ export async function CTA() {
       />
       <div className="relative z-[1] mx-auto max-w-[1180px] px-8">
         <RevealOnScroll>
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.cta.eyebrow}</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.cta.eyebrow}</p>
         </RevealOnScroll>
         <RevealOnScroll className="mt-3.5">
           <h2 className="font-display text-[clamp(36px,6vw,72px)] uppercase leading-[0.92]">

@@ -67,7 +67,7 @@ export default async function NewsArticlePage({ params }: { params: Promise<{ sl
           >
             {t.news.back}
           </a>
-          <time dateTime={item.publishedAt} className="mt-8 block font-mono text-xs tracking-[.12em] text-amber">
+          <time dateTime={item.publishedAt} className="mt-8 block font-mono text-xs tracking-[.12em] text-gold">
             {item.publishedAt.replaceAll("-", ".")}
           </time>
           <h1 className="mt-3 font-display text-[clamp(32px,5vw,60px)] uppercase leading-[.95] [overflow-wrap:anywhere]">

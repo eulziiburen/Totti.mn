@@ -60,7 +60,7 @@ export async function Footer() {
                   rel="noopener noreferrer"
                   aria-label={link.label}
                   title={link.label}
-                  className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-chalk transition-colors hover:border-amber hover:text-amber"
+                  className="flex h-10 w-10 items-center justify-center rounded-full border border-line text-chalk transition-colors hover:border-amber hover:text-gold"
                 >
                   <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
                     <path d={link.icon} />

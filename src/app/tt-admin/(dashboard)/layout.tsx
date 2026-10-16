@@ -34,7 +34,7 @@ export default async function AdminDashboardLayout({
         <div className="mx-auto flex max-w-[1200px] flex-wrap items-center justify-between gap-4 px-6 py-4">
           <div className="flex items-center gap-8">
             <Link href="/tt-admin" className="font-display text-lg uppercase tracking-wide">
-              ТОТТИ <span className="text-amber">Admin</span>
+              ТОТТИ <span className="text-gold">Admin</span>
             </Link>
             <nav className="flex flex-wrap items-center gap-5 text-[13px] font-semibold uppercase tracking-wide text-muted">
               {navItems.map((item) => (

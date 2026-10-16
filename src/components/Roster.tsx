@@ -31,7 +31,7 @@ export function Roster({ players: rosterPlayers }: { players: RosterPlayer[] }) 
     <section id="roster" className="border-y border-line bg-bg-1 py-[120px]">
       <div className="mx-auto max-w-[1180px] px-8">
         <RevealOnScroll className="mb-14 max-w-[640px]">
-          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-amber">{t.roster.eyebrow}</p>
+          <p className="font-mono text-[13px] uppercase tracking-[0.18em] text-gold">{t.roster.eyebrow}</p>
           <h2 className="mt-3.5 font-display text-[clamp(32px,4.5vw,54px)] uppercase leading-[0.92]">
             {t.roster.title}
           </h2>
